@@ -4,4 +4,8 @@ body {
         sans-serif;
     display: grid;
     justify-items: center;
+    color: white;
+    align-items: center;
+    margin-top: 300px;
+    font-size: 70px;
 }
