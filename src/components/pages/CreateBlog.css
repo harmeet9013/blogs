@@ -1,0 +1,99 @@
+.create-blog-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 150px;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    transition: all 200ms ease;
+}
+
+.create-blog-actions {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0;
+    border-radius: 15px;
+    border: 1px solid white;
+}
+.create-blog-actions.dark {
+    border-color: white;
+}
+.create-blog-actions.light {
+    border-color: black;
+}
+
+.create-blog-actions-button {
+    border: none;
+    cursor: pointer;
+    padding: 20px 25px;
+    font-size: 20px;
+    text-align: right;
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 100ms ease;
+}
+.create-blog-actions-button.dark {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.create-blog-actions-button.light {
+    background-color: #e7e2dd;
+    color: black;
+}
+.create-blog-actions-button.dark:hover {
+    background-color: #55380b;
+}
+.create-blog-actions-button.light:hover {
+    background-color: #ffc0ab;
+}
+
+.create-blog-inputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 50px 30px;
+    width: 60%;
+}
+.create-blog-inputs.dark {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.create-blog-inputs.light {
+    background-color: #e7e2dd;
+    color: black;
+}
+
+.create-blog-title,
+.create-blog-content {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    text-align: left;
+    transition: all 200ms ease;
+}
+.create-blog-title {
+    font-weight: 700;
+    font-size: 60px;
+}
+.create-blog-content {
+    margin: 0;
+    text-align: justify;
+    font-weight: 500;
+    letter-spacing: 2px;
+    font-size: 20px;
+}
+.create-blog-title:focus {
+    border: none;
+}
+
+.create-blog-title.dark,
+.create-blog-content.dark {
+    background-color: rgba(30, 30, 30, 1);
+    color: white;
+}
+.create-blog-title.light,
+.create-blog-content.light {
+    background-color: rgba(250, 250, 250, 1);
+    color: black;
+}
