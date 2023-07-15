@@ -21,7 +21,7 @@
     color: white;
 }
 .blog-container.light {
-    background-color: #e7e2dd;
+    background-color: #e4dccf;
     color: black;
 }
 
@@ -64,14 +64,26 @@
     border-radius: 15px;
     text-decoration: none;
     border: none;
-    background-color: #484440;
-    color: white;
     cursor: pointer;
     transition: all 100ms ease;
     overflow: hidden;
 }
-.read-more-button:hover {
-    background-color: #ffc0ab;
-    color: black;
+.read-more-button.light,
+.read-more-button.dark {
+    background-color: #484440;
+    color: white;
+}
+.read-more-button.light:hover {
+    background-color: #1e212d;
+    color: white;
     transform: scale(1.05);
+}
+.read-more-button.dark:hover {
+}
+
+.response-text {
+    text-align: center;
+    font-size: 24px;
+    padding: 25px;
+    color: rgb(255, 50, 50);
 }

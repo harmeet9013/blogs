@@ -1,37 +1,70 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
     ArrowBack,
     CheckCircle,
-    Close,
     Delete,
     Edit,
     Link,
 } from "@mui/icons-material";
-import { Divider, IconButton, Paper, Snackbar } from "@mui/material";
-import { blogs } from "../../main";
+import { Divider, Paper } from "@mui/material";
+
+import { ShowDialog } from "../shared/ShowDialog";
+import { Scrollbar } from "react-scrollbars-custom";
 
 import "./ShowBlog.css";
+import axios from "axios";
 
 export default function ShowBlog({
     darkMode,
-    setDialogText,
-    setShowLoading,
-    setShowDialog,
     isLoggedIn,
+    setShowLoading,
+    setSnackbarInputs,
+    setRefresh,
 }) {
-    // const [isEditing, setIsEditing] = useState(false);
-    const [isCopied, setIsCopied] = useState(false);
-    const [snackbarInputs, setSnackbarInputs] = useState({
-        open: false,
-        message: "",
-    });
-
     const { id } = useParams();
     const navigate = useNavigate();
 
+    const [isCopied, setIsCopied] = useState(false);
+    const [currentBlog, setCurrentBlog] = useState({});
+
+    const deleteBlog = async (blogID) => {
+        setShowLoading(true);
+        await axios
+            .delete(`http://localhost:5000/api/blogs/delete/${blogID}`, {
+                data: {
+                    userID: isLoggedIn.userID,
+                },
+            })
+            .then((res) => {
+                setSnackbarInputs({ open: true, message: "Blog was deleted!" });
+                setRefresh(true);
+                navigate("/");
+            })
+            .catch((error) => {
+                setSnackbarInputs({
+                    open: true,
+                    message: "Could not deleted the blog!",
+                });
+            });
+        setShowLoading(false);
+    };
+
     // Find the blog post with the given ID
-    const blog = blogs[id];
+    useEffect(() => {
+        const fetchBlog = async () => {
+            await axios
+                .get(`http://localhost:5000/api/blogs/${id}`)
+                .then((res) => {
+                    setCurrentBlog(res.data);
+                })
+                .catch((error) => {
+                    setCurrentBlog({ error: true });
+                });
+        };
+
+        fetchBlog();
+    }, []);
 
     const handleCopyURL = () => {
         navigator.clipboard
@@ -47,27 +80,22 @@ export default function ShowBlog({
         console.log("got here!");
     };
 
-    if (!blog) {
-        return <div>Blog not found</div>;
-    }
-
-    return (
+    return currentBlog.error === true ? (
+        <Scrollbar style={{ width: "100%", height: "100%" }}>
+            <ShowDialog
+                darkMode={darkMode}
+                setShowLoading={setShowLoading}
+                setRefresh={setRefresh}
+                title="Blog not found!"
+                content="The requested blog was not found."
+            />
+        </Scrollbar>
+    ) : (
         <div
             className={`solo-blog-main-container ${
                 darkMode ? "dark" : "light"
             }`}
         >
-            <Snackbar
-                open={snackbarInputs.open}
-                autoHideDuration={5000}
-                onClose={() => {
-                    setSnackbarInputs({
-                        open: false,
-                        message: "",
-                    });
-                }}
-                message={snackbarInputs.message}
-            />
             {/* Header that contains the actions of blog */}
             <div className="solo-blog-header-actions">
                 <div
@@ -81,10 +109,11 @@ export default function ShowBlog({
                         }`}
                         onClick={() => {
                             setTimeout(() => {
-                                navigate("/");
                                 setShowLoading(false);
+                                navigate("/");
                             }, 100);
                             setShowLoading(true);
+                            setRefresh(true);
                         }}
                     >
                         <ArrowBack sx={{ marginY: "-5px" }} /> Back
@@ -129,7 +158,7 @@ export default function ShowBlog({
                     </button>
                 </div>
 
-                {isLoggedIn && (
+                {isLoggedIn.logged && (
                     <div
                         className={`solo-blog-header-button-group ${
                             darkMode ? "dark" : "light"
@@ -153,17 +182,9 @@ export default function ShowBlog({
                             className={`solo-blog-header-button ${
                                 darkMode ? "dark" : "light"
                             }`}
-                            onClick={(e) => {
+                            onClick={async (e) => {
                                 e.preventDefault();
-                                console.log("got here");
-                                setDialogText({
-                                    title: "Delete Blog",
-                                    content:
-                                        "Are you sure you want to delete this blog?",
-                                    event: "logout",
-                                    location: "",
-                                });
-                                setShowDialog(true);
+                                deleteBlog(currentBlog._id);
                             }}
                         >
                             <Delete sx={{ marginY: "-5px" }} /> Delete
@@ -182,16 +203,17 @@ export default function ShowBlog({
                     // contentEditable={`${isEditing ? true : false}`}
                     className="solo-blog-title"
                 >
-                    {blog.title}
+                    {currentBlog.title}
                 </span>
                 <p className="solo-blog-author">
-                    By Harmeet Singh &#x2022; <strong>June 2023</strong>
+                    By {currentBlog.author} &#x2022;{" "}
+                    <strong>{currentBlog.date}</strong>
                 </p>
                 <p
                     // contentEditable={`${isEditing ? true : false}`}
                     className="solo-blog-content"
                 >
-                    {blog.content}
+                    {currentBlog.content}
                 </p>
             </Paper>
         </div>

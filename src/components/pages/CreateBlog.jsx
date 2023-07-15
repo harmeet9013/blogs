@@ -1,142 +1,298 @@
-import { Check, Delete } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import React, { useState } from "react";
 import {
+    Box,
     Divider,
     Paper,
-    TextField,
-    createTheme,
-    useTheme,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogActions,
 } from "@mui/material";
+import { ArrowBack, Check, Login } from "@mui/icons-material";
+import {
+    DialogDark,
+    DialogLight,
+    DialogTitleDark,
+    DialogTitleLight,
+    DialogContentDark,
+    DialogContentLight,
+    DialogButtonDark,
+    DialogButtonLight,
+} from "../shared/DialogStyle";
 
 import "./CreateBlog.css";
-import { ThemeProvider } from "@emotion/react";
+import ImageUpload from "../shared/ImageUpload";
 
 export default function CreateBlog({
     darkMode,
+    isLoggedIn,
+    dialogOpen,
+    dialogInputs,
+    setDialogOpen,
+    setDialogInputs,
     setShowLoading,
-    setShowDialog,
+    setRefresh,
+    setSnackbarInputs,
 }) {
-    const outerTheme = useTheme();
+    const navigate = useNavigate();
+    const { logged, userID } = isLoggedIn;
 
-    const customTheme = (outerTheme) =>
-        createTheme({
-            components: {
-                MuiTextField: {
-                    styleOverrides: {
-                        root: {
-                            "--TextField-brandBorderColor": "#E0E3E7",
-                            "--TextField-brandBorderHoverColor": "#B2BAC2",
-                            "--TextField-brandBorderFocusedColor": "#6F7E8C",
-                            label: {
-                                color: "rgba(150,150,150,1)",
-                                letterSpacing: "2px",
-                                fontWeight: "600",
-                            },
-                            "& label.Mui-focused": {
-                                color: ` ${darkMode ? "white" : "black"}`,
-                            },
-                            textarea: {
-                                backgroundColor: "rgba(0,0,0,0)",
-                                color: ` ${darkMode ? "white" : "black"}`,
-                                fontSize: "20px",
-                            },
-                        },
-                    },
-                },
-                MuiOutlinedInput: {
-                    styleOverrides: {
-                        root: {
-                            "&:before, &:after": {
-                                border: "2px solid rgba(0,0,0,0)",
-                            },
-                            "&:hover:not(.Mui-disabled, .Mui-error):before": {
-                                border: "2px solid rgba(150, 150, 150)",
-                            },
-                            "&.Mui-focused:after": {
-                                border: `2px solid ${
-                                    darkMode ? "#55380b" : "#ffc0ab"
-                                }`,
-                                borderRadius: "50px",
-                            },
-                        },
-                    },
-                },
-            },
+    const [isValid, setIsValid] = useState(false);
+    const [inputs, setInputs] = useState({
+        title: "",
+        content: "",
+        image: "",
+    });
+    const [showResponse, setShowResponse] = useState(
+        "Write your blog and then click on Finish"
+    );
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setInputs((prevInputs) => {
+            return { ...prevInputs, [id]: value };
         });
+    };
 
-    return (
-        <div className={`create-blog-container ${darkMode ? "dark" : "light"}`}>
-            <header
-                className={`create-blog-actions ${darkMode ? "dark" : "light"}`}
+    const createBlogRequest = async () => {
+        await axios
+            .post("http://localhost:5000/api/blogs/create", {
+                ...inputs,
+                userID,
+            })
+            .then((res) => {
+                if (res.status === 201) {
+                    setRefresh(true);
+                    setSnackbarInputs({
+                        open: true,
+                        message: "Your blog has been created!",
+                    });
+                    navigate("/");
+                }
+            })
+            .catch((error) => {
+                setShowResponse(error);
+            });
+    };
+
+    const handleSubmit = () => {
+        setShowLoading(true);
+        const hasError =
+            inputs.title === "" ||
+            inputs.content === "" ||
+            inputs.image === "" ||
+            !isValid;
+
+        if (dialogInputs.navigate === "/") {
+            setSnackbarInputs({ open: true, message: "Blog was discarded!" });
+            navigate("/");
+            setShowLoading(false);
+        } else {
+            if (!hasError && logged) {
+                setTimeout(() => {
+                    createBlogRequest();
+                    setShowLoading(false);
+                }, 500);
+            } else {
+                setShowResponse(
+                    "Inputs are invalid or the user is not logged in!"
+                );
+                setShowLoading(false);
+            }
+        }
+    };
+
+    const handleButtonNavigate = (event) => {
+        event.preventDefault();
+        setShowLoading(true);
+        setTimeout(() => {
+            navigate(event.target.id);
+            setShowLoading(false);
+        }, 200);
+    };
+
+    return logged ? (
+        <React.Fragment>
+            {/* Dialog component specifically for header usage */}
+            <Dialog
+                open={dialogOpen}
+                PaperProps={{
+                    component: Box,
+                    sx: darkMode ? DialogDark : DialogLight,
+                }}
             >
-                <button
-                    name="Delete"
-                    type="delete"
-                    className={`create-blog-actions-button ${
-                        darkMode ? "dark" : "light"
-                    }`}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        console.log("got here");
-                        setDialogText({
-                            title: "Delete Blog",
-                            content:
-                                "Are you sure you want to delete this blog?",
-                            event: "logout",
-                            location: "",
-                        });
-                        setShowDialog(true);
-                    }}
-                >
-                    <Delete sx={{ my: "-6px" }} /> Delete
-                </button>
-
+                <DialogTitle sx={darkMode ? DialogTitleDark : DialogTitleLight}>
+                    {dialogInputs.title}
+                </DialogTitle>
                 <Divider
-                    sx={{ bgcolor: `${darkMode ? "white" : "black"}` }}
-                    orientation="vertical"
+                    sx={{
+                        bgcolor: `${darkMode ? "white" : "black"}`,
+                    }}
+                    variant="middle"
                     flexItem
                 />
+                <DialogContent
+                    sx={darkMode ? DialogContentDark : DialogContentLight}
+                >
+                    {dialogInputs.content}
+                </DialogContent>
+                <DialogActions sx={darkMode ? DialogDark : DialogLight}>
+                    <button
+                        style={darkMode ? DialogButtonDark : DialogButtonLight}
+                        onClick={() => {
+                            setDialogOpen(false);
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        style={darkMode ? DialogButtonDark : DialogButtonLight}
+                        onClick={() => {
+                            setDialogOpen(false);
+                            handleSubmit();
+                        }}
+                    >
+                        Yes
+                    </button>
+                </DialogActions>
+            </Dialog>
 
-                <button
-                    name="Finish"
-                    type="submit"
-                    className={`create-blog-actions-button ${
+            {/* Component that displays to the user for creating blog */}
+            <div
+                className={`create-blog-container ${
+                    darkMode ? "dark" : "light"
+                }`}
+            >
+                <Paper
+                    elevation={4}
+                    className={`create-blog-header ${
                         darkMode ? "dark" : "light"
                     }`}
+                    style={{ borderRadius: "15px" }}
                 >
-                    <Check sx={{ my: "-6px" }} /> Finish
-                </button>
-            </header>
-            <Paper
-                elevation={4}
-                className={`create-blog-inputs ${darkMode ? "dark" : "light"}`}
-                sx={{ borderRadius: "15px" }}
-            >
-                <ThemeProvider theme={customTheme(outerTheme)}>
-                    <TextField
+                    <button
+                        name="Back"
+                        className={`create-blog-actions-button ${
+                            darkMode ? "dark" : "light"
+                        }`}
+                        onClick={() => {
+                            setDialogInputs({
+                                title: "Discard changes?",
+                                content:
+                                    "Are you sure you want to go back? This will discard everything!",
+                                navigate: "/",
+                            });
+                            setDialogOpen(true);
+                        }}
+                    >
+                        <ArrowBack sx={{ my: "-6px" }} /> Back
+                    </button>
+                    <p
+                        className={`response-text ${
+                            darkMode ? "dark" : "light"
+                        }`}
+                    >
+                        {showResponse}
+                    </p>
+                    <button
+                        name="Finish"
+                        type="submit"
+                        className={`create-blog-actions-button ${
+                            darkMode ? "dark" : "light"
+                        }`}
+                        onClick={() => {
+                            setDialogInputs({
+                                title: "Submit Blog?",
+                                content:
+                                    "Are you sure you want to create the blog?",
+                                navigate: "",
+                            });
+                            setDialogOpen(true);
+                        }}
+                    >
+                        <Check sx={{ my: "-6px" }} /> Finish
+                    </button>
+                </Paper>
+
+                <Paper
+                    elevation={4}
+                    className={`create-blog-inputs ${
+                        darkMode ? "dark" : "light"
+                    }`}
+                    sx={{ borderRadius: "15px" }}
+                >
+                    <ImageUpload
+                        darkMode={darkMode}
+                        id="blog-image"
+                        onInput={(image) => {
+                            setInputs((prevInputs) => {
+                                return {
+                                    ...prevInputs,
+                                    image: image,
+                                };
+                            });
+                        }}
+                        isValid={isValid}
+                        setIsValid={setIsValid}
+                    />
+                    <textarea
                         className={`create-blog-title ${
                             darkMode ? "dark" : "light"
                         }`}
-                        name="title"
+                        id="title"
                         variant="outlined"
                         type="text"
                         placeholder="Enter your Blog Title here"
+                        value={inputs.title}
+                        onChange={handleChange}
                         autoFocus
-                        fullWidth
-                        multiline
                     />
-                    <TextField
+                    <Divider
+                        sx={{ bgcolor: `${darkMode ? "white" : "black"}` }}
+                        variant="middle"
+                        flexItem
+                    />
+                    <textarea
                         className={`create-blog-content  ${
                             darkMode ? "dark" : "light"
                         }`}
-                        name="content"
+                        id="content"
                         type="text"
                         placeholder="Enter your Blog Content here"
-                        fullWidth
-                        multiline
-                        minRows={10}
+                        value={inputs.content}
+                        onChange={handleChange}
+                        rows={10}
                     />
-                </ThemeProvider>
-            </Paper>
+                </Paper>
+            </div>
+        </React.Fragment>
+    ) : (
+        <div className="create-blog-container">
+            <p className={`response-text ${darkMode ? "dark" : "light"}`}>
+                You do not have persmission to view this page!
+            </p>
+            <div style={{ display: "flex", gap: "20px" }}>
+                <button
+                    className={`create-blog-actions-button ${
+                        darkMode ? "dark" : "light"
+                    }`}
+                    id="/"
+                    onClick={handleButtonNavigate}
+                >
+                    <ArrowBack sx={{ my: "-6px" }} /> Back
+                </button>
+                <button
+                    className={`create-blog-actions-button ${
+                        darkMode ? "dark" : "light"
+                    }`}
+                    id="/authUser"
+                    onClick={handleButtonNavigate}
+                >
+                    Login <Login sx={{ my: "-6px" }} />
+                </button>
+            </div>
         </div>
     );
 }

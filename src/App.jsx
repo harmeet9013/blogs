@@ -1,52 +1,53 @@
 import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, CircularProgress, Snackbar } from "@mui/material";
 
 import Blogs from "./components/pages/Blogs";
 import Header from "./components/shared/Header";
 import ShowBlog from "./components/pages/ShowBlog";
 import AuthPage from "./components/pages/AuthPage";
 import CreateBlog from "./components/pages/CreateBlog";
-import ShowDialog from "./components/shared/ShowDialog";
 
 import "./App.css";
 
 export default function App() {
+    const [blogs, setBlogs] = useState({});
+
     const [darkMode, setDarkMode] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+    const [isLoggedIn, setIsLoggedIn] = useState({
+        logged: false,
+        userID: "",
+    });
+    const [refresh, setRefresh] = useState(true);
+
     const [showLoading, setShowLoading] = useState(false);
-    const [showDialog, setShowDialog] = useState(false);
-    const [dialogText, setDialogText] = useState({
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogInputs, setDialogInputs] = useState({
         title: "",
         content: "",
-        event: "",
-        location: "",
+        navigate: "",
     });
-
-    const confirmDialog = () => {
-        setTimeout(() => {
-            if (dialogText.event === "logout") {
-                setIsLoggedIn(false);
-            } else if (dialogText.event === "NavLink") {
-                window.open(dialogText.location, "_blank");
-            } else if (dialogText.event === "DeleteBlog") {
-                console.log("I was called!");
-            }
-            setShowLoading(false);
-        }, 300);
-        setShowLoading(true);
-    };
+    const [snackbarInputs, setSnackbarInputs] = useState({
+        open: false,
+        message: "",
+    });
 
     return (
         <div className={`App ${darkMode ? "dark" : "light"}`}>
             <div className="main-container">
                 <Header
                     darkMode={darkMode}
-                    setDarkMode={setDarkMode}
                     isLoggedIn={isLoggedIn}
+                    dialogInputs={dialogInputs}
+                    dialogOpen={dialogOpen}
                     setShowLoading={setShowLoading}
-                    setShowDialog={setShowDialog}
-                    setDialogText={setDialogText}
+                    setDarkMode={setDarkMode}
+                    setRefresh={setRefresh}
+                    setIsLoggedIn={setIsLoggedIn}
+                    setSnackbarInputs={setSnackbarInputs}
+                    setDialogInputs={setDialogInputs}
+                    setDialogOpen={setDialogOpen}
                 />
 
                 {/* Loading on the entire screen */}
@@ -57,13 +58,17 @@ export default function App() {
                     <CircularProgress color="inherit" />
                 </Backdrop>
 
-                {/* Dialog component */}
-                <ShowDialog
-                    showDialog={showDialog}
-                    setShowDialog={setShowDialog}
-                    darkMode={darkMode}
-                    confirm={confirmDialog}
-                    {...dialogText}
+                {/* SnackBar Component */}
+                <Snackbar
+                    open={snackbarInputs.open}
+                    message={snackbarInputs.message}
+                    autoHideDuration={5000}
+                    onClose={() => {
+                        setSnackbarInputs({
+                            open: false,
+                            message: "",
+                        });
+                    }}
                 />
 
                 <Routes>
@@ -74,6 +79,10 @@ export default function App() {
                         element={
                             <Blogs
                                 darkMode={darkMode}
+                                blogs={blogs}
+                                refresh={refresh}
+                                setRefresh={setRefresh}
+                                setBlogs={setBlogs}
                                 setShowLoading={setShowLoading}
                             />
                         }
@@ -81,32 +90,48 @@ export default function App() {
 
                     {/* Show blog seaparately */}
                     <Route
+                        exact
                         path="/blog/:id"
                         element={
                             <ShowBlog
                                 darkMode={darkMode}
-                                setDialogText={setDialogText}
-                                setShowLoading={setShowLoading}
-                                setShowDialog={setShowDialog}
                                 isLoggedIn={isLoggedIn}
+                                setShowLoading={setShowLoading}
+                                setSnackbarInputs={setSnackbarInputs}
+                                setRefresh={setRefresh}
                             />
                         }
                     />
 
                     {/* Login page */}
                     <Route
+                        exact
                         path="/authUser"
-                        element={<AuthPage darkMode={darkMode} />}
+                        element={
+                            <AuthPage
+                                darkMode={darkMode}
+                                setShowLoading={setShowLoading}
+                                setIsLoggedIn={setIsLoggedIn}
+                                setSnackbarInputs={setSnackbarInputs}
+                            />
+                        }
                     />
 
                     {/* Create blog */}
                     <Route
+                        exact
                         path="/createBlog"
                         element={
                             <CreateBlog
                                 darkMode={darkMode}
+                                isLoggedIn={isLoggedIn}
+                                dialogOpen={dialogOpen}
+                                dialogInputs={dialogInputs}
+                                setDialogOpen={setDialogOpen}
+                                setDialogInputs={setDialogInputs}
                                 setShowLoading={setShowLoading}
-                                setShowDialog={setShowDialog}
+                                setRefresh={setRefresh}
+                                setSnackbarInputs={setSnackbarInputs}
                             />
                         }
                     />

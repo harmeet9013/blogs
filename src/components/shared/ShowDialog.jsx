@@ -6,44 +6,36 @@ import {
     DialogContent,
     Divider,
 } from "@mui/material";
-import "./ShowDialog.css";
 
-export default function ShowDialog({
-    showDialog,
-    setShowDialog,
+import {
+    DialogDark,
+    DialogLight,
+    DialogTitleDark,
+    DialogTitleLight,
+    DialogContentDark,
+    DialogContentLight,
+    DialogButtonDark,
+    DialogButtonLight,
+} from "./DialogStyle";
+import { useNavigate } from "react-router-dom";
+
+export const ShowDialog = ({
     darkMode,
-    confirm,
+    setShowLoading,
+    setRefresh,
     title,
     content,
-}) {
+}) => {
+    const navigate = useNavigate();
     return (
         <Dialog
-            open={showDialog}
+            open={true}
             PaperProps={{
                 component: Box,
-                sx: {
-                    padding: "20px",
-                    backgroundColor: `${
-                        darkMode ? "rgba(10, 10, 10, 1)" : "#f8f6f4"
-                    }`,
-                    color: "white",
-                    borderRadius: "15px",
-                    textAlign: "center",
-                    justifyContent: "center",
-                },
+                sx: darkMode ? DialogDark : DialogLight,
             }}
         >
-            <DialogTitle
-                sx={{
-                    mt: "0",
-                    fontFamily: "inherit",
-                    fontWeight: "700",
-                    letterSpacing: "3px",
-                    textAlign: "center",
-                    fontSize: "40px",
-                    color: `${darkMode ? "white" : "black"}`,
-                }}
-            >
+            <DialogTitle sx={darkMode ? DialogTitleDark : DialogTitleLight}>
                 {title}
             </DialogTitle>
             <Divider
@@ -54,30 +46,22 @@ export default function ShowDialog({
                 flexItem
             />
             <DialogContent
-                className={`dialog ${darkMode ? "dark" : "light"}`}
-                sx={{ textAlign: "center", fontSize: "26px" }}
+                sx={darkMode ? DialogContentDark : DialogContentLight}
             >
                 {content}
             </DialogContent>
-            <DialogActions className={`dialog ${darkMode ? "dark" : "light"}`}>
+            <DialogActions sx={darkMode ? DialogDark : DialogLight}>
                 <button
-                    className={`dialog-button ${darkMode ? "dark" : "light"}`}
+                    style={darkMode ? DialogButtonDark : DialogButtonLight}
                     onClick={() => {
-                        setShowDialog(false);
+                        setShowLoading(true);
+                        navigate("/");
+                        setRefresh(true);
                     }}
                 >
-                    Cancel
-                </button>
-                <button
-                    className={`dialog-button ${darkMode ? "dark" : "light"}`}
-                    onClick={() => {
-                        confirm();
-                        setShowDialog(false);
-                    }}
-                >
-                    Yes
+                    Okay
                 </button>
             </DialogActions>
         </Dialog>
     );
-}
+};

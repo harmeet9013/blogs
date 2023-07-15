@@ -15,7 +15,7 @@
     color: white;
 }
 .header-container.light {
-    background-color: #e7e2ddb6;
+    background-color: #e4dccf;
     color: black;
 }
 
@@ -68,5 +68,6 @@
 }
 .navbar-button.light:hover,
 .navbar-button-secondary.light:hover {
-    background-color: #ffc0ab;
+    background-color: #1e212d;
+    color: white;
 }

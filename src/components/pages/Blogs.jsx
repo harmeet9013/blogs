@@ -1,38 +1,70 @@
-import "./Blogs.css";
-import { blogs } from "../../main";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { ReadMore } from "@mui/icons-material";
 import { Paper } from "@mui/material";
 
-export default function Blogs({ darkMode, setShowLoading }) {
+import "./Blogs.css";
+export default function Blogs({
+    darkMode,
+    blogs,
+    refresh,
+    setRefresh,
+    setBlogs,
+    setShowLoading,
+}) {
     const navigate = useNavigate();
+
+    //fetch Blogs when the component loads and refresh state changes
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            await axios
+                .get("http://localhost:5000/api/blogs")
+                .then((res) => {
+                    setBlogs(res.data);
+                })
+                .catch((error) => {
+                    setBlogs({ error: true });
+                });
+        };
+        if (refresh) {
+            setShowLoading(true);
+            fetchBlogs();
+            setRefresh(false);
+            setShowLoading(false);
+        }
+    }, [refresh]);
 
     const renderBlogs = () => {
         return Object.keys(blogs).map((key) => {
-            const blog = blogs[key];
+            const { _id, title, content, author, date } = blogs[key];
 
-            let words = blog.content.split(" ");
+            let words = content.split(" ");
             let truncatedText = words.slice(0, 50).join(" ");
 
-            return (
+            return blogs.error ? (
+                <p>Could not connect to the database.</p>
+            ) : (
                 <Paper
                     elevation={4}
                     className={`blog-container ${darkMode ? "dark" : "light"}`}
                     sx={{ borderRadius: "15px" }}
-                    key={key}
+                    key={_id}
                 >
-                    <p className="blog-title">{blog.title}</p>
+                    <p className="blog-title">{title}</p>
                     <p className="blog-author">
-                        By Harmeet Singh &#x2022; <strong>June 2023</strong>
+                        By {author} &#x2022; <strong>{date}</strong>
                     </p>
 
                     <p className="blog-content">{truncatedText} ... </p>
                     <Link
                         to={"#"}
-                        className="read-more-button"
+                        className={`read-more-button ${
+                            darkMode ? "dark" : "light"
+                        }`}
                         onClick={() => {
                             setTimeout(() => {
-                                navigate(`/blog/${key}`);
+                                navigate(`/blog/${_id}`);
                                 setShowLoading(false);
                             }, 300);
                             setShowLoading(true);

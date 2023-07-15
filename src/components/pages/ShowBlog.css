@@ -25,7 +25,7 @@
     color: white;
 }
 .solo-blog-container.light {
-    background-color: #e7e2dd;
+    background-color: #e4dccf;
     color: black;
 }
 
@@ -64,14 +64,15 @@
     color: white;
 }
 .solo-blog-header-button.light {
-    background-color: #e7e2dd;
+    background-color: #e4dccf;
     color: black;
 }
 .solo-blog-header-button.dark:hover {
     background-color: #55380b;
 }
 .solo-blog-header-button.light:hover {
-    background-color: #ffc0ab;
+    background-color: #1e212d;
+    color: white;
 }
 
 .solo-blog-title {
