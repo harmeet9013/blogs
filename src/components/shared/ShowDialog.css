@@ -1,0 +1,39 @@
+.dialog {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+        sans-serif;
+    text-align: center;
+    font-weight: 500;
+}
+.dialog.dark {
+    color: white;
+}
+.dialog.light {
+    color: black;
+}
+
+.dialog-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 10px;
+    transition: all 200ms ease;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+.dialog-button.dark {
+    border: 2px solid #55380b;
+    color: white;
+}
+.dialog-button.dark:hover {
+    background-color: #55380b;
+}
+.dialog-button.light {
+    border: 2px solid #ffc0ab;
+    color: black;
+}
+.dialog-button.light:hover {
+    background-color: #ffc0ab;
+}
