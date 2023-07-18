@@ -187,7 +187,13 @@ export default function CreateBlog({
                             setDialogOpen(true);
                         }}
                     >
-                        <ArrowBack sx={{ my: "-6px" }} /> Back
+                        <ArrowBack
+                            sx={{
+                                my: "-6px",
+                                color: darkMode ? "#ADFBFF" : "#A3320B",
+                            }}
+                        />{" "}
+                        Back
                     </button>
                     <p
                         className={`response-text ${
@@ -212,7 +218,13 @@ export default function CreateBlog({
                             setDialogOpen(true);
                         }}
                     >
-                        <Check sx={{ my: "-6px" }} /> Finish
+                        <Check
+                            sx={{
+                                my: "-6px",
+                                color: darkMode ? "#ADFBFF" : "#A3320B",
+                            }}
+                        />{" "}
+                        Finish
                     </button>
                 </Paper>
 

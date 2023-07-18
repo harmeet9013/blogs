@@ -52,10 +52,26 @@ export default function App() {
 
                 {/* Loading on the entire screen */}
                 <Backdrop
-                    sx={{ color: `${darkMode ? "#fff" : "#000"}`, zIndex: 999 }}
+                    sx={{
+                        bgcolor: darkMode
+                            ? "rgba(0,0,0,0.8)"
+                            : "rgba(255,255,255,0.8)",
+                        color: darkMode ? "#fff" : "#000",
+                        zIndex: 999,
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
                     open={showLoading}
                 >
-                    <CircularProgress color="inherit" />
+                    <CircularProgress
+                        sx={{
+                            color: darkMode ? "#ADFBFF" : "#A3320B",
+                        }}
+                    />
+
+                    <p style={{ fontSize: "24px", letterSpacing: "3px" }}>
+                        please wait
+                    </p>
                 </Backdrop>
 
                 {/* SnackBar Component */}

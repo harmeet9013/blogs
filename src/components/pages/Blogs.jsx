@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ReadMore } from "@mui/icons-material";
@@ -15,23 +15,26 @@ export default function Blogs({
 }) {
     const navigate = useNavigate();
 
+    const [errorBackend, setErrorBackend] = useState(false);
+
     //fetch Blogs when the component loads and refresh state changes
     useEffect(() => {
         const fetchBlogs = async () => {
+            setShowLoading(true);
             await axios
                 .get("http://localhost:5000/api/blogs")
                 .then((res) => {
                     setBlogs(res.data);
+                    setErrorBackend(false);
                 })
                 .catch((error) => {
-                    setBlogs({ error: true });
+                    setErrorBackend(true);
                 });
+            setShowLoading(false);
         };
         if (refresh) {
-            setShowLoading(true);
             fetchBlogs();
             setRefresh(false);
-            setShowLoading(false);
         }
     }, [refresh]);
 
@@ -42,9 +45,7 @@ export default function Blogs({
             let words = content.split(" ");
             let truncatedText = words.slice(0, 50).join(" ");
 
-            return blogs.error ? (
-                <p>Could not connect to the database.</p>
-            ) : (
+            return (
                 <Paper
                     elevation={4}
                     className={`blog-container ${darkMode ? "dark" : "light"}`}
@@ -89,7 +90,35 @@ export default function Blogs({
 
     return (
         <div className={`blogs-container ${darkMode ? "dark" : "light"}`}>
-            {renderBlogs()}
+            {errorBackend ? (
+                <Paper
+                    elevation={4}
+                    className={`blog-container ${darkMode ? "dark" : "light"}`}
+                    sx={{
+                        borderRadius: "15px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <p className="error-heading-text">
+                        Could not connect to the database.
+                    </p>
+                    <button
+                        className={`error-refresh-button ${
+                            darkMode ? "dark" : "light"
+                        }`}
+                        onClick={() => {
+                            setRefresh(true);
+                        }}
+                    >
+                        Refresh
+                    </button>
+                </Paper>
+            ) : (
+                renderBlogs()
+            )}
         </div>
     );
 }

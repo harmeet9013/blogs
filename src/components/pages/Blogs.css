@@ -81,6 +81,32 @@
 .read-more-button.dark:hover {
 }
 
+.error-heading-text {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 3px;
+}
+
+.error-refresh-button {
+    padding: 12px 25px;
+    border-radius: 15px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+}
+.error-refresh-button.dark {
+    border: 2px solid #adfbff;
+    background-color: #484440;
+    color: white;
+}
+.error-refresh-button.light {
+    border: 2px solid #a3320b;
+    background-color: #fff;
+    color: black;
+}
+
 .response-text {
     text-align: center;
     font-size: 24px;
