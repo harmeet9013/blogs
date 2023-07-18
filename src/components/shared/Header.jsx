@@ -133,7 +133,6 @@ export default function Header({
                         to={"#"}
                         onClick={() => {
                             setTimeout(() => {
-                                console.log("got here");
                                 navigate("/");
                             }, 200);
                             setShowLoading(true);
@@ -169,7 +168,13 @@ export default function Header({
                                 setShowLoading(true);
                             }}
                         >
-                            <Add sx={{ marginY: "-4px" }} /> Create a New Blog
+                            <Add
+                                sx={{
+                                    marginY: "-4px",
+                                    color: darkMode ? "#ADFBFF" : "#A3320B",
+                                }}
+                            />{" "}
+                            Create a New Blog
                         </NavLink>
                     )}
 
@@ -188,7 +193,14 @@ export default function Header({
                                 });
                             }}
                         >
-                            <Logout sx={{ marginY: "-4px" }} /> Logout
+                            <Logout
+                                className="icon-color"
+                                sx={{
+                                    marginY: "-4px",
+                                    color: darkMode ? "#ADFBFF" : "#A3320B",
+                                }}
+                            />{" "}
+                            Logout
                         </button>
                     ) : (
                         <NavLink
@@ -204,7 +216,13 @@ export default function Header({
                                 setShowLoading(true);
                             }}
                         >
-                            <Login sx={{ marginY: "-4px" }} /> Login
+                            <Login
+                                sx={{
+                                    marginY: "-4px",
+                                    color: darkMode ? "#ADFBFF" : "#A3320B",
+                                }}
+                            />{" "}
+                            Login
                         </NavLink>
                     )}
 
@@ -232,7 +250,12 @@ export default function Header({
                                 });
                             }}
                         >
-                            <GitHub sx={{ marginY: "-4px" }} />
+                            <GitHub
+                                sx={{
+                                    marginY: "-4px",
+                                    color: darkMode ? "#ADFBFF" : "#A3320B",
+                                }}
+                            />
                         </NavLink>
                     </Tooltip>
 
@@ -255,9 +278,19 @@ export default function Header({
                             }}
                         >
                             {darkMode ? (
-                                <DarkMode sx={{ marginY: "-3px" }} />
+                                <DarkMode
+                                    sx={{
+                                        marginY: "-3px",
+                                        color: "#ADFBFF",
+                                    }}
+                                />
                             ) : (
-                                <LightMode sx={{ marginY: "-3px" }} />
+                                <LightMode
+                                    sx={{
+                                        marginY: "-3px",
+                                        color: "#A3320B",
+                                    }}
+                                />
                             )}
                         </a>
                     </Tooltip>

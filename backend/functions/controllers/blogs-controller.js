@@ -1,8 +1,8 @@
-const { default: mongoose } = require("mongoose");
-const HttpError = require("../models/http-error");
+import { default as mongoose } from "mongoose";
+import HttpError from "../models/http-error.js";
 
-const Blog = require("../models/blog.js");
-const User = require("../models/user.js");
+import Blog from "../models/blog.js";
+import User from "../models/user.js";
 
 const month = [
     "January",
@@ -19,7 +19,7 @@ const month = [
     "December",
 ];
 
-const allBlogs = async (req, res, next) => {
+export const allBlogs = async (req, res, next) => {
     let blogs;
 
     try {
@@ -34,7 +34,7 @@ const allBlogs = async (req, res, next) => {
     res.status(200).json(blogs);
 };
 
-const createBlog = async (req, res, next) => {
+export const createBlog = async (req, res, next) => {
     const { title, content, userID } = req.body;
 
     const date = new Date();
@@ -82,7 +82,7 @@ const createBlog = async (req, res, next) => {
     res.status(201).json({ message: "Blog has been created!" });
 };
 
-const singleBlog = async (req, res, next) => {
+export const singleBlog = async (req, res, next) => {
     //catch the blog id from the url
     const blogID = req.params.blogID;
     let blog;
@@ -104,7 +104,7 @@ const singleBlog = async (req, res, next) => {
     res.json(blog.toObject({ getters: true }));
 };
 
-const editBlog = async (req, res, next) => {
+export const editBlog = async (req, res, next) => {
     const { title, content } = req.body;
     const blogID = req.params.blogID;
 
@@ -129,7 +129,7 @@ const editBlog = async (req, res, next) => {
     res.status(200).json({ message: "Blog was edited!" });
 };
 
-const deleteBlog = async (req, res, next) => {
+export const deleteBlog = async (req, res, next) => {
     const blogID = req.params.blogID;
     const { userID } = req.body;
     let blog;
@@ -177,9 +177,3 @@ const deleteBlog = async (req, res, next) => {
 
     res.status(200).json({ message: "Blog was deleted!" });
 };
-
-exports.allBlogs = allBlogs;
-exports.singleBlog = singleBlog;
-exports.createBlog = createBlog;
-exports.editBlog = editBlog;
-exports.deleteBlog = deleteBlog;

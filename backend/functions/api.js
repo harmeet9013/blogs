@@ -1,15 +1,16 @@
-const Express = require("express");
-const bodyParser = require("body-parser");
-const serverlessHttp = require("serverless-http");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const app = Express();
+import Express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import { connect } from "mongoose";
 
-const blogsRoute = require("./routes/blogs-route");
-const usersRoute = require("./routes/users-route.js");
-const HttpError = require("./models/http-error.js");
-const { KEY } = require("./credentials");
+import blogsRoute from "./routes/blogs-route.js";
+import usersRoute from "./routes/users-route.js";
+import HttpError from "./models/http-error.js";
+
+import { KEY } from "./credentials.js";
 const PORT = 5000;
+
+const app = Express();
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -33,8 +34,8 @@ app.use((error, req, res, next) => {
     }
 });
 
-mongoose
-    .connect(KEY)
+console.log("Trying to connect to database...");
+connect(KEY)
     .then(() => {
         console.log("Connected to database! Port: " + PORT);
         app.listen(PORT);
