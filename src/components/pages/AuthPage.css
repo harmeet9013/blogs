@@ -27,7 +27,7 @@
     border-bottom: 2px solid rgba(230, 230, 230, 0.5);
 }
 .auth-details-container.light {
-    background-color: rgba(230, 230, 230, 1);
+    background-color: rgb(230, 227, 224);
     border-bottom: 2px solid rgba(50, 50, 50, 0.5);
 }
 
@@ -86,7 +86,7 @@
 .auth-details-button {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     padding: 8px 16px;
-    border-radius: 20px;
+    border-radius: 15px;
     border: 2px solid rgba(0, 0, 0, 0);
     font-size: 20px;
     font-weight: 700;
@@ -107,12 +107,12 @@
     border: 2px solid #55380b;
 }
 .auth-details-button.light {
-    border: 2px solid #ffc0ab;
+    border: 2px solid #a3320b;
 }
 .auth-details-button.light:hover {
     transform: scale(1.05);
-    color: black;
-    background-color: #ffc0ab;
+    color: white;
+    background-color: #a3320b;
 }
 
 .response-text {

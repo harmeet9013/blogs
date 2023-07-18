@@ -1,3 +1,31 @@
 .image-preview {
-    width: inherit;
+    width: 90%;
+    border-radius: 15px;
+}
+
+.upload-image-button {
+    border: none;
+    cursor: pointer;
+    padding: 20px 25px;
+    font-size: 20px;
+    text-align: right;
+    border-radius: 15px;
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 100ms ease;
+}
+.upload-image-button.dark {
+    border-color: white;
+    color: white;
+}
+.upload-image-button.light {
+    border-color: #1e212d;
+    color: black;
+}
+.upload-image-button.dark:hover {
+    background-color: #55380b;
+}
+.upload-image-button.light:hover {
+    background-color: #1e212d;
+    color: white;
 }

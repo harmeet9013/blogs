@@ -1,11 +1,17 @@
-const Express = require("express");
-const router = Express.Router();
-const blogsController = require("../controllers/blogs-controller.js");
+import { Router } from "express";
+const router = Router();
+import {
+    allBlogs,
+    createBlog,
+    singleBlog,
+    editBlog,
+    deleteBlog,
+} from "../controllers/blogs-controller.js";
 
-router.get("/", blogsController.allBlogs);
-router.post("/create", blogsController.createBlog);
-router.get("/:blogID", blogsController.singleBlog);
-router.patch("/edit/:blogID", blogsController.editBlog);
-router.delete("/delete/:blogID", blogsController.deleteBlog);
+router.get("/", allBlogs);
+router.post("/create", createBlog);
+router.get("/:blogID", singleBlog);
+router.patch("/edit/:blogID", editBlog);
+router.delete("/delete/:blogID", deleteBlog);
 
-module.exports = router;
+export default router;

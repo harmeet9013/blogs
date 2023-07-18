@@ -1,5 +1,4 @@
 import {
-    Box,
     TextField,
     InputAdornment,
     IconButton,
@@ -64,7 +63,7 @@ export default function AuthPage({
                             },
                             "&.Mui-focused:after": {
                                 borderBottom: `2px solid ${
-                                    darkMode ? "#55380b" : "#ffc0ab"
+                                    darkMode ? "#55380b" : "#A3320B"
                                 }`,
                                 borderRadius: "50px",
                             },

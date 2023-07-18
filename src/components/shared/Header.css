@@ -15,7 +15,7 @@
     color: white;
 }
 .header-container.light {
-    background-color: #e4dccf;
+    background-color: #e4dccfbb;
     color: black;
 }
 
@@ -70,4 +70,8 @@
 .navbar-button-secondary.light:hover {
     background-color: #1e212d;
     color: white;
+}
+
+.icon-color {
+    color: #1e212d;
 }

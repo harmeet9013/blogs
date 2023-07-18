@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-// import "./ImageUpload.css";
+import { UploadFile } from "@mui/icons-material";
+import "./ImageUpload.css";
 
 export default function ImageUpload({
     darkMode,
@@ -30,7 +31,18 @@ export default function ImageUpload({
     return (
         <div className="image-upload-section">
             {previewUrl && (
-                <img className="image-preview" src={previewUrl} alt="Preview" />
+                <img
+                    className="image-preview"
+                    src={previewUrl}
+                    alt="Preview"
+                    onError={() => {
+                        setTimeout(() => {
+                            setIsValid(false);
+                            setPreviewUrl("");
+                            setImage("");
+                        }, 2000);
+                    }}
+                />
             )}
             <input
                 id={id}
@@ -50,19 +62,34 @@ export default function ImageUpload({
                     onInput(image);
                 }}
             />
-            <button
-                onClick={() => {
-                    clickRef.current.click();
-                }}
-            >
-                Upload Image
-            </button>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+                <button
+                    className={`upload-image-button ${
+                        darkMode ? "dark" : "light"
+                    }`}
+                    onClick={() => {
+                        clickRef.current.click();
+                    }}
+                >
+                    <UploadFile
+                        sx={{
+                            my: "-5px",
+                            color: darkMode ? "#ADFBFF" : "#A3320B",
+                        }}
+                    />{" "}
+                    {image ? "Change Image" : "Upload Image"}
+                </button>
 
-            {!isValid && (
-                <p className={`response-text ${darkMode ? "dark" : "light"}`}>
-                    Pick a valid Image File
-                </p>
-            )}
+                {!isValid && (
+                    <p
+                        className={`response-text ${
+                            darkMode ? "dark" : "light"
+                        }`}
+                    >
+                        Pick a valid Image File
+                    </p>
+                )}
+            </div>
         </div>
     );
 }
