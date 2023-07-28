@@ -8,7 +8,7 @@ import { tokenKEY } from "../credentials.js";
 const errorLogin = new HttpError("Could not login", 500);
 
 export const loginUser = async (req, res, next) => {
-    const { email, password } = req.body.inputs;
+    const { email, password } = req.body.loginData;
 
     let currentUser;
     let userValidation = false;
@@ -51,6 +51,7 @@ export const loginUser = async (req, res, next) => {
     res.status(200).json({
         userID: currentUser._id,
         name: currentUser.name,
+        avatar: currentUser.avatar,
         token,
     });
 };
@@ -96,7 +97,7 @@ export const createUser = async (req, res, next) => {
     try {
         await newUser.save();
     } catch (error) {
-        return next(new HttpError("COuld not create a new user."), 500);
+        return next(new HttpError("Could not create a new user."), 500);
     }
 
     //return +ve if all went well!

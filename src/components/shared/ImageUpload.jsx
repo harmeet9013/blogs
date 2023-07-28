@@ -1,14 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { UploadFile } from "@mui/icons-material";
-import "./ImageUpload.css";
+import { DeleteForever, UploadFile } from "@mui/icons-material";
+import { Box, Stack, Typography } from "@mui/material";
 
-export default function ImageUpload({
-    darkMode,
-    id,
-    onInput,
-    isValid,
-    setIsValid,
-}) {
+export default function ImageUpload(props) {
     const [image, setImage] = useState();
     const [previewUrl, setPreviewUrl] = useState();
 
@@ -29,23 +23,33 @@ export default function ImageUpload({
     }, [image]);
 
     return (
-        <div className="image-upload-section">
+        <Stack
+            direction="column"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+        >
             {previewUrl && (
-                <img
+                <Box
+                    component="img"
                     className="image-preview"
                     src={previewUrl}
                     alt="Preview"
                     onError={() => {
                         setTimeout(() => {
-                            setIsValid(false);
+                            props.setIsValid(false);
                             setPreviewUrl("");
                             setImage("");
                         }, 2000);
                     }}
+                    sx={{
+                        width: "100%",
+                        borderRadius: "15px",
+                    }}
                 />
             )}
             <input
-                id={id}
+                id={props.id}
                 ref={clickRef}
                 style={{ display: "none" }}
                 type="file"
@@ -55,41 +59,44 @@ export default function ImageUpload({
                     if (e.target.files && e.target.files.length === 1) {
                         pickedImage = e.target.files[0];
                         setImage(pickedImage);
-                        setIsValid(true);
+                        props.setIsValid(true);
                     } else {
-                        setIsValid(false);
+                        props.setIsValid(false);
                     }
-                    onInput(image);
+                    props.onInput(image);
                 }}
             />
-            <div style={{ display: "flex", flexDirection: "row" }}>
-                <button
-                    className={`upload-image-button ${
-                        darkMode ? "dark" : "light"
-                    }`}
+            <Stack
+                direction="row"
+                spacing={props.isMobile ? 2 : 4}
+                justifyContent="center"
+                alignItems="center"
+            >
+                <props.CustomButton
                     onClick={() => {
                         clickRef.current.click();
                     }}
+                    startIcon={<UploadFile color="icon" />}
                 >
-                    <UploadFile
-                        sx={{
-                            my: "-5px",
-                            color: darkMode ? "#ADFBFF" : "#A3320B",
-                        }}
-                    />{" "}
                     {image ? "Change Image" : "Upload Image"}
-                </button>
+                </props.CustomButton>
 
-                {!isValid && (
-                    <p
-                        className={`response-text ${
-                            darkMode ? "dark" : "light"
-                        }`}
-                    >
+                {!image ? (
+                    <Typography variant="h6">
                         Pick a valid Image File
-                    </p>
+                    </Typography>
+                ) : (
+                    <props.CustomButton
+                        onClick={() => {
+                            setImage();
+                            setPreviewUrl();
+                        }}
+                        startIcon={<DeleteForever color="icon" />}
+                    >
+                        Remove Image
+                    </props.CustomButton>
                 )}
-            </div>
-        </div>
+            </Stack>
+        </Stack>
     );
 }
