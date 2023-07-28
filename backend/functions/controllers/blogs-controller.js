@@ -91,13 +91,11 @@ export const singleBlog = async (req, res, next) => {
         // find the blog from the database
         blog = await Blog.findById(blogID);
     } catch (error) {
-        return next(
-            new HttpError("Bad request. Improper requests maybe?", 500)
-        );
+        return next(new HttpError("The requested blog does not exist!", 404));
     }
 
     if (!blog) {
-        return next(new HttpError("The requested blog does not exist!"), 404);
+        return next(new HttpError("The requested blog does not exist!", 404));
     }
 
     // send blog back as a response as a json
