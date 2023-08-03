@@ -115,7 +115,7 @@ export default function App() {
         const verifyToken = async () => {
             try {
                 const result = await axios.post(
-                    "https://blogs-server-five.vercel.app//api/users/verify",
+                    "https://blogs-server-five.vercel.app/api/users/verify",
                     {},
                     {
                         headers: {
