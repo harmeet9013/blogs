@@ -57,10 +57,10 @@ export default function DesktopActions(props) {
             <props.NavbarButton
                 onClick={() => {
                     setTimeout(() => {
-                        if (props.logged) {
-                            navigate("/createBlog");
-                        } else {
+                        if (props.isLoggedIn === null) {
                             navigate("/authUser");
+                        } else {
+                            navigate("/createBlog");
                         }
                         props.setShowLoading(false);
                     }, 200);
@@ -78,9 +78,12 @@ export default function DesktopActions(props) {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {props.logged ? (
+                {props.isLoggedIn !== null ? (
                     <MyAvatar>
-                        <MyBoxAvatar component="img" src={props.userAvatar} />
+                        <MyBoxAvatar
+                            component="img"
+                            src={props.isLoggedIn.avatar}
+                        />
                     </MyAvatar>
                 ) : (
                     <MyAvatar />
@@ -101,7 +104,7 @@ export default function DesktopActions(props) {
                 }}
             >
                 <Container disableGutters>
-                    {props.logged ? (
+                    {props.isLoggedIn !== null ? (
                         <Fragment>
                             <MyMenuItem
                                 disabled
@@ -111,24 +114,18 @@ export default function DesktopActions(props) {
                                     gap: "10px",
                                     opacity: "1",
                                     "&.Mui-disabled": {
-                                        opacity: 1,
+                                        opacity: 0.8,
                                     },
                                 }}
                             >
                                 <MyAvatar>
                                     <MyBoxAvatar
                                         component="img"
-                                        src={props.userAvatar}
+                                        src={props.isLoggedIn.avatar}
                                     />
                                 </MyAvatar>
-                                <i>{props.userName}</i>
+                                <i>{props.isLoggedIn.name}</i>
                             </MyMenuItem>
-
-                            {/* <Divider
-                                flexItem
-                                variant="middle"
-                                sx={DividerHorizontalSX}
-                            /> */}
 
                             <MyMenuItem
                                 dense

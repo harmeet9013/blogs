@@ -1,22 +1,10 @@
+import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Avatar, Box, Grow, Paper, Stack, Typography } from "@mui/material";
-import { EditorState, convertFromRaw } from "draft-js";
-import { Fragment, useEffect, useState } from "react";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 export default function RenderBlog(props) {
-    const [editorState, setEditorState] = useState(null);
-
-    useEffect(() => {
-        setEditorState(
-            EditorState.createWithContent(
-                convertFromRaw(JSON.parse(props.currentBlog.content))
-            )
-        );
-    }, []);
-
     return (
-        <Stack direction="column" spacing={4}>
+        <Stack direction="column" spacing={4} sx={{ cursor: "default" }}>
             <Typography
                 variant={props.isMobile ? "h4" : "h2"}
                 sx={{ textAlign: "left", letterSpacing: "2px" }}
@@ -25,7 +13,7 @@ export default function RenderBlog(props) {
             </Typography>
 
             <Stack direction="row" alignItems="center" spacing={1}>
-                <Avatar />
+                <Avatar src={props.currentBlog.avatar} />
                 <Typography
                     component={Stack}
                     direction="row"
@@ -56,19 +44,17 @@ export default function RenderBlog(props) {
                         src={props.currentBlog.image}
                         alt={props.currentBlog.title}
                         sx={{
-                            position: "relative",
                             borderRadius: "15px",
                             width: "100%",
-                            height: "500px",
+                            height: props.isMobile ? "300px" : "500px",
                             objectFit: "cover",
-                            zIndex: "11",
                         }}
                     />
 
-                    <Editor
-                        editorState={editorState}
-                        toolbarHidden={true}
-                        readOnly={true}
+                    <CKEditor
+                        editor={BalloonEditor}
+                        data={props.currentBlog.content}
+                        disabled={true}
                     />
                 </Paper>
             </Grow>

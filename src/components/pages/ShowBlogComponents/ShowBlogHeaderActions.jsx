@@ -1,24 +1,28 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import {
     ArrowBack,
     CheckCircle,
     Link,
     Edit,
     DeleteForever,
+    List,
+    CancelRounded,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { Divider, Paper, Stack, Tooltip } from "@mui/material";
+import {
+    Backdrop,
+    SpeedDial,
+    SpeedDialAction,
+    SpeedDialIcon,
+} from "@mui/material";
+import Cookies from "js-cookie";
 
 export default function HeaderActions(props) {
     const navigate = useNavigate();
 
-    const DividerSX = {
-        borderBottomWidth: 4,
-        borderRadius: "15px",
-    };
+    const [dialOpen, setDialOpen] = useState(false);
 
     const handleCopyURL = async () => {
-        props.setShowLoading(true);
         try {
             await navigator.clipboard.writeText(window.location.href);
             props.setIsCopied(true);
@@ -29,30 +33,47 @@ export default function HeaderActions(props) {
                 message: "Sorry. Could not copy link.",
             });
         }
-        props.setShowLoading(false);
         setTimeout(() => {
             props.setIsCopied(false);
         }, 8000);
     };
 
     return (
-        <Paper
-            elevation={2}
-            component={Stack}
-            spacing={0}
-            sx={{
-                borderRadius: "15px",
-                position: "sticky",
-                top: "50%",
-                marginLeft: "73%",
-                width: "5rem",
-                overflow: "hidden",
-                opacity: "0.8",
-                zIndex: "50",
-            }}
-        >
-            <Tooltip title="Back" placement="right" disableInteractive>
-                <props.HeaderButton
+        <Fragment>
+            <Backdrop open={dialOpen} sx={{ zIndex: "60" }} />
+            <SpeedDial
+                ariaLabel="dialButton"
+                sx={{
+                    position: "fixed",
+                    bottom: props.isMobile ? 40 : "10%",
+                    right: props.isMobile ? 30 : "23%",
+                    color: (theme) => theme.palette.action.hover,
+                    zIndex: "60",
+                }}
+                FabProps={{
+                    sx: {
+                        bgcolor: (theme) => theme.palette.accent.secondary,
+                        color: (theme) => theme.palette.text.primary,
+                        "&:hover": {
+                            bgcolor: (theme) => theme.palette.accent.primary,
+                        },
+                    },
+                }}
+                icon={
+                    <SpeedDialIcon
+                        icon={<List />}
+                        openIcon={<CancelRounded />}
+                    />
+                }
+                onOpen={() => {
+                    setDialOpen(true);
+                }}
+                onClose={() => {
+                    setDialOpen(false);
+                }}
+                open={dialOpen}
+            >
+                <SpeedDialAction
                     onClick={() => {
                         setTimeout(() => {
                             navigate("/");
@@ -61,66 +82,62 @@ export default function HeaderActions(props) {
                         props.setShowLoading(true);
                         props.setRefresh(true);
                     }}
-                >
-                    <ArrowBack color="icon" />
-                </props.HeaderButton>
-            </Tooltip>
-
-            <Divider variant="middle" sx={DividerSX} />
-
-            <Tooltip
-                title={props.isCopied ? "Copied!" : "Copy Link"}
-                placement="right"
-                disableInteractive
-            >
-                <props.HeaderButton
+                    icon={<ArrowBack color="icon" />}
+                    tooltipOpen
+                    tooltipTitle="Back"
+                />
+                <SpeedDialAction
                     onClick={handleCopyURL}
-                    sx={{
-                        backgroundColor: (theme) =>
-                            props.isCopied && theme.palette.accent.success,
-                    }}
-                >
-                    {props.isCopied ? (
-                        <CheckCircle color="icon" />
-                    ) : (
-                        <Link color="icon" />
-                    )}
-                </props.HeaderButton>
-            </Tooltip>
+                    icon={
+                        props.isCopied ? (
+                            <CheckCircle color="iconSuccess" />
+                        ) : (
+                            <Link color="icon" />
+                        )
+                    }
+                    tooltipTitle={props.isCopied ? "Copied!" : "Link"}
+                    tooltipOpen
+                />
 
-            {props.logged && (
-                <Fragment>
-                    <Divider variant="middle" sx={DividerSX} />
-
-                    <Tooltip title="Edit" placement="right" disableInteractive>
-                        <props.HeaderButton>
-                            <Edit color="icon" />
-                        </props.HeaderButton>
-                    </Tooltip>
-
-                    <Divider variant="middle" sx={DividerSX} />
-
-                    <Tooltip
-                        title="Delete Blog"
-                        placement="right"
-                        disableInteractive
-                    >
-                        <props.HeaderButton
-                            onClick={async (e) => {
-                                e.preventDefault();
+                <SpeedDialAction
+                    onClick={() => {
+                        setDialOpen(false);
+                        !Cookies.get("token") ||
+                            (!Cookies.get("userID") &&
                                 props.setDialogInputs({
                                     open: true,
-                                    title: "Delete blog",
-                                    desc: "Are you sure you want to remove this blog?",
-                                    button: true,
-                                });
-                            }}
-                        >
-                            <DeleteForever color="icon" />
-                        </props.HeaderButton>
-                    </Tooltip>
-                </Fragment>
-            )}
-        </Paper>
+                                    title: "Login",
+                                    desc: "You need to login to perform this action.",
+                                    button: false,
+                                }));
+                    }}
+                    icon={<Edit color="icon" />}
+                    tooltipTitle="Edit"
+                    tooltipOpen
+                />
+                <SpeedDialAction
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setDialOpen(false);
+                        !Cookies.get("token") || !Cookies.get("userID")
+                            ? props.setDialogInputs({
+                                  open: true,
+                                  title: "Login",
+                                  desc: "You need to login to perform this action.",
+                                  button: false,
+                              })
+                            : props.setDialogInputs({
+                                  open: true,
+                                  title: "Delete blog",
+                                  desc: "Are you sure you want to remove this blog?",
+                                  button: true,
+                              });
+                    }}
+                    icon={<DeleteForever color="icon" />}
+                    tooltipOpen
+                    tooltipTitle="Delete"
+                />
+            </SpeedDial>
+        </Fragment>
     );
 }

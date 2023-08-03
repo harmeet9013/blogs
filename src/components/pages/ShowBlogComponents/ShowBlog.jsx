@@ -3,17 +3,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
     Stack,
     useMediaQuery,
-    ButtonGroup,
     styled,
     Button,
     Paper,
-    Grow,
+    SpeedDial,
+    SpeedDialAction,
 } from "@mui/material";
 import HeaderActions from "./ShowBlogHeaderActions";
 import ShowBlogDialog from "./ShowBlogDialog";
 import RenderBlog from "./RenderBlog";
 import axios from "axios";
-import { EditorState, convertFromRaw } from "draft-js";
+import {
+    List,
+    ArrowBack,
+    CheckCircle,
+    Link,
+    Edit,
+    DeleteForever,
+} from "@mui/icons-material";
+import Cookies from "js-cookie";
+import { API_URL } from "../../../App";
 
 export default function ShowBlog({
     isLoggedIn,
@@ -32,6 +41,7 @@ export default function ShowBlog({
         open: false,
         title: "",
         desc: "",
+        navigate: "",
         button: false,
     });
 
@@ -46,41 +56,51 @@ export default function ShowBlog({
         },
     }));
 
-    const HeaderButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "5px",
-        backgroundColor: "transparent",
-        fontSize: isMobile ? "12px" : "20px",
-        padding: "20px 30px",
-        transition: "all 0.2s ease",
-        width: "100%",
-        borderColor: theme.palette.divider,
-        opacity: "0.6",
-        "&:hover": {
-            backgroundColor: theme.palette.accent.secondary,
-            opacity: "1",
-        },
-    }));
-
     const deleteBlog = async (blogID = currentBlog._id) => {
         setShowLoading(true);
-        await axios
-            .delete(`http://localhost:5000/api/blogs/delete/${blogID}`, {
-                data: {
-                    userID: isLoggedIn.userID,
-                },
-            })
-            .then((res) => {
-                setSnackbarInputs({ open: true, message: "Blog was deleted!" });
-                setRefresh(true);
-                navigate("/");
-            })
-            .catch((error) => {
+        try {
+            const userID = Cookies.get("userID");
+            const token = Cookies.get("token");
+
+            console.log(token, userID);
+
+            const result = await axios.delete(
+                `${API_URL}/api/blogs/delete/${blogID}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get("token")}`,
+                        userID: Cookies.get("userID"),
+                        "Content-Type": "application/json",
+                    },
+                    data: {},
+                }
+            );
+
+            // if status code is 200
+            setSnackbarInputs({ open: true, message: "Blog was deleted!" });
+            setRefresh(true);
+            navigate("/");
+        } catch (error) {
+            if (
+                error.response.status === 403 ||
+                error.response.status === 401
+            ) {
+                setDialogInputs({
+                    open: true,
+                    title: "Session Expired",
+                    desc: "This session is expired. Please login again.",
+                    navigate: "",
+                    button: false,
+                });
+            } else {
+                console.log(error);
                 setSnackbarInputs({
                     open: true,
                     message: "Could not deleted the blog!",
                 });
-            });
+            }
+        }
+
         setShowLoading(false);
     };
 
@@ -89,9 +109,7 @@ export default function ShowBlog({
         setShowLoading(true);
         const fetchBlog = async () => {
             try {
-                const result = await axios.get(
-                    `http://localhost:5000/api/blogs/${id}`
-                );
+                const result = await axios.get(`${API_URL}/api/blogs/${id}`);
                 setCurrentBlog(result.data);
                 setRenderBlog(true);
             } catch (error) {
@@ -101,6 +119,7 @@ export default function ShowBlog({
                     open: true,
                     title: "Blog not found!",
                     desc: `The blog that you tried to access does not exist. Going back to Home Page.`,
+                    navigate: "/",
                     button: false,
                 });
             } finally {
@@ -122,10 +141,9 @@ export default function ShowBlog({
             />
 
             <HeaderActions
-                HeaderButton={HeaderButton}
                 isMobile={isMobile}
                 isCopied={isCopied}
-                logged={isLoggedIn.logged}
+                isLoggedIn={isLoggedIn}
                 setIsCopied={setIsCopied}
                 setSnackbarInputs={setSnackbarInputs}
                 setShowLoading={setShowLoading}
@@ -136,21 +154,14 @@ export default function ShowBlog({
                 direction="column"
                 sx={{
                     transition: "all 0.2s ease",
-                    padding: isMobile ? "0 5% 5% 5%" : "0 28% 5% 28%",
+                    padding: isMobile ? "8rem 5% 5% 5%" : "10rem 28% 5% 28%",
                     justifyContent: "flex-end",
                     alignItems: "center",
                     textAlign: "right",
                 }}
             >
-                {!currentBlog.error && (
-                    <Fragment>
-                        {renderBlog && (
-                            <RenderBlog
-                                isMobile={isMobile}
-                                currentBlog={currentBlog}
-                            />
-                        )}
-                    </Fragment>
+                {!currentBlog.error && renderBlog && (
+                    <RenderBlog isMobile={isMobile} currentBlog={currentBlog} />
                 )}
             </Stack>
         </Fragment>

@@ -8,9 +8,42 @@ import {
 } from "@mui/material";
 import { GitHub, Logout, Cancel, CheckCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function HeaderShowDialog(props) {
     const navigate = useNavigate();
+
+    const handleLogout = () => {
+        setTimeout(() => {
+            if (props.dialogInputs.navigate === "logout") {
+                // remove token and userID from the token
+                Cookies.remove("token");
+                Cookies.remove("userID");
+                props.setIsLoggedIn(null);
+
+                // send a snackbar to inform user
+                props.setSnackbarInputs({
+                    open: true,
+                    message: "You are logged out!",
+                });
+            } else if (props.dialogInputs.navigate === "/") {
+                props.setRefresh(true);
+                navigate("/");
+            } else {
+                window.open(props.dialogInputs.navigate, "_blank");
+            }
+            props.setDialogInputs({
+                open: false,
+                title: "",
+                content: "",
+                navigate: "",
+                icon: "",
+            });
+            props.setShowLoading(false);
+        }, 200);
+
+        props.setShowLoading(true);
+    };
 
     return (
         <Dialog
@@ -59,38 +92,7 @@ export default function HeaderShowDialog(props) {
                 </props.DialogButton>
                 <props.DialogButton
                     startIcon={<CheckCircle color="icon" />}
-                    onClick={() => {
-                        setTimeout(() => {
-                            if (props.dialogInputs.navigate === "logout") {
-                                props.setIsLoggedIn({
-                                    logged: false,
-                                    userID: "",
-                                });
-                                props.setSnackbarInputs({
-                                    open: true,
-                                    message: "You are logged out!",
-                                });
-                            } else if (props.dialogInputs.navigate === "/") {
-                                props.setRefresh(true);
-                                navigate("/");
-                            } else {
-                                window.open(
-                                    props.dialogInputs.navigate,
-                                    "_blank"
-                                );
-                            }
-                            props.setDialogInputs({
-                                open: false,
-                                title: "",
-                                content: "",
-                                navigate: "",
-                                icon: "",
-                            });
-                            props.setShowLoading(false);
-                        }, 200);
-
-                        props.setShowLoading(true);
-                    }}
+                    onClick={handleLogout}
                 >
                     Yes
                 </props.DialogButton>

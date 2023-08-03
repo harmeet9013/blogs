@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import RenderBlogs from "./RenderBlogs";
+import { API_URL } from "../../../App";
 
 export default function Blogs({
     blogs,
@@ -55,7 +56,7 @@ export default function Blogs({
         const fetchBlogs = async () => {
             setShowLoading(true);
             await axios
-                .get("http://localhost:5000/api/blogs")
+                .get(`${API_URL}/api/blogs/allBlogs`)
                 .then((res) => {
                     setBlogs(res.data);
                     setErrorBackend(false);

@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Backdrop,
     CircularProgress,
@@ -9,28 +9,22 @@ import {
     Typography,
     createTheme,
 } from "@mui/material";
+import { deepOrange, green, red } from "@mui/material/colors";
 
 import Blogs from "./components/pages/BlogsComponents/Blogs";
 import Header from "./components/shared/HeaderComponents/Header";
 import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import AuthPage from "./components/pages/AuthPage";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
-import { deepOrange, green, red } from "@mui/material/colors";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 export default function App() {
     const [blogs, setBlogs] = useState({});
 
     const [darkMode, setDarkMode] = useState(true);
-
-    const [isLoggedIn, setIsLoggedIn] = useState({
-        logged: false,
-        userID: "",
-        name: "",
-        avatar: "",
-        token: "",
-    });
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [refresh, setRefresh] = useState(true);
-
     const [showLoading, setShowLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogInputs, setDialogInputs] = useState({
@@ -59,7 +53,6 @@ export default function App() {
             },
         },
     };
-
     const darkTheme = createTheme({
         palette: {
             mode: "dark",
@@ -80,10 +73,12 @@ export default function App() {
             icon: {
                 main: "#F1C376",
             },
+            iconSuccess: {
+                main: green[300],
+            },
         },
         ...CssBaselineStyles,
     });
-
     const lightTheme = createTheme({
         palette: {
             mode: "light",
@@ -104,11 +99,72 @@ export default function App() {
             icon: {
                 main: "#674188",
             },
+            iconSuccess: {
+                main: green[300],
+            },
         },
         ...CssBaselineStyles,
     });
 
     const customTheme = darkMode ? darkTheme : lightTheme;
+
+    useEffect(() => {
+        const userID = Cookies.get("userID");
+        const token = Cookies.get("token");
+
+        const verifyToken = async () => {
+            try {
+                const result = await axios.post(
+                    "https://blogs-server-five.vercel.app//api/users/verify",
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            userID: userID,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                setIsLoggedIn({
+                    name: result.data.name,
+                    avatar: result.data.avatar,
+                });
+            } catch (error) {
+                if (
+                    error.response.status === 403 ||
+                    error.response.status === 401
+                ) {
+                    // remove cookies and update the state
+                    setIsLoggedIn(null);
+                    Cookies.remove("token");
+                    Cookies.remove("userID");
+
+                    // inform user for invalid login
+                    setDialogInputs({
+                        open: true,
+                        title: "Session Expired",
+                        desc: "This session is expired. Please login again.",
+                        navigate: "",
+                        button: false,
+                    });
+                }
+                setDialogInputs({
+                    open: true,
+                    title: "Unexpected Error",
+                    desc: "There was an error connecting to the servers. Please try again later. Please save your work somewhere.",
+                    navigate: "",
+                    button: false,
+                });
+            }
+        };
+
+        if (!userID || !token) {
+            return;
+        } else {
+            verifyToken();
+        }
+    }, []);
 
     return (
         <ThemeProvider theme={customTheme}>
@@ -134,7 +190,6 @@ export default function App() {
                 open={showLoading}
             >
                 <CircularProgress color="icon" />
-
                 <Typography variant="h6">please wait</Typography>
             </Backdrop>
 
@@ -218,3 +273,5 @@ export default function App() {
         </ThemeProvider>
     );
 }
+
+export const API_URL = "https://blogs-server-five.vercel.app";

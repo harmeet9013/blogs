@@ -5,7 +5,7 @@ import {
     DialogActions,
     Typography,
 } from "@mui/material";
-import { Delete, Cancel, CheckCircle } from "@mui/icons-material";
+import { Cancel, CheckCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 export default function (props) {
@@ -28,7 +28,6 @@ export default function (props) {
         >
             {/* title */}
             <Typography variant="h4">
-                <Delete color="icon" />{" "}
                 <strong>{props.dialogInputs.title}</strong>
             </Typography>
             <Divider flexItem />
@@ -48,7 +47,8 @@ export default function (props) {
                         !props.dialogInputs.button &&
                             props.setShowLoading(true);
                         setTimeout(() => {
-                            !props.dialogInputs.button && navigate("/");
+                            !props.dialogInputs.button &&
+                                navigate(props.dialogInputs.navigate);
                             props.setShowLoading(false);
                         }, 300);
                     }}
@@ -64,7 +64,6 @@ export default function (props) {
                                 open: false,
                             });
                             props.deleteBlog();
-                            navigate("/");
                         }}
                         startIcon={<CheckCircle color="icon" />}
                     >

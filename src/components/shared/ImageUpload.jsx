@@ -67,7 +67,7 @@ export default function ImageUpload(props) {
                 }}
             />
             <Stack
-                direction="row"
+                direction={props.isMobile ? "column" : "row"}
                 spacing={props.isMobile ? 2 : 4}
                 justifyContent="center"
                 alignItems="center"
