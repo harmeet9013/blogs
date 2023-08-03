@@ -6,23 +6,22 @@ import {
     Button,
     styled,
     Paper,
-    Typography,
     TextField,
     Divider,
     Grow,
+    Avatar,
+    Typography,
 } from "@mui/material";
-import { EditorState, convertToRaw, ContentState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
-// import MUIEditor, { MUIEditorState } from "react-mui-draft-wysiwyg";
-
 import axios from "axios";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+
 import ImageUpload from "../../shared/ImageUpload";
 import CreateBlogDialog from "./CreateBlogDialog";
 import PermissionError from "./PermissionError";
 import HeaderActions from "./CreateBlogHeaderActions";
-import MUIRichTextEditor from "mui-rte";
+import Cookies from "js-cookie";
+import { API_URL } from "../../../App";
 
 export default function CreateBlog({
     darkMode,
@@ -32,7 +31,6 @@ export default function CreateBlog({
     setSnackbarInputs,
 }) {
     const navigate = useNavigate();
-    const { logged, userID } = isLoggedIn;
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const [dialogInputs, setDialogInputs] = useState({
@@ -42,18 +40,12 @@ export default function CreateBlog({
         navigate: "",
         button: true,
     });
-
     const [isValid, setIsValid] = useState(false);
     const [inputs, setInputs] = useState({
         title: "",
-        content: {},
+        content: "<h1>Write the Blog Content here</h1>",
         image: "",
     });
-    const [showResponse, setShowResponse] = useState(
-        "Write your blog and then click on Finish"
-    );
-
-    const [blogContent, setBlogContent] = useState(EditorState.createEmpty());
 
     const DialogButton = styled(Button)(({ theme }) => ({
         color: theme.palette.text.primary,
@@ -65,7 +57,6 @@ export default function CreateBlog({
             backgroundColor: theme.palette.accent.secondary,
         },
     }));
-
     const CustomButton = styled(Button)(({ theme }) => ({
         color: theme.palette.text.primary,
         borderRadius: "15px",
@@ -78,46 +69,46 @@ export default function CreateBlog({
             backgroundColor: theme.palette.accent.secondary,
         },
     }));
-
-    const MyEditor = styled(MUIRichTextEditor)(({ theme }) => ({
-        root: {
-            backgroundColor: "#ebebeb",
-        },
-        container: {
-            display: "flex",
-            flexDirection: "column-reverse",
-        },
-        editor: {
-            backgroundColor: "#ebebeb",
-            padding: "20px",
-            height: "200px",
-            maxHeight: "200px",
-            overflow: "auto",
-        },
-        toolbar: {
-            borderTop: "1px solid gray",
-            backgroundColor: "#ebebeb",
-        },
-        placeHolder: {
-            backgroundColor: "#ebebeb",
-            paddingLeft: 20,
-            width: "inherit",
-        },
-        anchorLink: {
-            color: "#333333",
-            textDecoration: "underline",
-        },
-    }));
-
-    const editorStyle = {
-        minHeight: "500px",
-        cursor: "text",
-        color: (theme) => theme.palette.accent.primary,
-    };
-
     const DividerHorizontalSX = {
         borderBottomWidth: 2,
         borderRadius: "15px",
+    };
+    const editorConfig = {
+        toolbar: {
+            items: [
+                "undo",
+                "redo",
+                "|",
+                "heading",
+                "|",
+                "fontfamily",
+                "fontsize",
+                "fontColor",
+                "fontBackgroundColor",
+                "|",
+                "bold",
+                "italic",
+                "underline",
+                "strikethrough",
+                "subscript",
+                "superscript",
+                "code",
+                "|",
+                "link",
+                "uploadImage",
+                "blockQuote",
+                "codeBlock",
+                "|",
+                "alignment",
+                "|",
+                "bulletedList",
+                "numberedList",
+                "todoList",
+                "outdent",
+                "indent",
+            ],
+            shouldNotGroupWhenFull: true,
+        },
     };
 
     const handleChange = (e) => {
@@ -127,38 +118,51 @@ export default function CreateBlog({
         });
     };
 
-    const handleEditorChange = (newBlogContent) => {
-        setBlogContent(newBlogContent);
-
-        setInputs((prevInputs) => {
-            return {
-                ...prevInputs,
-                content: JSON.stringify(
-                    convertToRaw(blogContent.getCurrentContent())
-                ),
-            };
-        });
-    };
-
     const createBlogRequest = async () => {
-        await axios
-            .post("http://localhost:5000/api/blogs/create", {
-                ...inputs,
-                userID,
-            })
-            .then((res) => {
-                if (res.status === 201) {
-                    setRefresh(true);
-                    setSnackbarInputs({
-                        open: true,
-                        message: "Your blog has been created!",
-                    });
-                    navigate("/");
+        try {
+            const result = await axios.post(
+                `${API_URL}/api/blogs/create`,
+                {
+                    ...inputs,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get("token")}`,
+                        userID: Cookies.get("userID"),
+                        "Content-Type": "application/json",
+                    },
                 }
-            })
-            .catch((error) => {
-                setShowResponse(error);
+            );
+            setRefresh(true);
+            setSnackbarInputs({
+                open: true,
+                message: "Your blog has been created!",
             });
+            navigate("/");
+        } catch (error) {
+            if (
+                error.response.status === 403 ||
+                error.response.status === 401
+            ) {
+                setDialogInputs({
+                    open: true,
+                    title: "Session Expired",
+                    content:
+                        "This session is expired. Please login again. Please save your work first.",
+                    navigate: "",
+                    button: false,
+                });
+            } else {
+                setDialogInputs({
+                    open: true,
+                    title: "Unexcpected Error",
+                    content:
+                        "There was an error connecting to the servers. Please try again later. Please save your work somewhere.",
+                    navigate: "",
+                    button: false,
+                });
+            }
+        }
     };
 
     const handleSubmit = () => {
@@ -182,7 +186,7 @@ export default function CreateBlog({
                     setShowLoading(false);
                 }, 300);
             } else {
-                if (!hasError && logged) {
+                if (!hasError && isLoggedIn !== null) {
                     setTimeout(() => {
                         createBlogRequest();
                         setShowLoading(false);
@@ -210,60 +214,56 @@ export default function CreateBlog({
                 handleSubmit={handleSubmit}
                 setDialogInputs={setDialogInputs}
             />
+
             <Grow in={true}>
                 <Stack
                     direction="column"
                     spacing={isMobile ? 4 : 8}
                     sx={{
                         transition: "all 200ms ease",
-                        padding: isMobile ? "0 5% 5% 5%" : "0 28% 5% 28%",
-                        paddingTop: isMobile ? "100px" : "10rem",
+                        padding: isMobile
+                            ? "8rem 5% 5% 5%"
+                            : "10rem 28% 5% 28%",
                     }}
                 >
-                    {logged ? (
+                    {Cookies.get("token") || Cookies.get("userID") ? (
                         <Stack direction="column" spacing={isMobile ? 2 : 4}>
                             <HeaderActions
-                                CustomButton={CustomButton}
+                                isMobile={isMobile}
                                 setDialogInputs={setDialogInputs}
                             />
-
-                            <Paper
-                                elevation={2}
+                            <TextField
+                                fullWidth
+                                multiline
+                                id="title"
+                                variant="standard"
+                                type="text"
+                                placeholder="Enter your Blog Title here"
+                                value={inputs.title}
+                                onChange={handleChange}
+                                autoFocus
+                                color="textField"
+                                size="large"
+                                InputProps={{
+                                    style: {
+                                        fontSize: "45px",
+                                    },
+                                }}
+                            />
+                            <Typography
                                 component={Stack}
                                 direction="row"
-                                justifyContent="center"
-                                sx={{
-                                    borderRadius: "15px",
-                                    padding: isMobile ? "5px" : "20px",
-                                    backgroundColor: (theme) =>
-                                        theme.palette.action.hover,
-                                }}
+                                spacing={1}
+                                variant={isMobile ? "caption" : "body1"}
+                                sx={{ alignItems: "center" }}
                             >
-                                {/* <Typography variant="h6">
-                                    {showResponse}
-                                </Typography> */}
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    id="title"
-                                    variant="standard"
-                                    type="text"
-                                    placeholder="Enter your Blog Title here"
-                                    value={inputs.title}
-                                    onChange={handleChange}
-                                    autoFocus
-                                    color="textField"
-                                    size="large"
-                                    InputProps={{
-                                        style: {
-                                            fontSize: "45px",
-                                        },
-                                    }}
-                                />
-                            </Paper>
+                                <i>Current user:</i>
+                                <Avatar src={isLoggedIn.avatar} />{" "}
+                                <strong>{isLoggedIn.name}</strong>
+                            </Typography>
 
                             <Paper
-                                elevation={2}
+                                elevation={6}
                                 component={Stack}
                                 direction="column"
                                 alignItems="center"
@@ -274,8 +274,6 @@ export default function CreateBlog({
                                     padding: isMobile ? "10px" : "20px",
                                     width: "100%",
                                     overflow: "hidden",
-                                    backgroundColor: (theme) =>
-                                        theme.palette.action.hover,
                                 }}
                             >
                                 <ImageUpload
@@ -297,67 +295,21 @@ export default function CreateBlog({
 
                                 <Divider flexItem sx={DividerHorizontalSX} />
 
-                                {/* <MyEditor
-                                    inlineToolbar={true}
-                                    toolbarButtonSize="medium"
-                                    label="Start Typing your blog here..."
-                                    component={Stack}
-                                    sx={{
-                                        width: "100%",
-                                        minHeight: "500px",
+                                <CKEditor
+                                    editor={BalloonEditor}
+                                    data={inputs.content}
+                                    onChange={(event, editor) => {
+                                        const data = editor.getData();
+                                        setInputs((prevInputs) => {
+                                            return {
+                                                ...prevInputs,
+                                                content: data,
+                                            };
+                                        });
                                     }}
-                                /> */}
-
-                                <Editor
-                                    editorState={blogContent}
-                                    onEditorStateChange={handleEditorChange}
-                                    // toolbar={{
-                                    //     options: [
-                                    //         "inline",
-                                    //         "blockType",
-                                    //         "list",
-                                    //         "link",
-                                    //         "emoji",
-                                    //         "image",
-                                    //     ],
-                                    //     inline: {
-                                    //         options: [
-                                    //             "bold",
-                                    //             "italic",
-                                    //             "underline",
-                                    //         ],
-                                    //     },
-                                    // }}
-                                    wrapperStyle={{
-                                        padding: "15px",
-                                        width: "100%",
-                                    }}
-                                    editorStyle={{
-                                        cursor: "text",
-                                        borderRadius: "15px",
-                                        minHeight: "500px",
-                                        padding: "0px 20px 0px 20px",
-                                        width: "100%",
-                                        border: `2px solid ${
-                                            darkMode
-                                                ? "rgba(255, 255, 255, 0.2)"
-                                                : "rgba(0, 0, 0, 0.2)"
-                                        }`,
-                                    }}
-                                    toolbarStyle={{
-                                        borderRadius: "15px",
-                                        backgroundColor: "transparent",
-                                        color: darkMode ? "black" : "black",
-                                        padding: "10px",
-                                        border: `2px solid ${
-                                            darkMode
-                                                ? "rgba(255, 255, 255, 0.2)"
-                                                : "rgba(0, 0, 0, 0.2)"
-                                        }`,
-                                        option: {
-                                            backgroundColor: "black",
-                                            borderRadius: "15px",
-                                        },
+                                    config={editorConfig}
+                                    style={{
+                                        color: "black",
                                     }}
                                 />
                             </Paper>

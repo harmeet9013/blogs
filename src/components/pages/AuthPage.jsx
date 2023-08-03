@@ -8,7 +8,6 @@ import {
     useMediaQuery,
     Button,
     Typography,
-    Box,
     Container,
     styled,
     Grow,
@@ -21,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 export default function AuthPage({
@@ -33,7 +33,9 @@ export default function AuthPage({
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showResponse, setShowResponse] = useState("");
+    const [showResponse, setShowResponse] = useState(
+        "Please enter valid credentials"
+    );
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -62,6 +64,7 @@ export default function AuthPage({
         setShowLoading(true);
         const loginData = { email, password };
         try {
+            // https://blogs-server-five.vercel.app
             const result = await axios.post(
                 "http://localhost:5000/api/users/login",
                 {
@@ -69,20 +72,39 @@ export default function AuthPage({
                 }
             );
 
-            setIsLoggedIn({
-                logged: true,
-                userID: result.data.userID,
-                name: result.data.name,
-                avatar: result.data.avatar,
-                token: result.data.token,
-            });
-            setShowResponse("");
+            if (result.status === 200) {
+                Cookies.set("token", result.data.token, {
+                    expires: 1 / 24,
+                    secure: false,
+                    httpOnly: false,
+                });
+                Cookies.set("userID", result.data.userID, {
+                    expires: 1 / 24,
+                    secure: false,
+                    httpOnly: false,
+                });
 
-            setSnackbarInputs({
-                open: true,
-                message: "You are now logged in!",
-            });
-            navigate("/");
+                setIsLoggedIn({
+                    name: result.data.name,
+                    avatar: result.data.avatar,
+                });
+                setShowResponse("");
+
+                setSnackbarInputs({
+                    open: true,
+                    message: "You are now logged in!",
+                });
+                navigate("/");
+            } else {
+                setDialogInputs({
+                    open: true,
+                    title: "Unexpected Error",
+                    content:
+                        "There was an error connecting to the servers. Please try again later.",
+                    navigate: "",
+                    button: false,
+                });
+            }
         } catch (error) {
             setShowResponse("Invalid Credentials. Please try again.");
         }
@@ -101,7 +123,6 @@ export default function AuthPage({
         }
 
         if (emailError && passwordError) {
-            console.log(emailError, passwordError);
             return;
         } else {
             loginRequest();
@@ -237,9 +258,7 @@ export default function AuthPage({
                     >
                         Login
                     </LoginButton>
-                    <Typography variant={isMobile ? "h6" : "h5"}>
-                        {showResponse}
-                    </Typography>
+                    <Typography variant="button">{showResponse}</Typography>
                 </Paper>
             </Grow>
         </Container>
