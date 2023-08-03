@@ -19,7 +19,7 @@ export default function RenderBlogs(props) {
                     elevation={1}
                     onClick={() => {
                         setTimeout(() => {
-                            navigate(`/blog/${_id}`);
+                            navigate(`/blogs/blog/${_id}`);
                             props.setShowLoading(false);
                         }, 300);
                         props.setShowLoading(true);

@@ -76,7 +76,7 @@ export default function HeaderActions(props) {
                 <SpeedDialAction
                     onClick={() => {
                         setTimeout(() => {
-                            navigate("/");
+                            navigate("/blogs");
                             props.setShowLoading(false);
                         }, 300);
                         props.setShowLoading(true);

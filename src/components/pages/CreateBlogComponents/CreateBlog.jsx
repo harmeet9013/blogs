@@ -138,7 +138,7 @@ export default function CreateBlog({
                 open: true,
                 message: "Your blog has been created!",
             });
-            navigate("/");
+            navigate("/blogs");
         } catch (error) {
             if (
                 error.response.status === 403 ||
@@ -182,7 +182,7 @@ export default function CreateBlog({
                         open: true,
                         message: "Blog was discarded!",
                     });
-                    navigate("/");
+                    navigate("/blogs");
                     setShowLoading(false);
                 }, 300);
             } else {

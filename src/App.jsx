@@ -210,7 +210,7 @@ export default function App() {
                 {/* Home page route */}
                 <Route
                     exact
-                    path="/"
+                    path="/blogs"
                     element={
                         <Blogs
                             blogs={blogs}
@@ -225,7 +225,7 @@ export default function App() {
                 {/* Show blog seaparately */}
                 <Route
                     exact
-                    path="/blog/:id"
+                    path="/blogs/blog/:id"
                     element={
                         <ShowBlog
                             darkMode={darkMode}
@@ -240,7 +240,7 @@ export default function App() {
                 {/* Login page */}
                 <Route
                     exact
-                    path="/authUser"
+                    path="/blogs/authUser"
                     element={
                         <AuthPage
                             darkMode={darkMode}
@@ -254,7 +254,7 @@ export default function App() {
                 {/* Create blog */}
                 <Route
                     exact
-                    path="/createBlog"
+                    path="/blogs/createBlog"
                     element={
                         <CreateBlog
                             darkMode={darkMode}
