@@ -23,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
 
+import { API_URL } from "../../App";
+
 export default function AuthPage({
     darkMode,
     setShowLoading,
@@ -65,12 +67,9 @@ export default function AuthPage({
         const loginData = { email, password };
         try {
             // https://blogs-server-five.vercel.app
-            const result = await axios.post(
-                "http://localhost:5000/api/users/login",
-                {
-                    loginData,
-                }
-            );
+            const result = await axios.post(`${API_URL}/api/users/login`, {
+                loginData,
+            });
 
             if (result.status === 200) {
                 Cookies.set("token", result.data.token, {
