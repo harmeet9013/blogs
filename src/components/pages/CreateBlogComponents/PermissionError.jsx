@@ -33,14 +33,14 @@ export default function PermissionError(props) {
             </Typography>
             <Stack direction="row" spacing={props.isMobile ? 2 : 4}>
                 <props.NavigateButton
-                    id="/"
+                    id="/blogs"
                     onClick={handleButtonNavigate}
                     startIcon={<ArrowBack color="icon" />}
                 >
                     Back
                 </props.NavigateButton>
                 <props.NavigateButton
-                    id="/authUser"
+                    id="/blogs/authUser"
                     onClick={handleButtonNavigate}
                     endIcon={<Login color="icon" />}
                 >

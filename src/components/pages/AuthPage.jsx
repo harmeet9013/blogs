@@ -93,7 +93,7 @@ export default function AuthPage({
                     open: true,
                     message: "You are now logged in!",
                 });
-                navigate("/");
+                navigate("/blogs");
             } else {
                 setDialogInputs({
                     open: true,

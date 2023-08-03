@@ -1,26 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-    Stack,
-    useMediaQuery,
-    styled,
-    Button,
-    Paper,
-    SpeedDial,
-    SpeedDialAction,
-} from "@mui/material";
+import { Stack, useMediaQuery, styled, Button } from "@mui/material";
 import HeaderActions from "./ShowBlogHeaderActions";
 import ShowBlogDialog from "./ShowBlogDialog";
 import RenderBlog from "./RenderBlog";
 import axios from "axios";
-import {
-    List,
-    ArrowBack,
-    CheckCircle,
-    Link,
-    Edit,
-    DeleteForever,
-} from "@mui/icons-material";
+
 import Cookies from "js-cookie";
 import { API_URL } from "../../../App";
 
@@ -79,7 +64,7 @@ export default function ShowBlog({
             // if status code is 200
             setSnackbarInputs({ open: true, message: "Blog was deleted!" });
             setRefresh(true);
-            navigate("/");
+            navigate("/blogs");
         } catch (error) {
             if (
                 error.response.status === 403 ||
@@ -119,7 +104,7 @@ export default function ShowBlog({
                     open: true,
                     title: "Blog not found!",
                     desc: `The blog that you tried to access does not exist. Going back to Home Page.`,
-                    navigate: "/",
+                    navigate: "/blogs",
                     button: false,
                 });
             } finally {
