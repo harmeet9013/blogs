@@ -58,9 +58,9 @@ export default function DesktopActions(props) {
                 onClick={() => {
                     setTimeout(() => {
                         if (props.isLoggedIn === null) {
-                            navigate("/authUser");
+                            navigate("/blogs/authUser");
                         } else {
-                            navigate("/createBlog");
+                            navigate("/blogs/createBlog");
                         }
                         props.setShowLoading(false);
                     }, 200);
@@ -149,7 +149,7 @@ export default function DesktopActions(props) {
                         <MyMenuItem
                             onClick={() => {
                                 setTimeout(() => {
-                                    navigate("/authUser");
+                                    navigate("/blogs/authUser");
                                     props.setShowLoading(false);
                                 }, 200);
                                 setIconAnchor(null);
