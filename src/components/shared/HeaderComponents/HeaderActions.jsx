@@ -79,7 +79,7 @@ export default function DesktopActions(props) {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {!Cookies.get("token") || !Cookies.get("userID") ? (
+                {Cookies.get("token") || Cookies.get("userID") ? (
                     <MyAvatar>
                         <MyBoxAvatar
                             component="img"
@@ -105,7 +105,7 @@ export default function DesktopActions(props) {
                 }}
             >
                 <Container disableGutters>
-                    {!Cookies.get("token") || !Cookies.get("userID") ? (
+                    {Cookies.get("token") || Cookies.get("userID") ? (
                         <Fragment>
                             <MyMenuItem
                                 disabled
