@@ -18,6 +18,7 @@ import {
     styled,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function DesktopActions(props) {
     const [iconAnchor, setIconAnchor] = useState(null);
@@ -78,7 +79,7 @@ export default function DesktopActions(props) {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {props.isLoggedIn !== null ? (
+                {!Cookies.get("token") || !Cookies.get("userID") ? (
                     <MyAvatar>
                         <MyBoxAvatar
                             component="img"
@@ -104,7 +105,7 @@ export default function DesktopActions(props) {
                 }}
             >
                 <Container disableGutters>
-                    {props.isLoggedIn !== null ? (
+                    {!Cookies.get("token") || !Cookies.get("userID") ? (
                         <Fragment>
                             <MyMenuItem
                                 disabled
