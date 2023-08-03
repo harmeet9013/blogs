@@ -119,18 +119,18 @@ export default function HeaderActions(props) {
                     onClick={(e) => {
                         e.preventDefault();
                         setDialOpen(false);
-                        !Cookies.get("token") || !Cookies.get("userID")
+                        Cookies.get("token") || Cookies.get("userID")
                             ? props.setDialogInputs({
-                                  open: true,
-                                  title: "Login",
-                                  desc: "You need to login to perform this action.",
-                                  button: false,
-                              })
-                            : props.setDialogInputs({
                                   open: true,
                                   title: "Delete blog",
                                   desc: "Are you sure you want to remove this blog?",
                                   button: true,
+                              })
+                            : props.setDialogInputs({
+                                  open: true,
+                                  title: "Login",
+                                  desc: "You need to login to perform this action.",
+                                  button: false,
                               });
                     }}
                     icon={<DeleteForever color="icon" />}
