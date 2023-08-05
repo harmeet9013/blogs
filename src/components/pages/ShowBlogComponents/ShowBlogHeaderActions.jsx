@@ -102,14 +102,13 @@ export default function HeaderActions(props) {
                 <SpeedDialAction
                     onClick={() => {
                         setDialOpen(false);
-                        !Cookies.get("token") ||
-                            (!Cookies.get("userID") &&
-                                props.setDialogInputs({
-                                    open: true,
-                                    title: "Login",
-                                    desc: "You need to login to perform this action.",
-                                    button: false,
-                                }));
+                        props.isLoggedIn.logged &&
+                            props.setDialogInputs({
+                                open: true,
+                                title: "Login",
+                                desc: "You need to login to perform this action.",
+                                button: false,
+                            });
                     }}
                     icon={<Edit color="icon" />}
                     tooltipTitle="Edit"
@@ -119,7 +118,7 @@ export default function HeaderActions(props) {
                     onClick={(e) => {
                         e.preventDefault();
                         setDialOpen(false);
-                        Cookies.get("token") || Cookies.get("userID")
+                        props.isLoggedIn.logged
                             ? props.setDialogInputs({
                                   open: true,
                                   title: "Delete blog",

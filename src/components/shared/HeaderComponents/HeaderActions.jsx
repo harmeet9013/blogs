@@ -79,7 +79,7 @@ export default function DesktopActions(props) {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {Cookies.get("token") || Cookies.get("userID") ? (
+                {props.isLoggedIn.logged ? (
                     <MyAvatar>
                         <MyBoxAvatar
                             component="img"
@@ -105,7 +105,7 @@ export default function DesktopActions(props) {
                 }}
             >
                 <Container disableGutters>
-                    {Cookies.get("token") || Cookies.get("userID") ? (
+                    {props.isLoggedIn.logged ? (
                         <Fragment>
                             <MyMenuItem
                                 disabled
@@ -132,6 +132,7 @@ export default function DesktopActions(props) {
                                 dense
                                 onClick={() => {
                                     setIconAnchor(null);
+
                                     props.setDialogInputs({
                                         open: true,
                                         title: "Logout",
@@ -185,7 +186,15 @@ export default function DesktopActions(props) {
                     <MyMenuItem
                         dense
                         onClick={() => {
-                            props.setDarkMode(!props.darkMode);
+                            const theme = !props.darkMode;
+
+                            props.setDarkMode(theme);
+                            Cookies.remove("theme");
+                            if (theme === true) {
+                                Cookies.set("theme", "dark");
+                            } else if (theme === false) {
+                                Cookies.set("theme", "light");
+                            }
                         }}
                     >
                         {props.darkMode ? (

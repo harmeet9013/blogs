@@ -47,14 +47,12 @@ export default function ShowBlog({
             const userID = Cookies.get("userID");
             const token = Cookies.get("token");
 
-            console.log(token, userID);
-
             const result = await axios.delete(
                 `${API_URL}/api/blogs/delete/${blogID}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${Cookies.get("token")}`,
-                        userID: Cookies.get("userID"),
+                        Authorization: `Bearer ${token}`,
+                        userID: userID,
                         "Content-Type": "application/json",
                     },
                     data: {},
@@ -78,7 +76,6 @@ export default function ShowBlog({
                     button: false,
                 });
             } else {
-                console.log(error);
                 setSnackbarInputs({
                     open: true,
                     message: "Could not deleted the blog!",

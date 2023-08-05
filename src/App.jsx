@@ -10,29 +10,37 @@ import {
     createTheme,
 } from "@mui/material";
 import { deepOrange, green, red } from "@mui/material/colors";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 import Blogs from "./components/pages/BlogsComponents/Blogs";
 import Header from "./components/shared/HeaderComponents/Header";
 import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import AuthPage from "./components/pages/AuthPage";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
-import Cookies from "js-cookie";
-import axios from "axios";
+
+export const API_URL = "https://blogs-server-five.vercel.app";
 
 export default function App() {
+    const checkToken = () => {
+        if (Cookies.get("token") && Cookies.get("userID")) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     const [blogs, setBlogs] = useState({});
 
     const [darkMode, setDarkMode] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(null);
-    const [refresh, setRefresh] = useState(true);
-    const [showLoading, setShowLoading] = useState(false);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [dialogInputs, setDialogInputs] = useState({
-        title: "",
-        content: "",
-        navigate: "",
-        icon: "",
+    const [isLoggedIn, setIsLoggedIn] = useState({
+        logged: checkToken(),
+        name: "",
+        avatar: "",
     });
+    const [refresh, setRefresh] = useState(true);
+    const [refreshToken, setRefreshToken] = useState(true);
+    const [showLoading, setShowLoading] = useState(false);
     const [snackbarInputs, setSnackbarInputs] = useState({
         open: false,
         message: "",
@@ -108,14 +116,14 @@ export default function App() {
 
     const customTheme = darkMode ? darkTheme : lightTheme;
 
-    useEffect(() => {
-        const userID = Cookies.get("userID");
+    const verifyToken = async () => {
         const token = Cookies.get("token");
+        const userID = Cookies.get("userID");
 
-        const verifyToken = async () => {
+        if (token && userID) {
             try {
                 const result = await axios.post(
-                    "https://blogs-server-five.vercel.app/api/users/verify",
+                    `${API_URL}/api/users/verify`,
                     {},
                     {
                         headers: {
@@ -127,6 +135,7 @@ export default function App() {
                 );
 
                 setIsLoggedIn({
+                    logged: checkToken(),
                     name: result.data.name,
                     avatar: result.data.avatar,
                 });
@@ -136,35 +145,41 @@ export default function App() {
                     error.response.status === 401
                 ) {
                     // remove cookies and update the state
-                    setIsLoggedIn(null);
+                    setIsLoggedIn({
+                        logged: checkToken(),
+                        name: "",
+                        avatar: "",
+                    });
                     Cookies.remove("token");
                     Cookies.remove("userID");
 
                     // inform user for invalid login
-                    setDialogInputs({
+                    setSnackbarInputs({
                         open: true,
-                        title: "Session Expired",
-                        desc: "This session is expired. Please login again.",
-                        navigate: "",
-                        button: false,
+                        message: "This session is expired. Please login again.",
+                    });
+                } else {
+                    setSnackbarInputs({
+                        open: true,
+                        message:
+                            "There was an error connecting to the servers.",
                     });
                 }
-                setDialogInputs({
-                    open: true,
-                    title: "Unexpected Error",
-                    desc: "There was an error connecting to the servers. Please try again later. Please save your work somewhere.",
-                    navigate: "",
-                    button: false,
-                });
             }
-        };
-
-        if (!userID || !token) {
-            return;
-        } else {
-            verifyToken();
         }
-    }, []);
+    };
+
+    const updateThemeFromCookies = () => {
+        const theme = Cookies.get("theme");
+
+        if (theme === "dark") {
+            setDarkMode(true);
+        } else if (theme === "light") {
+            setDarkMode(false);
+        } else {
+            Cookies.set("theme", "dark");
+        }
+    };
 
     return (
         <ThemeProvider theme={customTheme}>
@@ -172,6 +187,9 @@ export default function App() {
             <Header
                 darkMode={darkMode}
                 isLoggedIn={isLoggedIn}
+                verifyToken={verifyToken}
+                updateThemeFromCookies={updateThemeFromCookies}
+                checkToken={checkToken}
                 setShowLoading={setShowLoading}
                 setDarkMode={setDarkMode}
                 setRefresh={setRefresh}
@@ -259,10 +277,6 @@ export default function App() {
                         <CreateBlog
                             darkMode={darkMode}
                             isLoggedIn={isLoggedIn}
-                            dialogOpen={dialogOpen}
-                            dialogInputs={dialogInputs}
-                            setDialogOpen={setDialogOpen}
-                            setDialogInputs={setDialogInputs}
                             setShowLoading={setShowLoading}
                             setRefresh={setRefresh}
                             setSnackbarInputs={setSnackbarInputs}
@@ -273,5 +287,3 @@ export default function App() {
         </ThemeProvider>
     );
 }
-
-export const API_URL = "https://blogs-server-five.vercel.app";
