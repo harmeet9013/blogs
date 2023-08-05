@@ -7,6 +7,9 @@ import HeaderActions from "./HeaderActions";
 export default function Header({
     darkMode,
     isLoggedIn,
+    verifyToken,
+    updateThemeFromCookies,
+    checkToken,
     setDarkMode,
     setShowLoading,
     setRefresh,
@@ -49,6 +52,9 @@ export default function Header({
     }));
 
     useEffect(() => {
+        verifyToken();
+        updateThemeFromCookies();
+
         const handleScroll = () => {
             setIsTop(window.scrollY < 100);
         };
@@ -66,6 +72,7 @@ export default function Header({
                 dialogInputs={dialogInputs}
                 DialogButton={DialogButton}
                 isMobile={isMobile}
+                checkToken={checkToken}
                 setDialogInputs={setDialogInputs}
                 setIsLoggedIn={setIsLoggedIn}
                 setSnackbarInputs={setSnackbarInputs}

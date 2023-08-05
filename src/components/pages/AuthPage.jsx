@@ -18,6 +18,7 @@ import {
     Visibility,
     VisibilityOff,
 } from "@mui/icons-material";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -66,7 +67,6 @@ export default function AuthPage({
         setShowLoading(true);
         const loginData = { email, password };
         try {
-            // https://blogs-server-five.vercel.app
             const result = await axios.post(`${API_URL}/api/users/login`, {
                 loginData,
             });

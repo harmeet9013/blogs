@@ -15,12 +15,13 @@ import {
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+import Cookies from "js-cookie";
 
 import ImageUpload from "../../shared/ImageUpload";
 import CreateBlogDialog from "./CreateBlogDialog";
 import PermissionError from "./PermissionError";
 import HeaderActions from "./CreateBlogHeaderActions";
-import Cookies from "js-cookie";
+
 import { API_URL } from "../../../App";
 
 export default function CreateBlog({
@@ -206,6 +207,8 @@ export default function CreateBlog({
         }, 300);
     };
 
+    console.log(isLoggedIn.logged);
+
     return (
         <Fragment>
             <CreateBlogDialog
@@ -226,7 +229,7 @@ export default function CreateBlog({
                             : "10rem 28% 5% 28%",
                     }}
                 >
-                    {Cookies.get("token") || Cookies.get("userID") ? (
+                    {isLoggedIn.logged ? (
                         <Stack direction="column" spacing={isMobile ? 2 : 4}>
                             <HeaderActions
                                 isMobile={isMobile}

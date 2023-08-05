@@ -19,7 +19,9 @@ export default function HeaderShowDialog(props) {
                 // remove token and userID from the token
                 Cookies.remove("token");
                 Cookies.remove("userID");
-                props.setIsLoggedIn(null);
+                props.setIsLoggedIn({
+                    logged: props.checkToken(),
+                });
 
                 // send a snackbar to inform user
                 props.setSnackbarInputs({
