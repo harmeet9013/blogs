@@ -6,8 +6,11 @@ import {
     Divider,
     Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateBlogDialog(props) {
+    const navigate = useNavigate();
+
     return (
         <Dialog
             open={props.dialogInputs.open}
@@ -47,10 +50,14 @@ export default function CreateBlogDialog(props) {
                 {props.dialogInputs.button && (
                     <props.DialogButton
                         onClick={() => {
+                            if (props.dialogInputs.navigate === "") {
+                                props.handleSubmit();
+                            } else {
+                                navigate(props.dialogInputs.navigate);
+                            }
                             props.setDialogInputs({
                                 open: false,
                             });
-                            props.handleSubmit();
                         }}
                         startIcon={<CheckCircle color="icon" />}
                     >

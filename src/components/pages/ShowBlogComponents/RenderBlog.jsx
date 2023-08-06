@@ -1,6 +1,6 @@
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Avatar, Box, Grow, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Container, Grow, Stack, Typography } from "@mui/material";
 
 export default function RenderBlog(props) {
     return (
@@ -12,30 +12,25 @@ export default function RenderBlog(props) {
                 <strong>{props.currentBlog.title}</strong>
             </Typography>
 
-            <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar src={props.currentBlog.avatar} />
-                <Typography
-                    component={Stack}
-                    direction="row"
-                    spacing={5}
-                    sx={{ textAlign: "left" }}
-                    variant={props.isMobile ? "caption" : "body1"}
-                >
-                    <strong>{props.currentBlog.author}</strong>
-                    <i>{props.currentBlog.date}</i>
-                </Typography>
+                <Stack direction="column" spacing={0} textAlign="left">
+                    <Typography variant="body1">
+                        <strong>{props.currentBlog.author}</strong>
+                    </Typography>
+                    <Typography variant="body2">
+                        {props.currentBlog.date}
+                    </Typography>
+                </Stack>
             </Stack>
 
             <Grow in={true}>
-                <Paper
-                    elevation={1}
+                <Container
                     component={Stack}
                     spacing={2}
                     sx={{
                         borderRadius: "15px",
-                        padding: props.isMobile
-                            ? "20px"
-                            : "20px 40px 20px 40px",
+                        // padding: props.isMobile ? "0px" : "40px 60px 40px 60px",
                         transition: "all 0.2s ease",
                     }}
                 >
@@ -56,7 +51,7 @@ export default function RenderBlog(props) {
                         data={props.currentBlog.content}
                         disabled={true}
                     />
-                </Paper>
+                </Container>
             </Grow>
         </Stack>
     );

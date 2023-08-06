@@ -1,12 +1,13 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stack, useMediaQuery, styled, Button } from "@mui/material";
+import Cookies from "js-cookie";
+import axios from "axios";
+
 import HeaderActions from "./ShowBlogHeaderActions";
 import ShowBlogDialog from "./ShowBlogDialog";
 import RenderBlog from "./RenderBlog";
-import axios from "axios";
 
-import Cookies from "js-cookie";
 import { API_URL } from "../../../App";
 
 export default function ShowBlog({
@@ -113,7 +114,7 @@ export default function ShowBlog({
     }, []);
 
     return (
-        <Fragment>
+        <Stack spacing={0} justifyContent="center" alignItems="center">
             <ShowBlogDialog
                 DialogButton={DialogButton}
                 dialogInputs={dialogInputs}
@@ -146,6 +147,6 @@ export default function ShowBlog({
                     <RenderBlog isMobile={isMobile} currentBlog={currentBlog} />
                 )}
             </Stack>
-        </Fragment>
+        </Stack>
     );
 }

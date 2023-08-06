@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Backdrop,
     CircularProgress,
@@ -19,7 +19,8 @@ import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import AuthPage from "./components/pages/AuthPage";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
 
-export const API_URL = "https://blogs-server-five.vercel.app";
+// export const API_URL = "https://blogs-server-five.vercel.app";
+export const API_URL = "http://localhost:5000";
 
 export default function App() {
     const checkToken = () => {
@@ -39,7 +40,6 @@ export default function App() {
         avatar: "",
     });
     const [refresh, setRefresh] = useState(true);
-    const [refreshToken, setRefreshToken] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
     const [snackbarInputs, setSnackbarInputs] = useState({
         open: false,
@@ -262,6 +262,7 @@ export default function App() {
                     element={
                         <AuthPage
                             darkMode={darkMode}
+                            isLoggedIn={isLoggedIn}
                             setShowLoading={setShowLoading}
                             setIsLoggedIn={setIsLoggedIn}
                             setSnackbarInputs={setSnackbarInputs}
