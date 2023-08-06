@@ -1,13 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Grow, Paper, Typography, Divider } from "@mui/material";
+import { Box, Grow, Typography, Container, Stack } from "@mui/material";
 
 export default function RenderBlogs(props) {
     const navigate = useNavigate();
-
-    const DividerHorizontalSX = {
-        borderBottomWidth: 2,
-        borderRadius: "15px",
-    };
 
     return Object.keys(props.blogs).map((key) => {
         const { _id, title, image, author, date } = props.blogs[key];
@@ -15,8 +10,6 @@ export default function RenderBlogs(props) {
         return (
             <Grow in={true} key={_id}>
                 <props.BlogButton
-                    component={Paper}
-                    elevation={1}
                     onClick={() => {
                         setTimeout(() => {
                             navigate(`/blogs/blog/${_id}`);
@@ -35,25 +28,34 @@ export default function RenderBlogs(props) {
                             width: "100%",
                             height: "300px",
                             objectFit: "cover",
+                            border: (theme) =>
+                                `1px solid ${theme.palette.action.disabled}`,
                         }}
                     />
 
-                    <Divider flexItem sx={DividerHorizontalSX} />
+                    <Stack spacing={2} component={Container}>
+                        <Typography
+                            sx={{ textAlign: "left", cursor: "pointer" }}
+                            variant={props.isMobile ? "h4" : "h4"}
+                        >
+                            <strong>{title}</strong>
+                        </Typography>
 
-                    <Typography
-                        sx={{ textAlign: "left", cursor: "pointer" }}
-                        variant={props.isMobile ? "h4" : "h4"}
-                    >
-                        <strong>{title}</strong>
-                    </Typography>
-                    <Typography
-                        sx={{ textAlign: "left", cursor: "pointer" }}
-                        variant={props.isMobile ? "caption" : "body2"}
-                    >
-                        <i>
-                            By {author} &#x2022; <strong>{date}</strong>
-                        </i>
-                    </Typography>
+                        <Stack
+                            direction="column"
+                            alignItems="flex-start"
+                            justifyContent="flex-start"
+                            sx={{
+                                opacity: 0.8,
+                                fontStyle: "italic",
+                            }}
+                        >
+                            <Typography variant="body1">
+                                By <strong>{author}</strong>
+                            </Typography>
+                            <Typography variant="body2">{date}</Typography>
+                        </Stack>
+                    </Stack>
                 </props.BlogButton>
             </Grow>
         );

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import RenderBlogs from "./RenderBlogs";
+
 import { API_URL } from "../../../App";
 
 export default function Blogs({
@@ -37,11 +38,14 @@ export default function Blogs({
     }));
 
     const BlogButton = styled(Button)(({ theme }) => ({
+        textTransform: "none",
         borderRadius: "15px",
         padding: isMobile ? "20px" : "20px 40px 20px 40px",
         width: "100%",
         transition: "all 200ms ease",
         flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
         cursor: "pointer",
         color: theme.palette.text.primary,
         gap: "20px",

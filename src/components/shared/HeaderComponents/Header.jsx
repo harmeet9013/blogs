@@ -19,7 +19,9 @@ export default function Header({
     const navigate = useNavigate();
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
-    const [isTop, setIsTop] = useState(true);
+    const [showHeader, setShowHeader] = useState(true);
+    const [prevScrollPos, setPrevScrollPos] = useState(0);
+
     const [dialogInputs, setDialogInputs] = useState({
         open: false,
         title: "",
@@ -40,7 +42,6 @@ export default function Header({
         },
     }));
     const DialogButton = styled(Button)(({ theme }) => ({
-        // border: `2px solid ${theme.palette.accent.secondary}`,
         color: theme.palette.text.primary,
         borderRadius: "15px",
         backgroundColor: theme.palette.action.hover,
@@ -51,18 +52,24 @@ export default function Header({
         },
     }));
 
+    const handleScroll = () => {
+        const currentScrollPos = window.scrollY;
+        setShowHeader(
+            currentScrollPos < 100 || prevScrollPos > currentScrollPos
+        );
+        setPrevScrollPos(currentScrollPos);
+    };
+
     useEffect(() => {
-        verifyToken();
-        updateThemeFromCookies();
-
-        const handleScroll = () => {
-            setIsTop(window.scrollY < 100);
-        };
-
         window.addEventListener("scroll", handleScroll);
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
+    }, [prevScrollPos]);
+
+    useEffect(() => {
+        verifyToken();
+        updateThemeFromCookies();
     }, []);
 
     return (
@@ -81,23 +88,26 @@ export default function Header({
             />
 
             {/* Component that renders the header */}
-            <Paper
-                elevation={isTop ? 0 : 3}
+            <Stack
                 sx={{
                     position: "fixed",
                     display: "flex",
                     flexDirection: "row",
-                    backgroundColor: isTop
-                        ? "transparent"
-                        : (theme) => theme.palette.background.header,
+                    backgroundColor: "transparent",
+                    backdropFilter: "blur(5px)",
                     borderRadius: "0px",
                     padding: "0.5% 0% 0.5% 0%",
                     width: "100%",
                     justifyContent: "space-around",
                     alignItems: "center",
                     overflow: "hidden",
-                    transition: "all 200ms ease",
+                    transition: "all 0.3s ease-out",
                     zIndex: "50",
+                    borderBottom: (theme) =>
+                        `1px solid ${theme.palette.action.disabled}`,
+                    transform: !showHeader
+                        ? "translateY(-100px)"
+                        : "translateY(0px)",
                 }}
             >
                 {/* Takes you to home page when you click on BLOGS */}
@@ -131,7 +141,7 @@ export default function Header({
                         setDialogInputs={setDialogInputs}
                     />
                 </Stack>
-            </Paper>
+            </Stack>
         </Fragment>
     );
 }

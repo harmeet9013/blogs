@@ -11,6 +11,7 @@ import {
     Grow,
     Avatar,
     Typography,
+    Container,
 } from "@mui/material";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -140,6 +141,7 @@ export default function CreateBlog({
                 message: "Your blog has been created!",
             });
             navigate("/blogs");
+            setShowLoading(false);
         } catch (error) {
             if (
                 error.response.status === 403 ||
@@ -190,7 +192,6 @@ export default function CreateBlog({
                 if (!hasError && isLoggedIn !== null) {
                     setTimeout(() => {
                         createBlogRequest();
-                        setShowLoading(false);
                     }, 500);
                 } else {
                     setDialogInputs({
@@ -207,8 +208,6 @@ export default function CreateBlog({
         }, 300);
     };
 
-    console.log(isLoggedIn.logged);
-
     return (
         <Fragment>
             <CreateBlogDialog
@@ -217,6 +216,13 @@ export default function CreateBlog({
                 handleSubmit={handleSubmit}
                 setDialogInputs={setDialogInputs}
             />
+
+            {isLoggedIn.logged && (
+                <HeaderActions
+                    isMobile={isMobile}
+                    setDialogInputs={setDialogInputs}
+                />
+            )}
 
             <Grow in={true}>
                 <Stack
@@ -231,10 +237,6 @@ export default function CreateBlog({
                 >
                     {isLoggedIn.logged ? (
                         <Stack direction="column" spacing={isMobile ? 2 : 4}>
-                            <HeaderActions
-                                isMobile={isMobile}
-                                setDialogInputs={setDialogInputs}
-                            />
                             <TextField
                                 fullWidth
                                 multiline
