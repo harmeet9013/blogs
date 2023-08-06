@@ -19,8 +19,8 @@ import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import AuthPage from "./components/pages/AuthPage";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
 
-// export const API_URL = "https://blogs-server-five.vercel.app";
-export const API_URL = "http://localhost:5000";
+export const API_URL = "https://blogs-server-five.vercel.app";
+// export const API_URL = "http://localhost:5000";
 
 export default function App() {
     const checkToken = () => {
