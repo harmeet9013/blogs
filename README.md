@@ -1,5 +1,13 @@
 # blogs
-Hi! This project was built showcase my experstise in developing scalable full stack web applications.
+This is a simple blog website built using MERN stack. It is listed in my portfolio to show my expertise my building full stack web applications. However, seeing the scope of this project, I will develop it more and hopefully open it to the public for their own uses soon.
+
+## features
+* Responsive Design
+* Beautiful UI/UX
+* User Authentication
+* JWT and JSCRYPT for user authentication
+* Cookies storage
+* Dark/Light Theme
 
 ## Technologies and Dependencies used
 * MongoDB (Mongoose for communicating with Mongo)
@@ -13,9 +21,9 @@ Hi! This project was built showcase my experstise in developing scalable full st
 * cors
 
 ## Deployment
-As of right now, the app can be locally hosted and the code is designed that way.
-The backend would have to significantly altered in order to publish the app on some free hosting.
-> Not to mention the prices
+* Backend - **Vercel**
+* Frontend - **GitHub**
+* Database - **MongoDBAtlas**
 
 To run this app locally you need have MongoDB installed and running it's shell service along with NodeJS and its package manager (npm).
 
