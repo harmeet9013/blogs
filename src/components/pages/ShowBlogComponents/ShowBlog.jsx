@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stack, useMediaQuery, styled, Button } from "@mui/material";
 import Cookies from "js-cookie";
@@ -9,6 +9,7 @@ import ShowBlogDialog from "./ShowBlogDialog";
 import RenderBlog from "./RenderBlog";
 
 import { API_URL } from "../../../App";
+import { FooterButtons } from "../../shared/Footer";
 
 export default function ShowBlog({
     isLoggedIn,
@@ -138,13 +139,19 @@ export default function ShowBlog({
                 sx={{
                     transition: "all 0.2s ease",
                     padding: isMobile ? "8rem 5% 5% 5%" : "10rem 28% 5% 28%",
-                    justifyContent: "flex-end",
+                    justifyContent: "center",
                     alignItems: "center",
-                    textAlign: "right",
+                    textAlign: "center",
                 }}
             >
                 {!currentBlog.error && renderBlog && (
-                    <RenderBlog isMobile={isMobile} currentBlog={currentBlog} />
+                    <Fragment>
+                        <RenderBlog
+                            isMobile={isMobile}
+                            currentBlog={currentBlog}
+                        />
+                        <FooterButtons />
+                    </Fragment>
                 )}
             </Stack>
         </Stack>

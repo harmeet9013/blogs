@@ -12,6 +12,8 @@ import axios from "axios";
 import RenderBlogs from "./RenderBlogs";
 
 import { API_URL } from "../../../App";
+import { FooterButtons, FooterText } from "../../shared/Footer";
+import { Fragment } from "react";
 
 export default function Blogs({
     blogs,
@@ -40,7 +42,7 @@ export default function Blogs({
     const BlogButton = styled(Button)(({ theme }) => ({
         textTransform: "none",
         borderRadius: "15px",
-        padding: isMobile ? "20px" : "20px 40px 20px 40px",
+        padding: isMobile ? "5px" : "20px 40px 20px 40px",
         width: "100%",
         transition: "all 200ms ease",
         flexDirection: "column",
@@ -77,52 +79,60 @@ export default function Blogs({
     }, [refresh]);
 
     return (
-        <Stack
-            direction="column"
-            spacing={isMobile ? 6 : 8}
-            sx={{
-                transition: "all 200ms ease",
-                padding: isMobile ? "0 5% 5% 5%" : "0 28% 5% 28%",
-                paddingTop: isMobile ? "100px" : "15vh",
-                transition: "all 200ms ease",
-            }}
-        >
-            {errorBackend ? (
-                <Grow in={true}>
-                    <Paper
-                        elevation={2}
-                        sx={{
-                            borderRadius: "15px",
-                            padding: isMobile ? "20px" : "20px 40px 20px 40px",
-                            display: "flex",
-                            gap: "40px",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            transition: "all 200ms ease",
-                        }}
-                    >
-                        <Typography variant={isMobile ? "h6" : "h3"}>
-                            <strong>Could not connect to the database.</strong>
-                        </Typography>
-                        <RefreshButton
-                            onClick={() => {
-                                setRefresh(true);
+        <Fragment>
+            <Stack
+                direction="column"
+                spacing={isMobile ? 6 : 8}
+                sx={{
+                    transition: "all 200ms ease",
+                    padding: isMobile ? "0 5% 5% 5%" : "0 28% 5% 28%",
+                    paddingTop: isMobile ? "100px" : "15vh",
+                    transition: "all 200ms ease",
+                }}
+            >
+                {errorBackend ? (
+                    <Grow in={true}>
+                        <Paper
+                            elevation={2}
+                            sx={{
+                                borderRadius: "15px",
+                                padding: isMobile
+                                    ? "20px"
+                                    : "20px 40px 20px 40px",
+                                display: "flex",
+                                gap: "40px",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                transition: "all 200ms ease",
                             }}
-                            sx={{}}
                         >
-                            Refresh
-                        </RefreshButton>
-                    </Paper>
-                </Grow>
-            ) : (
-                <RenderBlogs
-                    blogs={blogs}
-                    isMobile={isMobile}
-                    BlogButton={BlogButton}
-                    setShowLoading={setShowLoading}
-                />
-            )}
-        </Stack>
+                            <Typography variant={isMobile ? "h6" : "h3"}>
+                                <strong>
+                                    Could not connect to the database.
+                                </strong>
+                            </Typography>
+                            <RefreshButton
+                                onClick={() => {
+                                    setRefresh(true);
+                                }}
+                                sx={{}}
+                            >
+                                Refresh
+                            </RefreshButton>
+                        </Paper>
+                    </Grow>
+                ) : (
+                    <RenderBlogs
+                        blogs={blogs}
+                        isMobile={isMobile}
+                        BlogButton={BlogButton}
+                        setShowLoading={setShowLoading}
+                    />
+                )}
+            </Stack>
+            <FooterText />
+            <FooterButtons />
+        </Fragment>
     );
 }

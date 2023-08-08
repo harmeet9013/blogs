@@ -28,6 +28,7 @@ export default function RenderBlogs(props) {
                             width: "100%",
                             height: "300px",
                             objectFit: "cover",
+                            pointerEvents: "none",
                             border: (theme) =>
                                 `1px solid ${theme.palette.action.disabled}`,
                         }}
@@ -36,7 +37,7 @@ export default function RenderBlogs(props) {
                     <Stack spacing={2} component={Container}>
                         <Typography
                             sx={{ textAlign: "left", cursor: "pointer" }}
-                            variant={props.isMobile ? "h4" : "h4"}
+                            variant={props.isMobile ? "h5" : "h4"}
                         >
                             <strong>{title}</strong>
                         </Typography>
@@ -47,7 +48,6 @@ export default function RenderBlogs(props) {
                             justifyContent="flex-start"
                             sx={{
                                 opacity: 0.8,
-                                fontStyle: "italic",
                             }}
                         >
                             <Typography variant="body1">

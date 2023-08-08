@@ -47,10 +47,23 @@ export default function App() {
     });
 
     const CssBaselineStyles = {
+        typography: {
+            fontFamily: "work sans",
+        },
         components: {
             MuiCssBaseline: {
                 styleOverrides: {
-                    "html *": {},
+                    "html *": {
+                        fontFamily: "work sans",
+                        "&:link": {
+                            color: darkMode
+                                ? "rgba(50, 255, 255, 1)"
+                                : "rgba(50, 120, 120, 1)",
+                        },
+                        // "&::-webkit-scrollbar": {
+                        //     display: "none",
+                        // },
+                    },
                     body: {
                         textAlign: "center",
                         justfifyContent: "center",
@@ -67,6 +80,7 @@ export default function App() {
             background: {
                 default: "#101010",
                 header: "#131313",
+                actions: "rgba(20,20,20,0.98)",
             },
             backdrop: "rgba(0,0,0,0.7)",
             accent: {
@@ -93,6 +107,7 @@ export default function App() {
             background: {
                 default: "#f7f5f5",
                 header: "#ebe8e8",
+                actions: "rgba(240,240,240,0.93)",
             },
             backdrop: "rgba(255,255,255,0.7)",
             accent: {
@@ -183,7 +198,7 @@ export default function App() {
 
     return (
         <ThemeProvider theme={customTheme}>
-            <CssBaseline />
+            <CssBaseline enableColorScheme />
             <Header
                 darkMode={darkMode}
                 isLoggedIn={isLoggedIn}
