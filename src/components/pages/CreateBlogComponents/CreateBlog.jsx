@@ -268,7 +268,7 @@ export default function CreateBlog({
                             </Typography>
 
                             <Paper
-                                elevation={6}
+                                elevation={1}
                                 component={Stack}
                                 direction="column"
                                 alignItems="center"

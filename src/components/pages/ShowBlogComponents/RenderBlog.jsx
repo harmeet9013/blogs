@@ -30,7 +30,6 @@ export default function RenderBlog(props) {
                     spacing={2}
                     sx={{
                         borderRadius: "15px",
-                        // padding: props.isMobile ? "0px" : "40px 60px 40px 60px",
                         transition: "all 0.2s ease",
                     }}
                 >
@@ -43,6 +42,7 @@ export default function RenderBlog(props) {
                             width: "100%",
                             height: props.isMobile ? "300px" : "500px",
                             objectFit: "cover",
+                            pointerEvents: "none",
                         }}
                     />
 

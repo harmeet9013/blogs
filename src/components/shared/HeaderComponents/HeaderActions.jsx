@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
     Add,
     Logout,
@@ -45,23 +45,34 @@ export default function DesktopActions(props) {
     }));
 
     const DividerHorizontalSX = {
-        borderBottomWidth: 4,
+        borderBottomWidth: 2,
         borderRadius: "15px",
     };
     const DividerVerticalSX = {
-        borderRightWidth: 4,
+        borderRightWidth: 2,
         borderRadius: "15px",
     };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIconAnchor(null);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     return (
         <Fragment>
             <props.NavbarButton
                 onClick={() => {
                     setTimeout(() => {
-                        if (props.isLoggedIn === null) {
-                            navigate("/blogs/authUser");
-                        } else {
+                        if (props.isLoggedIn.logged) {
                             navigate("/blogs/createBlog");
+                        } else {
+                            navigate("/blogs/authUser");
                         }
                         props.setShowLoading(false);
                     }, 200);
@@ -98,6 +109,7 @@ export default function DesktopActions(props) {
                 onClose={() => {
                     setIconAnchor(null);
                 }}
+                disableScrollLock={true}
                 PaperProps={{
                     style: {
                         borderRadius: "15px",
