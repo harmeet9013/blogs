@@ -22,7 +22,7 @@ import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
 import ErrorPage from "./components/pages/ErrorPage";
 import ScrollToTop from "./components/shared/ScrollToTop";
 
-export const API_URL = "https://blogs-server-five.vercel.app";
+export const API_URL = "https://harmeet9013-blogs-api.vercel.app/";
 // export const API_URL = "http://localhost:5000";
 
 export default function App() {
