@@ -1,8 +1,29 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Grow, Typography, Container, Stack } from "@mui/material";
+import {
+    Box,
+    Grow,
+    Typography,
+    Container,
+    Stack,
+    Skeleton,
+    styled,
+} from "@mui/material";
+import { useState } from "react";
 
 export default function RenderBlogs(props) {
     const navigate = useNavigate();
+
+    const [imageLoading, setImageLoading] = useState(true);
+
+    const ImageBox = styled(Box)(({ theme }) => ({
+        position: "relative",
+        borderRadius: "15px",
+        width: "100%",
+        height: "300px",
+        objectFit: "cover",
+        pointerEvents: "none",
+        border: `1px solid ${theme.palette.action.disabled}`,
+    }));
 
     return Object.keys(props.blogs).map((key) => {
         const { _id, title, image, author, date } = props.blogs[key];
@@ -18,21 +39,28 @@ export default function RenderBlogs(props) {
                         props.setShowLoading(true);
                     }}
                 >
-                    <Box
-                        component="img"
-                        src={image}
-                        alt={title}
-                        sx={{
-                            position: "relative",
-                            borderRadius: "15px",
-                            width: "100%",
-                            height: "300px",
-                            objectFit: "cover",
-                            pointerEvents: "none",
-                            border: (theme) =>
-                                `1px solid ${theme.palette.action.disabled}`,
-                        }}
-                    />
+                    {imageLoading ? (
+                        <Skeleton
+                            variant="rectangular"
+                            width="100%"
+                            sx={{
+                                borderRadius: "15px",
+                            }}
+                        >
+                            <ImageBox
+                                component="img"
+                                src={image}
+                                onError={() => {
+                                    setImageLoading(true);
+                                }}
+                                onLoad={() => {
+                                    setImageLoading(false);
+                                }}
+                            />
+                        </Skeleton>
+                    ) : (
+                        <ImageBox component="img" src={image} alt={title} />
+                    )}
 
                     <Stack spacing={2} component={Container}>
                         <Typography

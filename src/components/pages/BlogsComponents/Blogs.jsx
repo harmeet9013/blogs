@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
     Button,
     Grow,
-    Paper,
     Stack,
     Typography,
     styled,
@@ -13,7 +12,6 @@ import RenderBlogs from "./RenderBlogs";
 
 import { API_URL } from "../../../App";
 import { FooterButtons, FooterText } from "../../shared/Footer";
-import { Fragment } from "react";
 
 export default function Blogs({
     blogs,
@@ -26,16 +24,15 @@ export default function Blogs({
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const RefreshButton = styled(Button)(({ theme }) => ({
-        backgroundColor: theme.palette.action.hover,
         color: theme.palette.text.primary,
-        padding: "8px 20px",
         borderRadius: "15px",
-        width: isMobile ? "100%" : "300px",
-        fontSize: isMobile ? "16px" : "24px",
-        transition: "all 200ms ease",
-        border: `2px solid ${theme.palette.text.primary}`,
+        backgroundColor: theme.palette.background.header,
+        fontSize: isMobile ? "16px" : "18px",
+        padding: isMobile ? "15px 20px" : "15px 30px",
+        transition: theme.transitions.create(),
+        border: `2px solid ${theme.palette.divider}`,
         "&:hover": {
-            backgroundColor: theme.palette.accent.secondary,
+            backgroundColor: theme.palette.accent.hover,
         },
     }));
 
@@ -43,17 +40,15 @@ export default function Blogs({
         textTransform: "none",
         borderRadius: "15px",
         padding: isMobile ? "5px" : "20px 40px 20px 40px",
-        width: "100%",
-        transition: "all 200ms ease",
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "flex-start",
         cursor: "pointer",
         color: theme.palette.text.primary,
+        transition: theme.transitions.create(),
         gap: "20px",
         "&:hover": {
-            backgroundColor: theme.palette.action.hover,
-            transform: "scale(1.2)",
+            backgroundColor: theme.palette.accent.hover,
         },
     }));
 
@@ -82,45 +77,35 @@ export default function Blogs({
         <Fragment>
             <Stack
                 direction="column"
-                spacing={isMobile ? 6 : 8}
+                spacing={4}
                 sx={{
-                    transition: "all 200ms ease",
-                    padding: isMobile ? "0 5% 5% 5%" : "0 28% 5% 28%",
-                    paddingTop: isMobile ? "100px" : "15vh",
-                    transition: "all 200ms ease",
+                    transition: (theme) => theme.transitions.create(),
+                    paddingTop: isMobile ? "7rem" : "10rem",
+                    width: isMobile ? "100%" : "50rem",
+                    marginBottom: "30px",
+                    transition: (theme) => theme.transitions.create(),
                 }}
             >
                 {errorBackend ? (
                     <Grow in={true}>
-                        <Paper
-                            elevation={2}
-                            sx={{
-                                borderRadius: "15px",
-                                padding: isMobile
-                                    ? "20px"
-                                    : "20px 40px 20px 40px",
-                                display: "flex",
-                                gap: "40px",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                transition: "all 200ms ease",
-                            }}
+                        <Stack
+                            direction="column"
+                            spacing={4}
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            <Typography variant={isMobile ? "h6" : "h3"}>
-                                <strong>
-                                    Could not connect to the database.
-                                </strong>
+                            <Typography variant="h6">
+                                Could not connect to the database. <br />
+                                Try again after sometime.
                             </Typography>
                             <RefreshButton
                                 onClick={() => {
                                     setRefresh(true);
                                 }}
-                                sx={{}}
                             >
                                 Refresh
                             </RefreshButton>
-                        </Paper>
+                        </Stack>
                     </Grow>
                 ) : (
                     <RenderBlogs

@@ -15,6 +15,7 @@ import {
     IconButton,
     Menu,
     MenuItem,
+    Skeleton,
     styled,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +23,8 @@ import Cookies from "js-cookie";
 
 export default function DesktopActions(props) {
     const [iconAnchor, setIconAnchor] = useState(null);
+    const [avatarImgLoad, setAvatarImgLoad] = useState(false);
+
     const navigate = useNavigate();
 
     const MyMenuItem = styled(MenuItem)(({ theme }) => ({
@@ -35,13 +38,6 @@ export default function DesktopActions(props) {
     const MyAvatar = styled(Avatar)(({ theme }) => ({
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.action.hover,
-    }));
-
-    const MyBoxAvatar = styled(Box)(({ theme }) => ({
-        width: "100%",
-        height: "100%",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
     }));
 
     const DividerHorizontalSX = {
@@ -63,6 +59,21 @@ export default function DesktopActions(props) {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+
+    const RenderAvatar = () => {
+        return avatarImgLoad ? (
+            <MyAvatar src={props.isLoggedIn.avatar} />
+        ) : (
+            <Skeleton variant="circular">
+                <Avatar
+                    src={props.isLoggedIn.avatar}
+                    onLoad={() => {
+                        setAvatarImgLoad(true);
+                    }}
+                />
+            </Skeleton>
+        );
+    };
 
     return (
         <Fragment>
@@ -90,16 +101,7 @@ export default function DesktopActions(props) {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {props.isLoggedIn.logged ? (
-                    <MyAvatar>
-                        <MyBoxAvatar
-                            component="img"
-                            src={props.isLoggedIn.avatar}
-                        />
-                    </MyAvatar>
-                ) : (
-                    <MyAvatar />
-                )}
+                {props.isLoggedIn.logged ? RenderAvatar() : <MyAvatar />}
             </IconButton>
             <Menu
                 open={Boolean(iconAnchor)}
@@ -131,12 +133,7 @@ export default function DesktopActions(props) {
                                     },
                                 }}
                             >
-                                <MyAvatar>
-                                    <MyBoxAvatar
-                                        component="img"
-                                        src={props.isLoggedIn.avatar}
-                                    />
-                                </MyAvatar>
+                                {RenderAvatar()}
                                 <i>{props.isLoggedIn.name}</i>
                             </MyMenuItem>
 

@@ -1,12 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Stack, useMediaQuery, styled, Button } from "@mui/material";
+import { useMediaQuery, styled, Button } from "@mui/material";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-import HeaderActions from "./ShowBlogHeaderActions";
 import ShowBlogDialog from "./ShowBlogDialog";
 import RenderBlog from "./RenderBlog";
+import HeaderActions from "./ShowBlogHeaderActions";
 
 import { API_URL } from "../../../App";
 import { FooterButtons } from "../../shared/Footer";
@@ -39,7 +39,7 @@ export default function ShowBlog({
         padding: isMobile ? "8px 15px" : "8px 20px",
         fontSize: "16px",
         "&:hover": {
-            backgroundColor: theme.palette.accent.secondary,
+            backgroundColor: theme.palette.accent.hover,
         },
     }));
 
@@ -115,45 +115,42 @@ export default function ShowBlog({
     }, []);
 
     return (
-        <Stack spacing={0} justifyContent="center" alignItems="center">
-            <ShowBlogDialog
-                DialogButton={DialogButton}
-                dialogInputs={dialogInputs}
-                deleteBlog={deleteBlog}
-                setDialogInputs={setDialogInputs}
-                setShowLoading={setShowLoading}
-            />
+        !currentBlog.error &&
+        renderBlog && (
+            <Fragment>
+                <ShowBlogDialog
+                    DialogButton={DialogButton}
+                    dialogInputs={dialogInputs}
+                    deleteBlog={deleteBlog}
+                    setDialogInputs={setDialogInputs}
+                    setShowLoading={setShowLoading}
+                />
 
-            <HeaderActions
-                isMobile={isMobile}
-                isCopied={isCopied}
-                isLoggedIn={isLoggedIn}
-                setIsCopied={setIsCopied}
-                setSnackbarInputs={setSnackbarInputs}
-                setShowLoading={setShowLoading}
-                setRefresh={setRefresh}
-                setDialogInputs={setDialogInputs}
-            />
-            <Stack
-                direction="column"
-                sx={{
-                    transition: "all 0.2s ease",
-                    padding: isMobile ? "8rem 5% 5% 5%" : "10rem 28% 5% 28%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    textAlign: "center",
-                }}
-            >
-                {!currentBlog.error && renderBlog && (
-                    <Fragment>
-                        <RenderBlog
-                            isMobile={isMobile}
-                            currentBlog={currentBlog}
-                        />
-                        <FooterButtons />
-                    </Fragment>
-                )}
-            </Stack>
-        </Stack>
+                <RenderBlog
+                    currentBlog={currentBlog}
+                    isMobile={isMobile}
+                    isCopied={isCopied}
+                    isLoggedIn={isLoggedIn}
+                    setIsCopied={setIsCopied}
+                    setSnackbarInputs={setSnackbarInputs}
+                    setShowLoading={setShowLoading}
+                    setRefresh={setRefresh}
+                    setDialogInputs={setDialogInputs}
+                />
+
+                <HeaderActions
+                    isMobile={isMobile}
+                    isCopied={isCopied}
+                    isLoggedIn={isLoggedIn}
+                    setIsCopied={setIsCopied}
+                    setSnackbarInputs={setSnackbarInputs}
+                    setShowLoading={setShowLoading}
+                    setRefresh={setRefresh}
+                    setDialogInputs={setDialogInputs}
+                />
+
+                <FooterButtons />
+            </Fragment>
+        )
     );
 }

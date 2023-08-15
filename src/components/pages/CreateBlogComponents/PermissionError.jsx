@@ -1,5 +1,5 @@
-import { Paper, Stack, Typography } from "@mui/material";
-import { ArrowBack, Login } from "@mui/icons-material";
+import { ButtonGroup, Stack, Typography } from "@mui/material";
+import { Home, Login } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 export default function PermissionError(props) {
@@ -15,29 +15,26 @@ export default function PermissionError(props) {
     };
 
     return (
-        <Paper
-            elevation={10}
+        <Stack
+            direction="column"
+            spacing={4}
+            justifyContent="center"
+            alignItems="center"
             sx={{
-                borderRadius: "15px",
-                padding: props.isMobile ? "20px" : "20px 40px 20px 40px",
-                display: "flex",
-                gap: "40px",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                transition: "all 200ms ease",
+                transition: (theme) => theme.transitions.create(),
             }}
         >
-            <Typography variant={props.isMobile ? "h6" : "h3"}>
-                <strong>You do not have persmission to view this page!</strong>
+            <Typography variant="h6">
+                You do not have persmission to view this page!
             </Typography>
-            <Stack direction="row" spacing={props.isMobile ? 2 : 4}>
+
+            <ButtonGroup color="icon">
                 <props.NavigateButton
                     id="/blogs"
                     onClick={handleButtonNavigate}
-                    startIcon={<ArrowBack color="icon" />}
+                    startIcon={<Home color="icon" />}
                 >
-                    Back
+                    Home
                 </props.NavigateButton>
                 <props.NavigateButton
                     id="/blogs/authUser"
@@ -46,7 +43,7 @@ export default function PermissionError(props) {
                 >
                     Login
                 </props.NavigateButton>
-            </Stack>
-        </Paper>
+            </ButtonGroup>
+        </Stack>
     );
 }

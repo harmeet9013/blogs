@@ -3,10 +3,11 @@ import { useState } from "react";
 import {
     Backdrop,
     CircularProgress,
+    Container,
     CssBaseline,
     Snackbar,
+    Stack,
     ThemeProvider,
-    Typography,
     createTheme,
 } from "@mui/material";
 import { deepOrange, green, red } from "@mui/material/colors";
@@ -18,6 +19,8 @@ import Header from "./components/shared/HeaderComponents/Header";
 import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import AuthPage from "./components/pages/AuthPage";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
+import ErrorPage from "./components/pages/ErrorPage";
+import ScrollToTop from "./components/shared/ScrollToTop";
 
 export const API_URL = "https://blogs-server-five.vercel.app";
 // export const API_URL = "http://localhost:5000";
@@ -60,9 +63,6 @@ export default function App() {
                                 ? "rgba(50, 255, 255, 1)"
                                 : "rgba(50, 120, 120, 1)",
                         },
-                        // "&::-webkit-scrollbar": {
-                        //     display: "none",
-                        // },
                     },
                     body: {
                         textAlign: "center",
@@ -84,19 +84,20 @@ export default function App() {
             },
             backdrop: "rgba(0,0,0,0.7)",
             accent: {
-                primary: "#4C4B16",
-                secondary: "#606C5D",
+                primary: "#5a002d",
+                secondary: "#feb8d4",
                 success: green[900],
+                hover: "#34001a",
             },
             textField: {
                 main: deepOrange[300],
                 error: red[200],
             },
             icon: {
-                main: "#F1C376",
+                main: "#ff4f98",
             },
             iconSuccess: {
-                main: green[300],
+                main: green[500],
             },
         },
         ...CssBaselineStyles,
@@ -111,8 +112,9 @@ export default function App() {
             },
             backdrop: "rgba(255,255,255,0.7)",
             accent: {
-                primary: "#B08BBB",
+                primary: "#b2e5ff",
                 secondary: "#C3ACD0",
+                hover: "#e1f5ff",
                 success: green[300],
             },
             textField: {
@@ -120,10 +122,10 @@ export default function App() {
                 error: red[500],
             },
             icon: {
-                main: "#674188",
+                main: "#0056a3",
             },
             iconSuccess: {
-                main: green[300],
+                main: green[800],
             },
         },
         ...CssBaselineStyles,
@@ -201,6 +203,7 @@ export default function App() {
             <CssBaseline enableColorScheme />
             <Header
                 darkMode={darkMode}
+                refresh={refresh}
                 isLoggedIn={isLoggedIn}
                 verifyToken={verifyToken}
                 updateThemeFromCookies={updateThemeFromCookies}
@@ -223,7 +226,7 @@ export default function App() {
                 open={showLoading}
             >
                 <CircularProgress color="icon" />
-                <Typography variant="h6">please wait</Typography>
+                {/* <Typography variant="h6">please wait</Typography> */}
             </Backdrop>
 
             {/* SnackBar Component */}
@@ -239,67 +242,78 @@ export default function App() {
                 }}
             />
 
-            <Routes>
-                {/* Home page route */}
-                <Route
-                    exact
-                    path="/blogs"
-                    element={
-                        <Blogs
-                            blogs={blogs}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                            setBlogs={setBlogs}
-                            setShowLoading={setShowLoading}
-                        />
-                    }
-                />
+            {/* button that takes you to heaven */}
+            <ScrollToTop />
 
-                {/* Show blog seaparately */}
-                <Route
-                    exact
-                    path="/blogs/blog/:id"
-                    element={
-                        <ShowBlog
-                            darkMode={darkMode}
-                            isLoggedIn={isLoggedIn}
-                            setShowLoading={setShowLoading}
-                            setSnackbarInputs={setSnackbarInputs}
-                            setRefresh={setRefresh}
-                        />
-                    }
-                />
+            <Stack
+                component={Container}
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Routes>
+                    {/* Home page route */}
+                    <Route
+                        exact
+                        path="/blogs"
+                        element={
+                            <Blogs
+                                blogs={blogs}
+                                refresh={refresh}
+                                setRefresh={setRefresh}
+                                setBlogs={setBlogs}
+                                setShowLoading={setShowLoading}
+                            />
+                        }
+                    />
 
-                {/* Login page */}
-                <Route
-                    exact
-                    path="/blogs/authUser"
-                    element={
-                        <AuthPage
-                            darkMode={darkMode}
-                            isLoggedIn={isLoggedIn}
-                            setShowLoading={setShowLoading}
-                            setIsLoggedIn={setIsLoggedIn}
-                            setSnackbarInputs={setSnackbarInputs}
-                        />
-                    }
-                />
+                    {/* Show blog seaparately */}
+                    <Route
+                        exact
+                        path="/blogs/blog/:id"
+                        element={
+                            <ShowBlog
+                                darkMode={darkMode}
+                                isLoggedIn={isLoggedIn}
+                                setShowLoading={setShowLoading}
+                                setSnackbarInputs={setSnackbarInputs}
+                                setRefresh={setRefresh}
+                            />
+                        }
+                    />
 
-                {/* Create blog */}
-                <Route
-                    exact
-                    path="/blogs/createBlog"
-                    element={
-                        <CreateBlog
-                            darkMode={darkMode}
-                            isLoggedIn={isLoggedIn}
-                            setShowLoading={setShowLoading}
-                            setRefresh={setRefresh}
-                            setSnackbarInputs={setSnackbarInputs}
-                        />
-                    }
-                />
-            </Routes>
+                    {/* Login page */}
+                    <Route
+                        exact
+                        path="/blogs/authUser"
+                        element={
+                            <AuthPage
+                                darkMode={darkMode}
+                                isLoggedIn={isLoggedIn}
+                                setRefresh={setRefresh}
+                                setShowLoading={setShowLoading}
+                                setIsLoggedIn={setIsLoggedIn}
+                                setSnackbarInputs={setSnackbarInputs}
+                            />
+                        }
+                    />
+
+                    {/* Create blog */}
+                    <Route
+                        exact
+                        path="/blogs/createBlog"
+                        element={
+                            <CreateBlog
+                                darkMode={darkMode}
+                                isLoggedIn={isLoggedIn}
+                                setShowLoading={setShowLoading}
+                                setRefresh={setRefresh}
+                                setSnackbarInputs={setSnackbarInputs}
+                            />
+                        }
+                    />
+                    <Route exact path="*" element={<ErrorPage />} />
+                </Routes>
+            </Stack>
         </ThemeProvider>
     );
 }
