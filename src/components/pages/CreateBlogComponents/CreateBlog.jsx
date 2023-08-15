@@ -52,24 +52,21 @@ export default function CreateBlog({
     const DialogButton = styled(Button)(({ theme }) => ({
         color: theme.palette.text.primary,
         borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
+        backgroundColor: theme.palette.background.header,
+        transition: theme.transitions.create(),
         padding: isMobile ? "8px 15px" : "8px 20px",
         fontSize: "16px",
         "&:hover": {
-            backgroundColor: theme.palette.accent.secondary,
+            backgroundColor: theme.palette.accent.hover,
         },
     }));
     const CustomButton = styled(Button)(({ theme }) => ({
         color: theme.palette.text.primary,
         borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
+        backgroundColor: theme.palette.background.header,
         fontSize: isMobile ? "16px" : "18px",
-        padding: isMobile ? "15px 20px" : "20px 30px",
-        transition: "all 0.2s ease",
-        borderColor: theme.palette.divider,
-        "&:hover": {
-            backgroundColor: theme.palette.accent.secondary,
-        },
+        padding: isMobile ? "15px 20px" : "15px 30px",
+        transition: theme.transitions.create(),
     }));
     const DividerHorizontalSX = {
         borderBottomWidth: 2,
@@ -122,16 +119,20 @@ export default function CreateBlog({
 
     const createBlogRequest = async () => {
         try {
+            const formData = new FormData();
+
+            formData.append("title", inputs.title);
+            formData.append("content", inputs.content);
+            formData.append("image", inputs.image);
+
             const result = await axios.post(
                 `${API_URL}/api/blogs/create`,
-                {
-                    ...inputs,
-                },
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get("token")}`,
                         userID: Cookies.get("userID"),
-                        "Content-Type": "application/json",
+                        "Content-Type": "multipart/form-data",
                     },
                 }
             );
@@ -141,7 +142,6 @@ export default function CreateBlog({
                 message: "Your blog has been created!",
             });
             navigate("/blogs");
-            setShowLoading(false);
         } catch (error) {
             if (
                 error.response.status === 403 ||
@@ -158,13 +158,15 @@ export default function CreateBlog({
             } else {
                 setDialogInputs({
                     open: true,
-                    title: "Unexcpected Error",
+                    title: "Unexpected Error",
                     content:
-                        "There was an error connecting to the servers. Please try again later. Please save your work somewhere.",
+                        "Server error. Please try again later. Please save your work somewhere.",
                     navigate: "",
                     button: false,
                 });
             }
+        } finally {
+            setShowLoading(false);
         }
     };
 
@@ -190,9 +192,7 @@ export default function CreateBlog({
                 }, 300);
             } else {
                 if (!hasError && isLoggedIn !== null) {
-                    setTimeout(() => {
-                        createBlogRequest();
-                    }, 500);
+                    createBlogRequest();
                 } else {
                     setDialogInputs({
                         open: true,
@@ -217,22 +217,15 @@ export default function CreateBlog({
                 setDialogInputs={setDialogInputs}
             />
 
-            {isLoggedIn.logged && (
-                <HeaderActions
-                    isMobile={isMobile}
-                    setDialogInputs={setDialogInputs}
-                />
-            )}
-
             <Grow in={true}>
                 <Stack
                     direction="column"
                     spacing={isMobile ? 4 : 8}
                     sx={{
-                        transition: "all 200ms ease",
-                        padding: isMobile
-                            ? "8rem 5% 5% 5%"
-                            : "10rem 28% 5% 28%",
+                        transition: (theme) => theme.transitions.create(),
+                        paddingTop: isMobile ? "7rem" : "10rem",
+                        width: isMobile ? "100%" : "50rem",
+                        marginBottom: "30px",
                     }}
                 >
                     {isLoggedIn.logged ? (
@@ -252,6 +245,7 @@ export default function CreateBlog({
                                 InputProps={{
                                     style: {
                                         fontSize: "45px",
+                                        fontWeight: "bold",
                                     },
                                 }}
                             />
@@ -328,6 +322,12 @@ export default function CreateBlog({
                     )}
                 </Stack>
             </Grow>
+            {isLoggedIn.logged && (
+                <HeaderActions
+                    isMobile={isMobile}
+                    setDialogInputs={setDialogInputs}
+                />
+            )}
         </Fragment>
     );
 }

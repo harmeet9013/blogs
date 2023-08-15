@@ -1,7 +1,7 @@
 {
   "name": "blogs",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "homepage": "https://harmeet9013.github.io/blogs/",
   "scripts": {
@@ -18,10 +18,9 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
-    "@mui/joy": "^5.0.0-beta.0",
     "@mui/material": "^5.13.5",
-    "@syncfusion/ej2-react-richtexteditor": "^22.2.5",
     "axios": "^1.4.0",
+    "intersection-observer": "^0.12.2",
     "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

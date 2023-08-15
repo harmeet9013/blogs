@@ -9,8 +9,6 @@ import {
     useMediaQuery,
 } from "@mui/material";
 
-let isMobile;
-
 export function FooterText(props) {
     return (
         <Stack
@@ -40,16 +38,16 @@ export function FooterText(props) {
 }
 
 export function FooterButtons(props) {
-    isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const FooterButton = styled(Button)(({ theme }) => ({
         padding: "8px 16px",
         borderRadius: "15px",
         backgroundColor: theme.palette.background.actions,
         color: theme.palette.text.primary,
-        transition: "background-color 0.4s ease",
+        transition: theme.transitions.create(),
         "&:hover": {
-            backgroundColor: theme.palette.action.hover,
+            backgroundColor: theme.palette.accent.hover,
         },
     }));
 
@@ -63,7 +61,7 @@ export function FooterButtons(props) {
         >
             <Divider flexItem />
             <Typography variant="button">
-                Created with love.
+                Created with love 💞,
                 <br />
                 By Harmeet.
             </Typography>

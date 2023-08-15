@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { DeleteForever, UploadFile } from "@mui/icons-material";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
 
 export default function ImageUpload(props) {
-    const [image, setImage] = useState();
-    const [previewUrl, setPreviewUrl] = useState();
+    const [image, setImage] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
 
     const clickRef = useRef();
 
@@ -38,8 +38,8 @@ export default function ImageUpload(props) {
                     onError={() => {
                         setTimeout(() => {
                             props.setIsValid(false);
-                            setPreviewUrl("");
-                            setImage("");
+                            setPreviewUrl(null);
+                            setImage(null);
                         }, 2000);
                     }}
                     sx={{
@@ -63,40 +63,32 @@ export default function ImageUpload(props) {
                     } else {
                         props.setIsValid(false);
                     }
-                    props.onInput(image);
+                    props.onInput(pickedImage);
                 }}
             />
-            <Stack
-                direction={props.isMobile ? "column" : "row"}
-                spacing={props.isMobile ? 2 : 4}
-                justifyContent="center"
-                alignItems="center"
-            >
+            <ButtonGroup color="icon">
                 <props.CustomButton
                     onClick={() => {
                         clickRef.current.click();
                     }}
                     startIcon={<UploadFile color="icon" />}
                 >
-                    {image ? "Change Image" : "Upload Image"}
+                    {image ? "Change" : "Upload Image"}
                 </props.CustomButton>
 
-                {!image ? (
-                    <Typography variant="h6">
-                        Pick a valid Image File
-                    </Typography>
-                ) : (
+                {image && (
                     <props.CustomButton
                         onClick={() => {
-                            setImage();
-                            setPreviewUrl();
+                            setImage(null);
+                            setPreviewUrl(null);
+                            setIsValid(false);
                         }}
                         startIcon={<DeleteForever color="icon" />}
                     >
-                        Remove Image
+                        Remove
                     </props.CustomButton>
                 )}
-            </Stack>
+            </ButtonGroup>
         </Stack>
     );
 }
