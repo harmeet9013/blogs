@@ -83,7 +83,6 @@ export default function Blogs({
                     paddingTop: isMobile ? "7rem" : "10rem",
                     width: isMobile ? "100%" : "50rem",
                     marginBottom: "30px",
-                    transition: (theme) => theme.transitions.create(),
                 }}
             >
                 {errorBackend ? (
