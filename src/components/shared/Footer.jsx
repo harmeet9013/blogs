@@ -1,4 +1,4 @@
-import { GitHub, Home } from "@mui/icons-material";
+import { GitHub, Home, Web } from "@mui/icons-material";
 import {
     Button,
     Container,
@@ -61,9 +61,9 @@ export function FooterButtons(props) {
         >
             <Divider flexItem />
             <Typography variant="button">
-                Created with love 💞,
+                Created with love 💞
                 <br />
-                By Harmeet.
+                By Harmeet
             </Typography>
             <Stack
                 direction={isMobile ? "column" : "row"}
@@ -76,22 +76,19 @@ export function FooterButtons(props) {
                     fullWidth={isMobile && true}
                     startIcon={<GitHub color="icon" />}
                     onClick={() => {
-                        window.open(
-                            "https://github.com/harmeet9013/blogs",
-                            "_blank"
-                        );
+                        window.open("https://github.com/harmeet9013/blogs");
                     }}
                 >
                     Source Code
                 </FooterButton>
                 <FooterButton
                     fullWidth={isMobile && true}
-                    startIcon={<Home color="icon" />}
+                    startIcon={<Web color="icon" />}
                     onClick={() => {
-                        window.open("https://harmeet9013.github.io", "_blank");
+                        window.open("https://harmeet9013.github.io");
                     }}
                 >
-                    Website
+                    Portfolio
                 </FooterButton>
             </Stack>
         </Stack>

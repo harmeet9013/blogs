@@ -1,5 +1,5 @@
 import { ArrowUpwardRounded } from "@mui/icons-material";
-import { Fab, Slide } from "@mui/material";
+import { Fab, Slide, Tooltip } from "@mui/material";
 import { useState, useEffect } from "react";
 
 export default function ScrollToTop(props) {
@@ -17,27 +17,47 @@ export default function ScrollToTop(props) {
 
     return (
         <Slide direction="up" in={!showScrollTopButton}>
-            <Fab
-                sx={{
-                    position: "fixed",
-                    bottom: 25,
-                    right: props.isMobile ? 30 : 50,
-                    backgroundColor: (theme) => theme.palette.background.header,
-                    transition: (theme) => theme.transitions.create(),
-                    "&:hover": {
-                        backgroundColor: (theme) => theme.palette.accent.hover,
+            <Tooltip
+                title="Scroll to Top"
+                disableInteractive
+                componentsProps={{
+                    tooltip: {
+                        sx: {
+                            backgroundColor: (theme) =>
+                                theme.palette.accent.primary,
+                            color: (theme) => theme.palette.text.primary,
+                            fontSize: "0.8rem",
+                            borderRadius: "15px",
+                            transition: (theme) => theme.transitions.create(),
+                        },
                     },
                 }}
-                onClick={(e) => {
-                    e.preventDefault();
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth",
-                    });
-                }}
             >
-                <ArrowUpwardRounded color="icon" />
-            </Fab>
+                <Fab
+                    sx={{
+                        position: "fixed",
+                        bottom: 25,
+                        right: props.isMobile ? 30 : 50,
+                        backdropFilter: "blur(10px)",
+                        backgroundColor: (theme) =>
+                            theme.palette.background.actions,
+                        transition: (theme) => theme.transitions.create(),
+                        "&:hover": {
+                            backgroundColor: (theme) =>
+                                theme.palette.accent.hover,
+                        },
+                    }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: 0,
+                            behavior: "smooth",
+                        });
+                    }}
+                >
+                    <ArrowUpwardRounded color="icon" />
+                </Fab>
+            </Tooltip>
         </Slide>
     );
 }
