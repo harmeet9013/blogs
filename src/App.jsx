@@ -9,6 +9,7 @@ import {
     Stack,
     ThemeProvider,
     createTheme,
+    useMediaQuery,
 } from "@mui/material";
 import { deepOrange, green, red } from "@mui/material/colors";
 import Cookies from "js-cookie";
@@ -37,6 +38,7 @@ export default function App() {
     const [blogs, setBlogs] = useState({});
 
     const [darkMode, setDarkMode] = useState(true);
+    const [selectedTheme, setSelectedTheme] = useState("system");
     const [isLoggedIn, setIsLoggedIn] = useState({
         logged: checkToken(),
         name: "",
@@ -72,6 +74,9 @@ export default function App() {
                     },
                 },
             },
+            MuiTooltip: {
+                styleOverrides: {},
+            },
         },
     };
     const darkTheme = createTheme({
@@ -79,7 +84,7 @@ export default function App() {
             mode: "dark",
             background: {
                 default: "#101010",
-                header: "#131313",
+                header: "#101010af",
                 actions: "rgba(20,20,20,0.98)",
             },
             backdrop: "rgba(0,0,0,0.7)",
@@ -107,7 +112,7 @@ export default function App() {
             mode: "light",
             background: {
                 default: "#f7f5f5",
-                header: "#ebe8e8",
+                header: "#f7f5f5af",
                 actions: "rgba(240,240,240,0.93)",
             },
             backdrop: "rgba(255,255,255,0.7)",
@@ -131,7 +136,11 @@ export default function App() {
         ...CssBaselineStyles,
     });
 
-    const customTheme = darkMode ? darkTheme : lightTheme;
+    let customTheme = darkMode ? darkTheme : lightTheme;
+
+    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
+        ? true
+        : false;
 
     const verifyToken = async () => {
         const token = Cookies.get("token");
@@ -190,11 +199,14 @@ export default function App() {
         const theme = Cookies.get("theme");
 
         if (theme === "dark") {
+            setSelectedTheme("dark");
             setDarkMode(true);
         } else if (theme === "light") {
+            setSelectedTheme("light");
             setDarkMode(false);
         } else {
-            Cookies.set("theme", "dark");
+            setSelectedTheme("system");
+            setDarkMode(systemTheme);
         }
     };
 
@@ -208,6 +220,8 @@ export default function App() {
                 verifyToken={verifyToken}
                 updateThemeFromCookies={updateThemeFromCookies}
                 checkToken={checkToken}
+                selectedTheme={selectedTheme}
+                setSelectedTheme={setSelectedTheme}
                 setShowLoading={setShowLoading}
                 setDarkMode={setDarkMode}
                 setRefresh={setRefresh}

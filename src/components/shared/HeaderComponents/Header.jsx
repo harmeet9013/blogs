@@ -10,6 +10,8 @@ export default function Header({
     verifyToken,
     updateThemeFromCookies,
     checkToken,
+    selectedTheme,
+    setSelectedTheme,
     setDarkMode,
     setShowLoading,
     setRefresh,
@@ -95,8 +97,9 @@ export default function Header({
                     alignItems="center"
                     sx={{
                         position: "fixed",
-                        backgroundColor: "transparent",
-                        backdropFilter: "blur(5px)",
+                        backgroundColor: (theme) =>
+                            theme.palette.background.header,
+                        backdropFilter: "blur(10px)",
                         width: "100%",
                         overflow: "hidden",
                         zIndex: "50",
@@ -138,6 +141,8 @@ export default function Header({
                             isLoggedIn={isLoggedIn}
                             darkMode={darkMode}
                             NavbarButton={NavbarButton}
+                            selectedTheme={selectedTheme}
+                            setSelectedTheme={setSelectedTheme}
                             setDarkMode={setDarkMode}
                             setShowLoading={setShowLoading}
                             setDialogInputs={setDialogInputs}

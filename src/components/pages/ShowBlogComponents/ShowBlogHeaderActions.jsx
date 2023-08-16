@@ -1,12 +1,13 @@
 import {
     ArrowBack,
     CheckCircle,
-    Link,
     Edit,
     DeleteForever,
+    Share,
+    Link,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { Button, Divider, Grow, Stack, styled } from "@mui/material";
+import { Button, Divider, Grow, Stack, Tooltip, styled } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 
 export default function HeaderActions(props) {
@@ -68,8 +69,6 @@ export default function HeaderActions(props) {
                 <Stack
                     direction="row"
                     id="header-actions"
-                    justifyContent="center"
-                    alignItems="center"
                     sx={{
                         position: headerSticky ? "fixed" : "sticky",
                         top: headerSticky && 0,
@@ -105,6 +104,7 @@ export default function HeaderActions(props) {
                     >
                         <ArrowBack color="icon" />
                     </ActionButton>
+
                     <Divider orientation="vertical" variant="middle" flexItem />
                     {props.isLoggedIn.logged && (
                         <ActionButton
@@ -164,11 +164,35 @@ export default function HeaderActions(props) {
                             flexItem
                         />
                     )}
+
                     <ActionButton onClick={handleCopyURL}>
                         {props.isCopied ? (
-                            <CheckCircle color="iconSuccess" />
+                            <Grow in={true}>
+                                <CheckCircle
+                                    color="iconSuccess"
+                                    sx={{
+                                        animation: "come-on-in 0.5s ease-in",
+                                        "@keyframes come-on-in": {
+                                            "0%": {
+                                                transform: "translateY(-100px)",
+                                            },
+                                            "50%": {
+                                                transform: "translateY(5px)",
+                                            },
+                                            "65%": {
+                                                transform: "translateY(-10px)",
+                                            },
+                                            "100%": {
+                                                transform: "translateY(0px)",
+                                            },
+                                        },
+                                    }}
+                                />
+                            </Grow>
                         ) : (
-                            <Link color="icon" />
+                            <Grow in={true}>
+                                <Link color="icon" />
+                            </Grow>
                         )}
                     </ActionButton>
                 </Stack>

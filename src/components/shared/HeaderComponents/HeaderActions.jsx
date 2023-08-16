@@ -6,10 +6,13 @@ import {
     GitHub,
     DarkMode,
     LightMode,
+    LightModeOutlined,
+    DarkModeOutlined,
+    DesktopMac,
+    DesktopMacOutlined,
 } from "@mui/icons-material";
 import {
     Avatar,
-    Box,
     Container,
     Divider,
     IconButton,
@@ -17,6 +20,7 @@ import {
     MenuItem,
     Skeleton,
     styled,
+    useMediaQuery,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -27,12 +31,17 @@ export default function DesktopActions(props) {
 
     const navigate = useNavigate();
 
+    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
+        ? true
+        : false;
+
     const MyMenuItem = styled(MenuItem)(({ theme }) => ({
         fontSize: props.isMobile ? "16px" : "18px",
         width: "100%",
         padding: props.isMobile ? "20px 30px" : "10px 30px",
         gap: "10px",
         justifyContent: "flex-start",
+        transition: theme.transitions.create(),
     }));
 
     const MyAvatar = styled(Avatar)(({ theme }) => ({
@@ -192,7 +201,89 @@ export default function DesktopActions(props) {
                         <GitHub color="icon" /> Source Code
                     </MyMenuItem>
 
+                    <Divider
+                        flexItem
+                        variant="middle"
+                        sx={DividerHorizontalSX}
+                    />
+
                     <MyMenuItem
+                        dense
+                        onClick={() => {
+                            Cookies.set("theme", "light");
+                            props.setSelectedTheme("light");
+                            props.setDarkMode(false);
+                        }}
+                        sx={
+                            props.selectedTheme === "light" && {
+                                backgroundColor: (theme) =>
+                                    theme.palette.accent.primary,
+                                "&:hover": {
+                                    backgroundColor: (theme) =>
+                                        theme.palette.accent.primary,
+                                },
+                            }
+                        }
+                    >
+                        {props.selectedTheme === "light" ? (
+                            <LightMode color="icon" />
+                        ) : (
+                            <LightModeOutlined />
+                        )}
+                        Light mode
+                    </MyMenuItem>
+                    <MyMenuItem
+                        dense
+                        onClick={() => {
+                            props.setDarkMode(systemTheme);
+                            props.setSelectedTheme("system");
+                            Cookies.remove("theme");
+                        }}
+                        sx={
+                            props.selectedTheme === "system" && {
+                                backgroundColor: (theme) =>
+                                    theme.palette.accent.primary,
+                                "&:hover": {
+                                    backgroundColor: (theme) =>
+                                        theme.palette.accent.primary,
+                                },
+                            }
+                        }
+                    >
+                        {props.selectedTheme === "system" ? (
+                            <DesktopMac color="icon" />
+                        ) : (
+                            <DesktopMacOutlined />
+                        )}
+                        System
+                    </MyMenuItem>
+                    <MyMenuItem
+                        dense
+                        onClick={() => {
+                            Cookies.set("theme", "dark");
+                            props.setSelectedTheme("dark");
+                            props.setDarkMode(true);
+                        }}
+                        sx={
+                            props.selectedTheme === "dark" && {
+                                backgroundColor: (theme) =>
+                                    theme.palette.accent.primary,
+                                "&:hover": {
+                                    backgroundColor: (theme) =>
+                                        theme.palette.accent.primary,
+                                },
+                            }
+                        }
+                    >
+                        {props.selectedTheme === "dark" ? (
+                            <DarkMode color="icon" />
+                        ) : (
+                            <DarkModeOutlined />
+                        )}
+                        Dark Mode
+                    </MyMenuItem>
+
+                    {/* <MyMenuItem
                         dense
                         onClick={() => {
                             const theme = !props.darkMode;
@@ -215,7 +306,7 @@ export default function DesktopActions(props) {
                                 <DarkMode color="icon" /> Dark Mode
                             </Fragment>
                         )}
-                    </MyMenuItem>
+                    </MyMenuItem> */}
                 </Container>
             </Menu>
         </Fragment>

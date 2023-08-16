@@ -21,12 +21,13 @@ import {
     VisibilityOff,
 } from "@mui/icons-material";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
 
 import { API_URL } from "../../App";
+import { FooterButtons } from "../shared/Footer";
 
 export default function AuthPage({
     darkMode,
@@ -40,9 +41,7 @@ export default function AuthPage({
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showResponse, setShowResponse] = useState(
-        "Please enter valid credentials"
-    );
+    const [showResponse, setShowResponse] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState(false);
@@ -126,125 +125,133 @@ export default function AuthPage({
     };
 
     return !isLoggedIn.logged ? (
-        <Grow in={true}>
-            <Paper
-                elevation={4}
-                component={Stack}
-                spacing={2}
-                sx={{
-                    borderRadius: "15px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: isMobile ? 4 : 5,
-                    transition: (theme) => theme.transitions.create(),
-                    marginTop: isMobile ? "25vh" : "25vh",
-                    width: isMobile ? "100%" : "30rem",
-                }}
-            >
-                <Typography variant={isMobile ? "h4" : "h3"}>
-                    <strong>Sign in</strong>
-                </Typography>
-                <Divider flexItem />
-
-                {/* Input fields */}
-
-                <TextField
-                    fullWidth
-                    required
-                    onKeyDown={handleKeyPress}
-                    error={emailError}
-                    helperText={
-                        emailError
-                            ? "Email is required"
-                            : "Please enter your email address"
-                    }
-                    value={email}
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                        setEmailError(false);
+        <Fragment>
+            <Grow in={true}>
+                <Paper
+                    elevation={4}
+                    component={Stack}
+                    spacing={2}
+                    sx={{
+                        borderRadius: "15px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: isMobile ? 4 : 5,
+                        transition: (theme) => theme.transitions.create(),
+                        marginTop: isMobile ? "25vh" : "25vh",
+                        width: isMobile ? "100%" : "30rem",
+                        marginBottom: "30px",
                     }}
-                    label="Email Address"
-                    id="email"
-                    variant="outlined"
-                    color="textField"
-                    type="text"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <AlternateEmail color="icon" />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-
-                <TextField
-                    fullWidth
-                    required
-                    onKeyDown={handleKeyPress}
-                    error={passwordError}
-                    helperText={
-                        passwordError
-                            ? "Password is required"
-                            : "Please enter your password"
-                    }
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                        setPasswordError(false);
-                    }}
-                    label="Password"
-                    id="password"
-                    variant="outlined"
-                    color="textField"
-                    type={`${showPassword ? "text" : "password"}`}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Password color="icon" />
-                            </InputAdornment>
-                        ),
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    onClick={() => {
-                                        setShowPassword(!showPassword);
-                                    }}
-                                    edge="end"
-                                >
-                                    {/* the user can click on thus button to display/hide their password. */}
-                                    {showPassword ? (
-                                        <VisibilityOff
-                                            sx={{
-                                                color: `${
-                                                    darkMode ? "white" : "black"
-                                                }`,
-                                            }}
-                                        />
-                                    ) : (
-                                        <Visibility
-                                            sx={{
-                                                color: `${
-                                                    darkMode ? "white" : "black"
-                                                }`,
-                                            }}
-                                        />
-                                    )}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-
-                <LoginButton
-                    id="submitButton"
-                    type="submit"
-                    onClick={handleClick}
                 >
-                    Login
-                </LoginButton>
-                <Typography variant="button">{showResponse}</Typography>
-            </Paper>
-        </Grow>
+                    <Typography variant={isMobile ? "h4" : "h3"}>
+                        <strong>Sign in</strong>
+                    </Typography>
+                    <Divider flexItem />
+
+                    {/* Input fields */}
+
+                    <TextField
+                        fullWidth
+                        required
+                        onKeyDown={handleKeyPress}
+                        error={emailError}
+                        helperText={
+                            emailError
+                                ? "Email is required"
+                                : "Please enter your email address"
+                        }
+                        value={email}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            setEmailError(false);
+                        }}
+                        label="Email Address"
+                        id="email"
+                        variant="outlined"
+                        color="textField"
+                        type="text"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <AlternateEmail color="icon" />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
+                    <TextField
+                        fullWidth
+                        required
+                        onKeyDown={handleKeyPress}
+                        error={passwordError}
+                        helperText={
+                            passwordError
+                                ? "Password is required"
+                                : "Please enter your password"
+                        }
+                        value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            setPasswordError(false);
+                        }}
+                        label="Password"
+                        id="password"
+                        variant="outlined"
+                        color="textField"
+                        type={`${showPassword ? "text" : "password"}`}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Password color="icon" />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => {
+                                            setShowPassword(!showPassword);
+                                        }}
+                                        edge="end"
+                                    >
+                                        {/* the user can click on thus button to display/hide their password. */}
+                                        {showPassword ? (
+                                            <VisibilityOff
+                                                sx={{
+                                                    color: `${
+                                                        darkMode
+                                                            ? "white"
+                                                            : "black"
+                                                    }`,
+                                                }}
+                                            />
+                                        ) : (
+                                            <Visibility
+                                                sx={{
+                                                    color: `${
+                                                        darkMode
+                                                            ? "white"
+                                                            : "black"
+                                                    }`,
+                                                }}
+                                            />
+                                        )}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
+                    <LoginButton
+                        id="submitButton"
+                        type="submit"
+                        onClick={handleClick}
+                    >
+                        Login
+                    </LoginButton>
+                    <Typography variant="button">{showResponse}</Typography>
+                </Paper>
+            </Grow>
+            <FooterButtons />
+        </Fragment>
     ) : (
         <Stack
             component={Container}
