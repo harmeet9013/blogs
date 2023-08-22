@@ -1,22 +1,25 @@
-import { Button, styled, Stack, useMediaQuery, Slide } from "@mui/material";
+import {
+    Button,
+    styled,
+    Stack,
+    useMediaQuery,
+    Slide,
+    Fade,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Fragment, useEffect, useState } from "react";
-import HeaderShowDialog from "./HeaderShowDialog";
+
 import HeaderActions from "./HeaderActions";
 
 export default function Header({
     darkMode,
     isLoggedIn,
-    verifyToken,
-    updateThemeFromCookies,
-    checkToken,
     selectedTheme,
-    setSelectedTheme,
-    setDarkMode,
-    setShowLoading,
     setRefresh,
+    setDarkMode,
     setIsLoggedIn,
-    setSnackbarInputs,
+    setShowLoading,
+    setSelectedTheme,
 }) {
     const navigate = useNavigate();
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -24,33 +27,15 @@ export default function Header({
     const [showHeader, setShowHeader] = useState(true);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
 
-    const [dialogInputs, setDialogInputs] = useState({
-        open: false,
-        title: "",
-        content: "",
-        navigate: "",
-        icon: "",
-    });
-
     const NavbarButton = styled(Button)(({ theme }) => ({
-        backgroundColor: "transparent",
+        textTransform: "none",
         color: theme.palette.text.primary,
         fontSize: isMobile ? "18px" : "24px",
         padding: "8px 20px",
         borderRadius: "15px",
-        fontWeight: "600",
+        fontWeight: "500",
         "&:hover": {
             backgroundColor: theme.palette.accent.primary,
-        },
-    }));
-    const DialogButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "16px",
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
         },
     }));
 
@@ -69,25 +54,9 @@ export default function Header({
         };
     }, [prevScrollPos]);
 
-    useEffect(() => {
-        verifyToken();
-        updateThemeFromCookies();
-    }, []);
-
     return (
         <Fragment>
             {/* Dialog component specifically for header usage */}
-            <HeaderShowDialog
-                dialogInputs={dialogInputs}
-                DialogButton={DialogButton}
-                isMobile={isMobile}
-                checkToken={checkToken}
-                setDialogInputs={setDialogInputs}
-                setIsLoggedIn={setIsLoggedIn}
-                setSnackbarInputs={setSnackbarInputs}
-                setRefresh={setRefresh}
-                setShowLoading={setShowLoading}
-            />
 
             {/* Component that renders the header */}
             <Slide direction="down" in={showHeader}>
@@ -95,37 +64,36 @@ export default function Header({
                     direction="row"
                     justifyContent="space-around"
                     alignItems="center"
+                    position="fixed"
+                    width="100%"
+                    overflow="hidden"
+                    zIndex="50"
+                    borderBottom={(theme) =>
+                        `2px solid ${theme.palette.divider}`
+                    }
                     sx={{
-                        position: "fixed",
                         backgroundColor: (theme) =>
                             theme.palette.background.header,
                         backdropFilter: "blur(10px)",
-                        width: "100%",
-                        overflow: "hidden",
-                        zIndex: "50",
                         transition: (theme) => theme.transitions.create(),
-                        borderBottom: (theme) =>
-                            `1px solid ${theme.palette.action.disabled}`,
                     }}
                 >
                     {/* Takes you to home page when you click on BLOGS */}
 
-                    <Stack direction="row" alignItems="baseline">
+                    <Fade in={true}>
                         <NavbarButton
                             onClick={() => {
-                                setTimeout(() => {
-                                    navigate("/");
-                                }, 200);
                                 setShowLoading(true);
                                 setRefresh(true);
+                                navigate("/");
                             }}
                             sx={{
-                                fontSize: isMobile ? "28px" : "35px",
-                                letterSpacing: isMobile ? "4px" : "8px",
+                                fontSize: isMobile ? "1.8rem" : "2.2rem",
+                                letterSpacing: isMobile ? 4 : 8,
+                                fontWeight: "bold",
                                 "&:hover": {
                                     backgroundColor: "transparent",
                                 },
-
                                 background: (theme) =>
                                     `linear-gradient(to right, ${theme.palette.icon.main}, ${theme.palette.accent.secondary})`,
                                 WebkitBackgroundClip: "text",
@@ -134,20 +102,22 @@ export default function Header({
                         >
                             BLOGS
                         </NavbarButton>
-                    </Stack>
+                    </Fade>
 
-                    <Stack direction="row" spacing={isMobile ? 1 : 3}>
-                        <HeaderActions
-                            isLoggedIn={isLoggedIn}
-                            darkMode={darkMode}
-                            NavbarButton={NavbarButton}
-                            selectedTheme={selectedTheme}
-                            setSelectedTheme={setSelectedTheme}
-                            setDarkMode={setDarkMode}
-                            setShowLoading={setShowLoading}
-                            setDialogInputs={setDialogInputs}
-                        />
-                    </Stack>
+                    <Fade in={true}>
+                        <Stack direction="row" spacing={isMobile ? 1 : 3}>
+                            <HeaderActions
+                                darkMode={darkMode}
+                                isLoggedIn={isLoggedIn}
+                                NavbarButton={NavbarButton}
+                                selectedTheme={selectedTheme}
+                                setDarkMode={setDarkMode}
+                                setIsLoggedIn={setIsLoggedIn}
+                                setShowLoading={setShowLoading}
+                                setSelectedTheme={setSelectedTheme}
+                            />
+                        </Stack>
+                    </Fade>
                 </Stack>
             </Slide>
         </Fragment>

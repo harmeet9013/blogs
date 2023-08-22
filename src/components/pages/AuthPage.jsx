@@ -3,14 +3,14 @@ import {
     InputAdornment,
     IconButton,
     Divider,
-    Paper,
     Stack,
     useMediaQuery,
     Button,
     Typography,
     Container,
     styled,
-    Grow,
+    Box,
+    Slide,
 } from "@mui/material";
 import {
     AlternateEmail,
@@ -20,260 +20,246 @@ import {
     Visibility,
     VisibilityOff,
 } from "@mui/icons-material";
-
-import { Fragment, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { Fragment, useState } from "react";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 import { API_URL } from "../../App";
 import { FooterButtons } from "../shared/Footer";
+import { useConfirm } from "material-ui-confirm";
 
 export default function AuthPage({
-    darkMode,
     isLoggedIn,
-    setRefresh,
-    setShowLoading,
     setIsLoggedIn,
-    setSnackbarInputs,
+    setShowLoading,
 }) {
     const navigate = useNavigate();
+    const confirmDialog = useConfirm();
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showResponse, setShowResponse] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [emailError, setEmailError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
 
     const LoginButton = styled(Button)(({ theme }) => ({
+        textTransform: "none",
         color: theme.palette.text.primary,
         borderRadius: "15px",
         backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "20px",
-        width: isMobile ? "100%" : "40%",
+        padding: isMobile ? "8px 15px" : "8px 10px",
+        fontSize: "1.3rem",
+        width: isMobile ? "100%" : "8rem",
         border: `2px solid ${theme.palette.action.disabled}`,
         transition: theme.transitions.create(),
         "&:hover": {
             backgroundColor: theme.palette.accent.hover,
+            borderColor: theme.palette.accent.primary,
         },
     }));
 
-    const handleKeyPress = (event) => {
-        if (event.key === "Enter") {
-            document.getElementById("submitButton").click();
-        }
+    const TextFieldSX = {
+        borderRadius: "15px",
+        transition: (theme) => theme.transitions.create(),
+        "&.Mui-focused": {
+            backgroundColor: (theme) => theme.palette.action.hover,
+        },
+        "&.MuiOutlinedInput-root": {
+            "& fieldset": {
+                transition: (theme) => theme.transitions.create(),
+                border: 2,
+                borderColor: (theme) => theme.palette.action.disabled,
+            },
+            "&:hover fieldset": {
+                borderColor: (theme) => theme.palette.text.primary,
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: (theme) => theme.palette.textField.main,
+            },
+        },
     };
 
-    const loginRequest = async () => {
+    const handleClick = async (e) => {
+        e.preventDefault();
         setShowLoading(true);
-        const loginData = { email, password };
+
+        const loginData = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
 
         try {
             const result = await axios.post(`${API_URL}/api/users/login`, {
                 loginData,
             });
 
+            // set cookies
             Cookies.set("token", result.data.token, {
-                expires: 1 / 24,
                 secure: false,
                 httpOnly: false,
             });
             Cookies.set("userID", result.data.userID, {
-                expires: 1 / 24,
                 secure: false,
                 httpOnly: false,
             });
 
+            // updateState
             setIsLoggedIn({
                 name: result.data.name,
                 avatar: result.data.avatar,
             });
-            setShowResponse("");
 
-            setSnackbarInputs({
-                open: true,
-                message: "You are now logged in!",
-            });
-            setRefresh(true);
+            // show snackbar
+            enqueueSnackbar("You are now logged in!", { variant: "success" });
+
+            // go to home page
             navigate("/");
         } catch (error) {
-            setShowResponse("Invalid Credentials. Please try again.");
+            if (error.code === "ERR_NETWORK") {
+                enqueueSnackbar("Server offline.", { variant: "info" });
+            } else {
+                confirmDialog({
+                    title: "Wrong credentials.",
+                    description:
+                        "Email or password is wrong. Please try again.",
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        //
+                    })
+                    .catch(() => {
+                        //
+                    });
+            }
         } finally {
             setShowLoading(false);
         }
     };
 
-    const handleClick = async (e) => {
-        e.preventDefault();
-
-        // Check if the fields are not empty
-        if (email === "") {
-            setEmailError(true);
-        }
-        if (password === "") {
-            setPasswordError(true);
-        }
-
-        if (emailError && passwordError) {
-            return;
-        } else {
-            loginRequest();
-        }
-    };
-
     return !isLoggedIn.logged ? (
         <Fragment>
-            <Grow in={true}>
-                <Paper
-                    elevation={4}
-                    component={Stack}
-                    spacing={2}
+            <Slide direction="up" in={true}>
+                <Stack
+                    spacing={3}
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
+                    borderRadius="15px"
+                    padding={isMobile ? 4 : 5}
+                    marginTop={isMobile ? "10vh" : "15vh"}
+                    marginBottom="2rem"
+                    width={isMobile ? "100%" : "30rem"}
                     sx={{
-                        borderRadius: "15px",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: isMobile ? 4 : 5,
                         transition: (theme) => theme.transitions.create(),
-                        marginTop: isMobile ? "25vh" : "25vh",
-                        width: isMobile ? "100%" : "30rem",
-                        marginBottom: "30px",
                     }}
                 >
-                    <Typography variant={isMobile ? "h4" : "h3"}>
-                        <strong>Sign in</strong>
+                    <Typography
+                        variant="h2"
+                        letterSpacing={2}
+                        sx={{
+                            cursor: "default",
+                        }}
+                    >
+                        Sign in
                     </Typography>
-                    <Divider flexItem />
+
+                    <Divider
+                        flexItem
+                        sx={{
+                            borderBottomWidth: 2,
+                        }}
+                    />
 
                     {/* Input fields */}
-
-                    <TextField
-                        fullWidth
-                        required
-                        onKeyDown={handleKeyPress}
-                        error={emailError}
-                        helperText={
-                            emailError
-                                ? "Email is required"
-                                : "Please enter your email address"
-                        }
-                        value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                            setEmailError(false);
-                        }}
-                        label="Email Address"
-                        id="email"
-                        variant="outlined"
-                        color="textField"
-                        type="text"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <AlternateEmail color="icon" />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-
-                    <TextField
-                        fullWidth
-                        required
-                        onKeyDown={handleKeyPress}
-                        error={passwordError}
-                        helperText={
-                            passwordError
-                                ? "Password is required"
-                                : "Please enter your password"
-                        }
-                        value={password}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                            setPasswordError(false);
-                        }}
-                        label="Password"
-                        id="password"
-                        variant="outlined"
-                        color="textField"
-                        type={`${showPassword ? "text" : "password"}`}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Password color="icon" />
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={() => {
-                                            setShowPassword(!showPassword);
-                                        }}
-                                        edge="end"
-                                    >
-                                        {/* the user can click on thus button to display/hide their password. */}
-                                        {showPassword ? (
-                                            <VisibilityOff
-                                                sx={{
-                                                    color: `${
-                                                        darkMode
-                                                            ? "white"
-                                                            : "black"
-                                                    }`,
-                                                }}
-                                            />
-                                        ) : (
-                                            <Visibility
-                                                sx={{
-                                                    color: `${
-                                                        darkMode
-                                                            ? "white"
-                                                            : "black"
-                                                    }`,
-                                                }}
-                                            />
-                                        )}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-
-                    <LoginButton
-                        id="submitButton"
-                        type="submit"
-                        onClick={handleClick}
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        width="100%"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap={(theme) => theme.spacing(3)}
+                        component="form"
+                        onSubmit={handleClick}
                     >
-                        Login
-                    </LoginButton>
-                    <Typography variant="button">{showResponse}</Typography>
-                </Paper>
-            </Grow>
+                        <TextField
+                            fullWidth
+                            required
+                            helperText="Enter a valid email address"
+                            placeholder="Email Address"
+                            id="email"
+                            variant="outlined"
+                            color="textField"
+                            type="text"
+                            InputProps={{
+                                sx: TextFieldSX,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <AlternateEmail color="icon" />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            required
+                            helperText="Please enter your password"
+                            placeholder="Password"
+                            id="password"
+                            variant="outlined"
+                            type={showPassword ? "text" : "password"}
+                            InputProps={{
+                                sx: TextFieldSX,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Password color="icon" />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={() => {
+                                                setShowPassword(!showPassword);
+                                            }}
+                                            edge="end"
+                                        >
+                                            {/* the user can click on thus button to display/hide their password. */}
+                                            {showPassword ? (
+                                                <Visibility color="warning" />
+                                            ) : (
+                                                <VisibilityOff />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <LoginButton type="submit">Login</LoginButton>
+                    </Box>
+                </Stack>
+            </Slide>
             <FooterButtons />
         </Fragment>
     ) : (
         <Stack
             component={Container}
-            spacing={2}
+            spacing={4}
             justifyContent="center"
             alignItems="center"
-            sx={{
-                transition: (theme) => theme.transitions.create(),
-                paddingTop: isMobile ? "7rem" : "10rem",
-                width: isMobile ? "100%" : "50rem",
-            }}
+            paddingTop="15vh"
+            width={isMobile ? "100%" : "50rem"}
         >
-            <Typography variant="h4">
-                <BackHand /> You are already logged in.
+            <Typography variant={isMobile ? "h5" : "h4"}>
+                <BackHand /> Where you tryna go? <br />
+                You are already logged in.
             </Typography>
             <LoginButton
                 onClick={() => {
+                    setShowLoading(true);
                     navigate("/");
                 }}
                 startIcon={<Home color="icon" />}
             >
-                HOME
+                Home
             </LoginButton>
         </Stack>
     );

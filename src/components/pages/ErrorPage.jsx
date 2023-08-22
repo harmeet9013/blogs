@@ -13,15 +13,18 @@ export default function ErrorPage(props) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
     const CustomButton = styled(Button)(({ theme }) => ({
+        textTransform: "none",
         color: theme.palette.text.primary,
         borderRadius: "15px",
-        backgroundColor: theme.palette.background.header,
-        fontSize: isMobile ? "16px" : "18px",
-        padding: isMobile ? "15px 20px" : "15px 30px",
+        backgroundColor: theme.palette.action.hover,
+        padding: isMobile ? "8px 15px" : "8px 10px",
+        fontSize: "1.3rem",
+        width: isMobile ? "100%" : "15rem",
+        border: `2px solid ${theme.palette.action.disabled}`,
         transition: theme.transitions.create(),
-        border: `2px solid ${theme.palette.divider}`,
         "&:hover": {
             backgroundColor: theme.palette.accent.hover,
+            borderColor: theme.palette.accent.primary,
         },
     }));
 
@@ -31,12 +34,9 @@ export default function ErrorPage(props) {
             spacing={4}
             justifyContent="center"
             alignItems="center"
-            sx={{
-                transition: (theme) => theme.transitions.create(),
-                paddingTop: isMobile ? "7rem" : "10rem",
-                width: isMobile ? "100%" : "50rem",
-                marginBottom: "30px",
-            }}
+            width={isMobile ? "100%" : "50rem"}
+            paddingTop="15vh"
+            marginBottom={4}
         >
             <Typography variant="h6">
                 Uh oh, seems like you have wandered off somewhere else. <br />
@@ -45,6 +45,7 @@ export default function ErrorPage(props) {
 
             <CustomButton
                 onClick={() => {
+                    props.setShowLoading(true);
                     navigate("/");
                 }}
                 startIcon={<Home color="icon" />}

@@ -1,6 +1,5 @@
 import { Container } from "@mui/material";
-import { useState } from "react";
-import { Editor, EditorState } from "react-draft-wysiwyg";
+import { Editor } from "react-draft-wysiwyg";
 
 export default function CreateBlogContent(props) {
     return (
