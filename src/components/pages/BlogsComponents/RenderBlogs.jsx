@@ -1,19 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import {
-    Box,
-    Grow,
-    Typography,
-    Container,
-    Stack,
-    Skeleton,
-    styled,
-} from "@mui/material";
-import { useState } from "react";
+import { Box, Grow, Typography, Container, Stack, styled } from "@mui/material";
 
 export default function RenderBlogs(props) {
     const navigate = useNavigate();
-
-    const [imageLoading, setImageLoading] = useState(true);
 
     const ImageBox = styled(Box)(({ theme }) => ({
         position: "relative",
@@ -32,42 +21,18 @@ export default function RenderBlogs(props) {
             <Grow in={true} key={_id}>
                 <props.BlogButton
                     onClick={() => {
-                        setTimeout(() => {
-                            navigate(`/blog/${_id}`);
-                            props.setShowLoading(false);
-                        }, 300);
+                        navigate(`/blog/${_id}`);
                         props.setShowLoading(true);
                     }}
                 >
-                    {imageLoading ? (
-                        <Skeleton
-                            variant="rectangular"
-                            width="100%"
-                            sx={{
-                                borderRadius: "15px",
-                            }}
-                        >
-                            <ImageBox
-                                component="img"
-                                src={image}
-                                onError={() => {
-                                    setImageLoading(true);
-                                }}
-                                onLoad={() => {
-                                    setImageLoading(false);
-                                }}
-                            />
-                        </Skeleton>
-                    ) : (
-                        <ImageBox component="img" src={image} alt={title} />
-                    )}
+                    <ImageBox component="img" src={image} alt={title} />
 
                     <Stack spacing={2} component={Container}>
                         <Typography
                             sx={{ textAlign: "left", cursor: "pointer" }}
-                            variant={props.isMobile ? "h5" : "h4"}
+                            variant="h4"
                         >
-                            <strong>{title}</strong>
+                            {title}
                         </Typography>
 
                         <Stack
@@ -78,7 +43,7 @@ export default function RenderBlogs(props) {
                                 opacity: 0.8,
                             }}
                         >
-                            <Typography variant="body1">
+                            <Typography variant="body2">
                                 By <strong>{author}</strong>
                             </Typography>
                             <Typography variant="body2">{date}</Typography>

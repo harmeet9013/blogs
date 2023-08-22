@@ -1,47 +1,49 @@
+import axios from "axios";
+import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
+import { useMediaQuery } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMediaQuery, styled, Button } from "@mui/material";
-import Cookies from "js-cookie";
-import axios from "axios";
 
-import ShowBlogDialog from "./ShowBlogDialog";
 import RenderBlog from "./RenderBlog";
 import HeaderActions from "./ShowBlogHeaderActions";
 
 import { API_URL } from "../../../App";
 import { FooterButtons } from "../../shared/Footer";
 
-export default function ShowBlog({
-    isLoggedIn,
-    setShowLoading,
-    setSnackbarInputs,
-    setRefresh,
-}) {
+export default function ShowBlog({ isLoggedIn, setRefresh, setShowLoading }) {
     const { id } = useParams();
     const navigate = useNavigate();
+    const confirmDialog = useConfirm();
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
-    const [isCopied, setIsCopied] = useState(false);
-    const [renderBlog, setRenderBlog] = useState(false);
-    const [currentBlog, setCurrentBlog] = useState({});
-    const [dialogInputs, setDialogInputs] = useState({
-        open: false,
-        title: "",
-        desc: "",
-        navigate: "",
-        button: false,
-    });
+    const [currentBlog, setCurrentBlog] = useState(null);
 
-    const DialogButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "16px",
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
-        },
-    }));
+    const fetchBlog = async () => {
+        setShowLoading(true);
+        try {
+            const result = await axios.get(`${API_URL}/api/blogs/${id}`);
+            setCurrentBlog(result.data);
+        } catch (error) {
+            confirmDialog({
+                title: "Blog not found!",
+                content:
+                    "The blog that you tried to access does not exist. Going back to Home Page.",
+                hideCancelButton: true,
+            })
+                .then(() => {
+                    setShowLoading(true);
+                    setRefresh(true);
+                    navigate("/");
+                })
+                .catch(() => {
+                    /* */
+                });
+        } finally {
+            setShowLoading(false);
+        }
+    };
 
     const deleteBlog = async (blogID = currentBlog._id) => {
         setShowLoading(true);
@@ -49,104 +51,63 @@ export default function ShowBlog({
             const userID = Cookies.get("userID");
             const token = Cookies.get("token");
 
-            const result = await axios.delete(
-                `${API_URL}/api/blogs/delete/${blogID}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        userID: userID,
-                        "Content-Type": "application/json",
-                    },
-                    data: {},
-                }
-            );
+            await axios.delete(`${API_URL}/api/blogs/delete/${blogID}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    userID: userID,
+                    "Content-Type": "application/json",
+                },
+                data: {},
+            });
 
             // if status code is 200
-            setSnackbarInputs({ open: true, message: "Blog was deleted!" });
+            enqueueSnackbar("Blog was deleted!", { variant: "success" });
             setRefresh(true);
             navigate("/");
         } catch (error) {
-            if (
+            if (error.code === "ERR_NETWORK") {
+                enqueueSnackbar("Server Offline", { variant: "info" });
+                setRefresh(true);
+            } else if (
                 error.response.status === 403 ||
                 error.response.status === 401
             ) {
-                setDialogInputs({
-                    open: true,
+                confirmDialog({
                     title: "Session Expired",
-                    desc: "This session is expired. Please login again.",
-                    navigate: "",
-                    button: false,
-                });
+                    content: "This session is expired. Please login again.",
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        /* */
+                    })
+                    .catch(() => {
+                        /* */
+                    });
             } else {
-                setSnackbarInputs({
-                    open: true,
-                    message: "Could not deleted the blog!",
+                enqueueSnackbar("Error deleting this blog!", {
+                    variant: "error",
                 });
             }
         }
-
         setShowLoading(false);
     };
 
     // Find the blog post with the given ID
     useEffect(() => {
-        setShowLoading(true);
-        const fetchBlog = async () => {
-            try {
-                const result = await axios.get(`${API_URL}/api/blogs/${id}`);
-                setCurrentBlog(result.data);
-                setRenderBlog(true);
-            } catch (error) {
-                setRenderBlog(false);
-                setCurrentBlog({ error: true });
-                setDialogInputs({
-                    open: true,
-                    title: "Blog not found!",
-                    desc: `The blog that you tried to access does not exist. Going back to Home Page.`,
-                    navigate: "/",
-                    button: false,
-                });
-            } finally {
-                setShowLoading(false); // Move setShowLoading inside the fetchBlog function
-            }
-        };
-
         fetchBlog();
     }, []);
 
     return (
-        !currentBlog.error &&
-        renderBlog && (
+        currentBlog && (
             <Fragment>
-                <ShowBlogDialog
-                    DialogButton={DialogButton}
-                    dialogInputs={dialogInputs}
-                    deleteBlog={deleteBlog}
-                    setDialogInputs={setDialogInputs}
-                    setShowLoading={setShowLoading}
-                />
-
-                <RenderBlog
-                    currentBlog={currentBlog}
-                    isMobile={isMobile}
-                    isCopied={isCopied}
-                    isLoggedIn={isLoggedIn}
-                    setIsCopied={setIsCopied}
-                    setSnackbarInputs={setSnackbarInputs}
-                    setShowLoading={setShowLoading}
-                    setRefresh={setRefresh}
-                    setDialogInputs={setDialogInputs}
-                />
+                <RenderBlog currentBlog={currentBlog} isMobile={isMobile} />
 
                 <HeaderActions
                     isMobile={isMobile}
-                    isCopied={isCopied}
+                    deleteBlog={deleteBlog}
                     isLoggedIn={isLoggedIn}
-                    setIsCopied={setIsCopied}
-                    setSnackbarInputs={setSnackbarInputs}
-                    setShowLoading={setShowLoading}
                     setRefresh={setRefresh}
-                    setDialogInputs={setDialogInputs}
+                    setShowLoading={setShowLoading}
                 />
 
                 <FooterButtons />

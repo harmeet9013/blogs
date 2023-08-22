@@ -8,10 +8,7 @@ export default function PermissionError(props) {
     const handleButtonNavigate = (event) => {
         event.preventDefault();
         props.setShowLoading(true);
-        setTimeout(() => {
-            navigate(event.target.id);
-            props.setShowLoading(false);
-        }, 200);
+        navigate(event.target.id);
     };
 
     return (

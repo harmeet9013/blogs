@@ -11,13 +11,7 @@ import {
 
 export function FooterText(props) {
     return (
-        <Stack
-            component={Container}
-            spacing={4}
-            sx={{
-                mb: "50px",
-            }}
-        >
+        <Stack component={Container} spacing={4} marginBottom={4}>
             <Divider flexItem />
             <Typography
                 variant="body1"
@@ -52,13 +46,7 @@ export function FooterButtons(props) {
     }));
 
     return (
-        <Stack
-            component={Container}
-            spacing={2}
-            sx={{
-                mb: 5,
-            }}
-        >
+        <Stack component={Container} spacing={2} marginBottom={5}>
             <Divider flexItem />
             <Typography variant="button">
                 Created with love 💞

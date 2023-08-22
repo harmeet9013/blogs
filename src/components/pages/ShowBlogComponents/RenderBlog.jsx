@@ -33,12 +33,12 @@ export default function RenderBlog(props) {
                 justifyContent="center"
                 alignItems="center"
                 component={Container}
+                marginBottom={4}
+                padding="7rem 0 0 0"
+                width={props.isMobile ? "100%" : "50rem"}
                 sx={{
                     cursor: "default",
-                    marginBottom: "30px",
                     transition: (theme) => theme.transitions.create(),
-                    padding: props.isMobile ? "7rem 0 0 0" : "10rem 0 0 0",
-                    width: props.isMobile ? "100%" : "50rem",
                 }}
             >
                 <Container component={Stack} spacing={2}>
