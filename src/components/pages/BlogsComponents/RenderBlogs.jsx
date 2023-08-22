@@ -33,7 +33,7 @@ export default function RenderBlogs(props) {
                 <props.BlogButton
                     onClick={() => {
                         setTimeout(() => {
-                            navigate(`/blogs/blog/${_id}`);
+                            navigate(`/blog/${_id}`);
                             props.setShowLoading(false);
                         }, 300);
                         props.setShowLoading(true);

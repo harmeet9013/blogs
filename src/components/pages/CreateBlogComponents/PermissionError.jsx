@@ -30,14 +30,14 @@ export default function PermissionError(props) {
 
             <ButtonGroup color="icon">
                 <props.NavigateButton
-                    id="/blogs"
+                    id="/"
                     onClick={handleButtonNavigate}
                     startIcon={<Home color="icon" />}
                 >
                     Home
                 </props.NavigateButton>
                 <props.NavigateButton
-                    id="/blogs/authUser"
+                    id="/authUser"
                     onClick={handleButtonNavigate}
                     endIcon={<Login color="icon" />}
                 >

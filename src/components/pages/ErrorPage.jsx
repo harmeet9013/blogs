@@ -45,7 +45,7 @@ export default function ErrorPage(props) {
 
             <CustomButton
                 onClick={() => {
-                    navigate("/blogs");
+                    navigate("/");
                 }}
                 startIcon={<Home color="icon" />}
             >

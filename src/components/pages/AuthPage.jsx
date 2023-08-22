@@ -98,7 +98,7 @@ export default function AuthPage({
                 message: "You are now logged in!",
             });
             setRefresh(true);
-            navigate("/blogs");
+            navigate("/");
         } catch (error) {
             setShowResponse("Invalid Credentials. Please try again.");
         } finally {
@@ -269,7 +269,7 @@ export default function AuthPage({
             </Typography>
             <LoginButton
                 onClick={() => {
-                    navigate("/blogs");
+                    navigate("/");
                 }}
                 startIcon={<Home color="icon" />}
             >

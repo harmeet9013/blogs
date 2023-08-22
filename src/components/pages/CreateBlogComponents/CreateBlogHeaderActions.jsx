@@ -46,7 +46,7 @@ export default function HeaderActions(props) {
                             title: "Discard changes?",
                             content:
                                 "Are you sure you want to go back? This will discard everything!",
-                            navigate: "/blogs",
+                            navigate: "/",
                             button: true,
                         });
                     }}

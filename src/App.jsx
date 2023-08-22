@@ -23,8 +23,8 @@ import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
 import ErrorPage from "./components/pages/ErrorPage";
 import ScrollToTop from "./components/shared/ScrollToTop";
 
-export const API_URL = "https://harmeet9013-blogs-api.vercel.app";
-// export const API_URL = "http://localhost:5000";
+// export const API_URL = "https://harmeet9013-blogs-api.vercel.app";
+export const API_URL = "http://localhost:5000";
 
 export default function App() {
     const checkToken = () => {
@@ -268,7 +268,7 @@ export default function App() {
                     {/* Home page route */}
                     <Route
                         exact
-                        path="/blogs"
+                        path="/"
                         element={
                             <Blogs
                                 blogs={blogs}
@@ -283,7 +283,7 @@ export default function App() {
                     {/* Show blog seaparately */}
                     <Route
                         exact
-                        path="/blogs/blog/:id"
+                        path="/blog/:id"
                         element={
                             <ShowBlog
                                 darkMode={darkMode}
@@ -298,7 +298,7 @@ export default function App() {
                     {/* Login page */}
                     <Route
                         exact
-                        path="/blogs/authUser"
+                        path="/authUser"
                         element={
                             <AuthPage
                                 darkMode={darkMode}
@@ -314,7 +314,7 @@ export default function App() {
                     {/* Create blog */}
                     <Route
                         exact
-                        path="/blogs/createBlog"
+                        path="/createBlog"
                         element={
                             <CreateBlog
                                 darkMode={darkMode}

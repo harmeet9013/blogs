@@ -64,7 +64,7 @@ export default function ShowBlog({
             // if status code is 200
             setSnackbarInputs({ open: true, message: "Blog was deleted!" });
             setRefresh(true);
-            navigate("/blogs");
+            navigate("/");
         } catch (error) {
             if (
                 error.response.status === 403 ||
@@ -103,7 +103,7 @@ export default function ShowBlog({
                     open: true,
                     title: "Blog not found!",
                     desc: `The blog that you tried to access does not exist. Going back to Home Page.`,
-                    navigate: "/blogs",
+                    navigate: "/",
                     button: false,
                 });
             } finally {

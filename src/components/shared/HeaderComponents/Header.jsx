@@ -114,7 +114,7 @@ export default function Header({
                         <NavbarButton
                             onClick={() => {
                                 setTimeout(() => {
-                                    navigate("/blogs");
+                                    navigate("/");
                                 }, 200);
                                 setShowLoading(true);
                                 setRefresh(true);

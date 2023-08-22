@@ -90,9 +90,9 @@ export default function DesktopActions(props) {
                 onClick={() => {
                     setTimeout(() => {
                         if (props.isLoggedIn.logged) {
-                            navigate("/blogs/createBlog");
+                            navigate("/createBlog");
                         } else {
-                            navigate("/blogs/authUser");
+                            navigate("/authUser");
                         }
                         props.setShowLoading(false);
                     }, 200);
@@ -169,7 +169,7 @@ export default function DesktopActions(props) {
                         <MyMenuItem
                             onClick={() => {
                                 setTimeout(() => {
-                                    navigate("/blogs/authUser");
+                                    navigate("/authUser");
                                     props.setShowLoading(false);
                                 }, 200);
                                 setIconAnchor(null);
