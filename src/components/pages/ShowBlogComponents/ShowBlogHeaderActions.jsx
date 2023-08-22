@@ -95,7 +95,7 @@ export default function HeaderActions(props) {
                         onClick={(e) => {
                             e.preventDefault();
                             setTimeout(() => {
-                                navigate("/blogs");
+                                navigate("/");
                                 props.setShowLoading(false);
                             }, 300);
                             props.setShowLoading(true);

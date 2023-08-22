@@ -28,9 +28,9 @@ export default function HeaderShowDialog(props) {
                     open: true,
                     message: "You are logged out!",
                 });
-            } else if (props.dialogInputs.navigate === "/blogs") {
+            } else if (props.dialogInputs.navigate === "/") {
                 props.setRefresh(true);
-                navigate("/blogs");
+                navigate("/");
             } else {
                 window.open(props.dialogInputs.navigate, "_blank");
             }
