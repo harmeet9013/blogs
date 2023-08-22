@@ -278,7 +278,6 @@ export default function App() {
 
             <ConfirmProvider
                 defaultOptions={{
-                    confirmationButtonProps: { autoFocus: true },
                     dialogProps: {
                         maxWidth: "xs",
                         disableScrollLock: true,
@@ -304,6 +303,7 @@ export default function App() {
                         },
                     },
                     confirmationButtonProps: {
+                        autoFocus: true,
                         startIcon: <CheckCircle color="icon" />,
                         sx: DialogButtonSX,
                     },
