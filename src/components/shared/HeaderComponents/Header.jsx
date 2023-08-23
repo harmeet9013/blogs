@@ -35,9 +35,9 @@ export default function Header(props) {
                 zIndex="50"
                 borderBottom={(theme) => `2px solid ${theme.palette.divider}`}
                 sx={{
+                    transition: (theme) => theme.transitions.create(),
                     backgroundColor: (theme) => theme.palette.background.header,
                     backdropFilter: "blur(10px)",
-                    transition: (theme) => theme.transitions.create(),
                 }}
             >
                 {/* Takes you to home page when you click on BLOGS */}
@@ -64,7 +64,7 @@ export default function Header(props) {
                             WebkitTextFillColor: "transparent",
                         }}
                     >
-                        BLOGS
+                        Blogs
                     </NavbarHomeButton>
                 </Fade>
 

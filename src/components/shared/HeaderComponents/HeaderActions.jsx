@@ -139,6 +139,7 @@ export default function DesktopActions(props) {
                     elevation: 0,
                     sx: {
                         borderRadius: "15px",
+                        transition: (theme) => theme.transitions.create(),
                     },
                     onMouseLeave: () => {
                         !props.isMobile && setIconAnchor(null);
