@@ -1,84 +1,75 @@
-import { GitHub, Home, Web } from "@mui/icons-material";
-import {
-    Button,
-    Container,
-    Divider,
-    Stack,
-    Typography,
-    styled,
-    useMediaQuery,
-} from "@mui/material";
+import { GitHub, Web } from "@mui/icons-material";
+import { Container, Divider, Grow, Stack, Typography } from "@mui/material";
+
+import { FooterButton } from "./CustomComponents";
 
 export function FooterText(props) {
     return (
-        <Stack component={Container} spacing={4} marginBottom={4}>
-            <Divider flexItem />
-            <Typography
-                variant="body1"
-                sx={{
-                    textDecoration: "none",
-                    textAlign: "justify",
-                    opacity: 0.6,
-                }}
-            >
-                This website is a simple blog website built using the MERN
-                Stack. This site is hosted using GitHub pages, The backend
-                server is hosted on vercel and the database is hosted on
-                MongoDBAtlas. The site features many amazing features along with
-                a beautiful UI/UX and a responsive design.
-            </Typography>
-        </Stack>
+        <Grow in={true}>
+            <Stack component={Container} spacing={4} marginBottom={4}>
+                <Divider flexItem />
+                <Typography
+                    variant="body1"
+                    sx={{
+                        cursor: "default",
+                        textDecoration: "none",
+                        textAlign: "justify",
+                        color: (theme) => theme.palette.text.disabled,
+                    }}
+                >
+                    This website is a simple blog website built using the MERN
+                    Stack. This site is hosted using GitHub pages, The backend
+                    server is hosted on vercel and the database is hosted on
+                    MongoDBAtlas. The site features many amazing features along
+                    with a beautiful UI/UX and a responsive design.
+                </Typography>
+            </Stack>
+        </Grow>
     );
 }
 
 export function FooterButtons(props) {
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
-    const FooterButton = styled(Button)(({ theme }) => ({
-        padding: "8px 16px",
-        borderRadius: "15px",
-        backgroundColor: theme.palette.background.actions,
-        color: theme.palette.text.primary,
-        transition: theme.transitions.create(),
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
-        },
-    }));
-
     return (
-        <Stack component={Container} spacing={2} marginBottom={5}>
-            <Divider flexItem />
-            <Typography variant="button">
-                Created with love 💞
-                <br />
-                By Harmeet
-            </Typography>
-            <Stack
-                direction={isMobile ? "column" : "row"}
-                spacing={2}
-                justifyContent="center"
-                alignItems="center"
-                component={Container}
-            >
-                <FooterButton
-                    fullWidth={isMobile && true}
-                    startIcon={<GitHub color="icon" />}
-                    onClick={() => {
-                        window.open("https://github.com/harmeet9013/blogs");
+        <Grow in={true}>
+            <Stack component={Container} spacing={2} marginBottom={5}>
+                <Divider flexItem />
+                <Typography
+                    variant="button"
+                    sx={{
+                        cursor: "default",
                     }}
                 >
-                    Source Code
-                </FooterButton>
-                <FooterButton
-                    fullWidth={isMobile && true}
-                    startIcon={<Web color="icon" />}
-                    onClick={() => {
-                        window.open("https://harmeet9013.github.io");
-                    }}
+                    Created with love 💞
+                    <br />
+                    By Harmeet
+                </Typography>
+                <Stack
+                    direction={props.isMobile ? "column" : "row"}
+                    spacing={2}
+                    justifyContent="center"
+                    alignItems="center"
+                    component={Container}
                 >
-                    Portfolio
-                </FooterButton>
+                    <FooterButton
+                        fullWidth={props.isMobile && true}
+                        startIcon={<GitHub color="icon" />}
+                        onClick={() => {
+                            window.open("https://github.com/harmeet9013/blogs");
+                        }}
+                    >
+                        Source Code
+                    </FooterButton>
+                    <FooterButton
+                        fullWidth={props.isMobile && true}
+                        startIcon={<Web color="icon" />}
+                        onClick={() => {
+                            window.open("https://harmeet9013.github.io");
+                        }}
+                    >
+                        Portfolio
+                    </FooterButton>
+                </Stack>
             </Stack>
-        </Stack>
+        </Grow>
     );
 }

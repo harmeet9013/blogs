@@ -4,83 +4,40 @@ import {
     IconButton,
     Divider,
     Stack,
-    useMediaQuery,
-    Button,
     Typography,
-    Container,
-    styled,
     Box,
-    Slide,
+    Grow,
+    Collapse,
 } from "@mui/material";
 import {
     AlternateEmail,
     BackHand,
     Home,
+    Login,
     Password,
     Visibility,
     VisibilityOff,
 } from "@mui/icons-material";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
 
 import { API_URL } from "../../App";
-import { FooterButtons } from "../shared/Footer";
-import { useConfirm } from "material-ui-confirm";
+import {
+    CustomButton,
+    TextFieldSX,
+    navigate,
+    serverOffline,
+} from "../shared/CustomComponents";
 
-export default function AuthPage({
-    isLoggedIn,
-    setIsLoggedIn,
-    setShowLoading,
-}) {
-    const navigate = useNavigate();
-    const confirmDialog = useConfirm();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+export default function AuthPage(props) {
     const [showPassword, setShowPassword] = useState(false);
-
-    const LoginButton = styled(Button)(({ theme }) => ({
-        textTransform: "none",
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 10px",
-        fontSize: "1.3rem",
-        width: isMobile ? "100%" : "8rem",
-        border: `2px solid ${theme.palette.action.disabled}`,
-        transition: theme.transitions.create(),
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
-            borderColor: theme.palette.accent.primary,
-        },
-    }));
-
-    const TextFieldSX = {
-        borderRadius: "15px",
-        transition: (theme) => theme.transitions.create(),
-        "&.Mui-focused": {
-            backgroundColor: (theme) => theme.palette.action.hover,
-        },
-        "&.MuiOutlinedInput-root": {
-            "& fieldset": {
-                transition: (theme) => theme.transitions.create(),
-                border: 2,
-                borderColor: (theme) => theme.palette.action.disabled,
-            },
-            "&:hover fieldset": {
-                borderColor: (theme) => theme.palette.text.primary,
-            },
-            "&.Mui-focused fieldset": {
-                borderColor: (theme) => theme.palette.textField.main,
-            },
-        },
-    };
+    const [isAnimating, setIsAnimating] = useState(false);
 
     const handleClick = async (e) => {
         e.preventDefault();
-        setShowLoading(true);
+        props.setShowLoading(true);
 
         const loginData = {
             email: e.target.email.value,
@@ -103,7 +60,7 @@ export default function AuthPage({
             });
 
             // updateState
-            setIsLoggedIn({
+            props.setIsLoggedIn({
                 name: result.data.name,
                 avatar: result.data.avatar,
             });
@@ -115,7 +72,7 @@ export default function AuthPage({
             navigate("/");
         } catch (error) {
             if (error.code === "ERR_NETWORK") {
-                enqueueSnackbar("Server offline.", { variant: "info" });
+                serverOffline();
             } else {
                 confirmDialog({
                     title: "Wrong credentials.",
@@ -131,93 +88,96 @@ export default function AuthPage({
                     });
             }
         } finally {
-            setShowLoading(false);
+            props.setShowLoading(false);
         }
     };
 
-    return !isLoggedIn.logged ? (
-        <Fragment>
-            <Slide direction="up" in={true}>
-                <Stack
-                    spacing={3}
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
-                    borderRadius="15px"
-                    padding={isMobile ? 4 : 5}
-                    marginTop={isMobile ? "10vh" : "15vh"}
-                    marginBottom="2rem"
-                    width={isMobile ? "100%" : "30rem"}
+    return !props.isLoggedIn.logged ? (
+        <Grow in={true}>
+            <Stack
+                spacing={3}
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                borderRadius="15px"
+                padding={props.isMobile ? 4 : 5}
+                marginTop="7rem"
+                marginBottom="2rem"
+                width={props.isMobile ? "100%" : "30rem"}
+                sx={{
+                    transition: (theme) => theme.transitions.create(),
+                }}
+            >
+                <Typography
+                    variant="h2"
+                    letterSpacing={2}
                     sx={{
-                        transition: (theme) => theme.transitions.create(),
+                        cursor: "default",
                     }}
                 >
-                    <Typography
-                        variant="h2"
-                        letterSpacing={2}
-                        sx={{
-                            cursor: "default",
-                        }}
-                    >
-                        Sign in
-                    </Typography>
+                    Sign in
+                </Typography>
 
-                    <Divider
-                        flexItem
-                        sx={{
-                            borderBottomWidth: 2,
+                <Divider flexItem />
+
+                {/* Input fields */}
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    width="100%"
+                    justifyContent="center"
+                    alignItems="center"
+                    gap={(theme) => theme.spacing(3)}
+                    component="form"
+                    onSubmit={handleClick}
+                >
+                    <TextField
+                        fullWidth
+                        required
+                        helperText="Enter a valid email address"
+                        placeholder="Email Address"
+                        id="email"
+                        variant="outlined"
+                        color="textField"
+                        type="text"
+                        InputProps={{
+                            sx: TextFieldSX,
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <AlternateEmail color="icon" />
+                                </InputAdornment>
+                            ),
                         }}
                     />
 
-                    {/* Input fields */}
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        width="100%"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap={(theme) => theme.spacing(3)}
-                        component="form"
-                        onSubmit={handleClick}
-                    >
-                        <TextField
-                            fullWidth
-                            required
-                            helperText="Enter a valid email address"
-                            placeholder="Email Address"
-                            id="email"
-                            variant="outlined"
-                            color="textField"
-                            type="text"
-                            InputProps={{
-                                sx: TextFieldSX,
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <AlternateEmail color="icon" />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-
-                        <TextField
-                            fullWidth
-                            required
-                            helperText="Please enter your password"
-                            placeholder="Password"
-                            id="password"
-                            variant="outlined"
-                            type={showPassword ? "text" : "password"}
-                            InputProps={{
-                                sx: TextFieldSX,
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <Password color="icon" />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment position="end">
+                    <TextField
+                        fullWidth
+                        required
+                        helperText="Please enter your password"
+                        placeholder="Password"
+                        id="password"
+                        variant="outlined"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                            sx: TextFieldSX,
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Password color="icon" />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Divider orientation="vertical" flexItem />
+                                    <Collapse in={!isAnimating}>
                                         <IconButton
+                                            disableRipple
                                             onClick={() => {
-                                                setShowPassword(!showPassword);
+                                                setIsAnimating(true);
+                                                setTimeout(() => {
+                                                    setShowPassword(
+                                                        !showPassword
+                                                    );
+                                                    setIsAnimating(false);
+                                                }, 100);
                                             }}
                                             edge="end"
                                         >
@@ -228,39 +188,41 @@ export default function AuthPage({
                                                 <VisibilityOff />
                                             )}
                                         </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
+                                    </Collapse>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
 
-                        <LoginButton type="submit">Login</LoginButton>
-                    </Box>
-                </Stack>
-            </Slide>
-            <FooterButtons />
-        </Fragment>
+                    <CustomButton
+                        type="submit"
+                        startIcon={<Login color="icon" />}
+                    >
+                        Login
+                    </CustomButton>
+                </Box>
+            </Stack>
+        </Grow>
     ) : (
-        <Stack
-            component={Container}
-            spacing={4}
-            justifyContent="center"
-            alignItems="center"
-            paddingTop="15vh"
-            width={isMobile ? "100%" : "50rem"}
-        >
-            <Typography variant={isMobile ? "h5" : "h4"}>
-                <BackHand /> Where you tryna go? <br />
-                You are already logged in.
-            </Typography>
-            <LoginButton
-                onClick={() => {
-                    setShowLoading(true);
-                    navigate("/");
-                }}
-                startIcon={<Home color="icon" />}
-            >
-                Home
-            </LoginButton>
-        </Stack>
+        <Grow in={true}>
+            <Stack spacing={4} paddingTop="7rem" paddingBottom={4}>
+                <Typography variant={props.isMobile ? "h5" : "h4"}>
+                    <BackHand /> Where you tryna go? <br />
+                    You are already logged in.
+                </Typography>
+                <CustomButton
+                    onClick={() => {
+                        props.setShowLoading(true);
+                        setTimeout(() => {
+                            navigate("/");
+                            props.setShowLoading(false);
+                        }, 200);
+                    }}
+                    startIcon={<Home color="icon" />}
+                >
+                    Home
+                </CustomButton>
+            </Stack>
+        </Grow>
     );
 }

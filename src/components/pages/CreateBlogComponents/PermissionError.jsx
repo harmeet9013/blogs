@@ -1,14 +1,15 @@
 import { ButtonGroup, Stack, Typography } from "@mui/material";
 import { Home, Login } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { CustomButton, navigate } from "../../shared/CustomComponents";
 
 export default function PermissionError(props) {
-    const navigate = useNavigate();
-
     const handleButtonNavigate = (event) => {
         event.preventDefault();
         props.setShowLoading(true);
-        navigate(event.target.id);
+        setTimeout(() => {
+            navigate(event.target.id);
+            props.setShowLoading(false);
+        }, 200);
     };
 
     return (
@@ -26,20 +27,20 @@ export default function PermissionError(props) {
             </Typography>
 
             <ButtonGroup color="icon">
-                <props.NavigateButton
+                <CustomButton
                     id="/"
                     onClick={handleButtonNavigate}
                     startIcon={<Home color="icon" />}
                 >
                     Home
-                </props.NavigateButton>
-                <props.NavigateButton
+                </CustomButton>
+                <CustomButton
                     id="/authUser"
                     onClick={handleButtonNavigate}
                     endIcon={<Login color="icon" />}
                 >
                     Login
-                </props.NavigateButton>
+                </CustomButton>
             </ButtonGroup>
         </Stack>
     );

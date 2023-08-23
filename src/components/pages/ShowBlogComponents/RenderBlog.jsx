@@ -1,30 +1,10 @@
-import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import {
-    Avatar,
-    Box,
-    Container,
-    Grow,
-    Stack,
-    Typography,
-    styled,
-} from "@mui/material";
+import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+import { Avatar, Container, Grow, Stack, Typography } from "@mui/material";
+
+import { BlogImageBox, BlogTitle } from "../../shared/CustomComponents";
 
 export default function RenderBlog(props) {
-    const BlogTitle = styled(Typography)(({ theme }) => ({
-        textAlign: "left",
-        letterSpacing: "2px",
-        fontWeight: "bold",
-    }));
-
-    const BlogImage = styled(Box)(({ theme }) => ({
-        borderRadius: "15px",
-        width: "100%",
-        height: props.isMobile ? "300px" : "500px",
-        objectFit: "cover",
-        pointerEvents: "none",
-    }));
-
     return (
         <Grow in={true}>
             <Stack
@@ -49,8 +29,8 @@ export default function RenderBlog(props) {
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Avatar src={props.currentBlog.avatar} />
                         <Stack direction="column" spacing={0} textAlign="left">
-                            <Typography variant="body1">
-                                <strong>{props.currentBlog.author}</strong>
+                            <Typography variant="body1" fontWeight="bold">
+                                {props.currentBlog.author}
                             </Typography>
                             <Typography variant="body2">
                                 {props.currentBlog.date}
@@ -65,7 +45,7 @@ export default function RenderBlog(props) {
                     component={Container}
                     id="blog-container"
                 >
-                    <BlogImage
+                    <BlogImageBox
                         component="img"
                         src={props.currentBlog.image}
                         alt={props.currentBlog.title}

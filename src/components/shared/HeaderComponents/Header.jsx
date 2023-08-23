@@ -1,43 +1,12 @@
-import {
-    Button,
-    styled,
-    Stack,
-    useMediaQuery,
-    Slide,
-    Fade,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Stack, Slide, Fade } from "@mui/material";
 
 import HeaderActions from "./HeaderActions";
+import { NavbarHomeButton, navigate } from "../CustomComponents";
 
-export default function Header({
-    darkMode,
-    isLoggedIn,
-    selectedTheme,
-    setRefresh,
-    setDarkMode,
-    setIsLoggedIn,
-    setShowLoading,
-    setSelectedTheme,
-}) {
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+export default function Header(props) {
     const [showHeader, setShowHeader] = useState(true);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
-
-    const NavbarButton = styled(Button)(({ theme }) => ({
-        textTransform: "none",
-        color: theme.palette.text.primary,
-        fontSize: isMobile ? "18px" : "24px",
-        padding: "8px 20px",
-        borderRadius: "15px",
-        fontWeight: "500",
-        "&:hover": {
-            backgroundColor: theme.palette.accent.primary,
-        },
-    }));
 
     const handleScroll = () => {
         const currentScrollPos = window.scrollY;
@@ -55,71 +24,64 @@ export default function Header({
     }, [prevScrollPos]);
 
     return (
-        <Fragment>
-            {/* Dialog component specifically for header usage */}
+        <Slide direction="down" in={showHeader}>
+            <Stack
+                direction="row"
+                justifyContent="space-around"
+                alignItems="center"
+                position="fixed"
+                width="100%"
+                overflow="hidden"
+                zIndex="50"
+                borderBottom={(theme) => `2px solid ${theme.palette.divider}`}
+                sx={{
+                    backgroundColor: (theme) => theme.palette.background.header,
+                    backdropFilter: "blur(10px)",
+                    transition: (theme) => theme.transitions.create(),
+                }}
+            >
+                {/* Takes you to home page when you click on BLOGS */}
 
-            {/* Component that renders the header */}
-            <Slide direction="down" in={showHeader}>
-                <Stack
-                    direction="row"
-                    justifyContent="space-around"
-                    alignItems="center"
-                    position="fixed"
-                    width="100%"
-                    overflow="hidden"
-                    zIndex="50"
-                    borderBottom={(theme) =>
-                        `2px solid ${theme.palette.divider}`
-                    }
-                    sx={{
-                        backgroundColor: (theme) =>
-                            theme.palette.background.header,
-                        backdropFilter: "blur(10px)",
-                        transition: (theme) => theme.transitions.create(),
-                    }}
-                >
-                    {/* Takes you to home page when you click on BLOGS */}
-
-                    <Fade in={true}>
-                        <NavbarButton
-                            onClick={() => {
-                                setShowLoading(true);
-                                setRefresh(true);
+                <Fade in={true}>
+                    <NavbarHomeButton
+                        onClick={() => {
+                            props.setShowLoading(true);
+                            props.setRefresh(true);
+                            setTimeout(() => {
                                 navigate("/");
-                            }}
-                            sx={{
-                                fontSize: isMobile ? "1.8rem" : "2.2rem",
-                                letterSpacing: isMobile ? 4 : 8,
-                                fontWeight: "bold",
-                                "&:hover": {
-                                    backgroundColor: "transparent",
-                                },
-                                background: (theme) =>
-                                    `linear-gradient(to right, ${theme.palette.icon.main}, ${theme.palette.accent.secondary})`,
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                            }}
-                        >
-                            BLOGS
-                        </NavbarButton>
-                    </Fade>
+                            }, 200);
+                        }}
+                        sx={{
+                            fontSize: props.isMobile ? "1.8rem" : "2.2rem",
+                            letterSpacing: props.isMobile ? 4 : 8,
+                            fontWeight: "bold",
+                            "&:hover": {
+                                backgroundColor: "transparent",
+                            },
+                            background: (theme) =>
+                                `linear-gradient(to right, ${theme.palette.icon.main}, ${theme.palette.accent.secondary})`,
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                        }}
+                    >
+                        BLOGS
+                    </NavbarHomeButton>
+                </Fade>
 
-                    <Fade in={true}>
-                        <Stack direction="row" spacing={isMobile ? 1 : 3}>
-                            <HeaderActions
-                                darkMode={darkMode}
-                                isLoggedIn={isLoggedIn}
-                                NavbarButton={NavbarButton}
-                                selectedTheme={selectedTheme}
-                                setDarkMode={setDarkMode}
-                                setIsLoggedIn={setIsLoggedIn}
-                                setShowLoading={setShowLoading}
-                                setSelectedTheme={setSelectedTheme}
-                            />
-                        </Stack>
-                    </Fade>
-                </Stack>
-            </Slide>
-        </Fragment>
+                <Fade in={true}>
+                    <Stack direction="row" spacing={props.isMobile ? 1 : 3}>
+                        <HeaderActions
+                            isMobile={props.isMobile}
+                            isLoggedIn={props.isLoggedIn}
+                            selectedTheme={props.selectedTheme}
+                            setDarkMode={props.setDarkMode}
+                            setIsLoggedIn={props.setIsLoggedIn}
+                            setShowLoading={props.setShowLoading}
+                            setSelectedTheme={props.setSelectedTheme}
+                        />
+                    </Stack>
+                </Fade>
+            </Stack>
+        </Slide>
     );
 }
