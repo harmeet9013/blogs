@@ -25,6 +25,7 @@ export default function ScrollToTop(props) {
             >
                 <Fab
                     sx={{
+                        transition: (theme) => theme.transitions.create(),
                         position: "fixed",
                         bottom: 25,
                         right: props.isMobile ? 30 : 50,
@@ -32,7 +33,6 @@ export default function ScrollToTop(props) {
                         color: (theme) => theme.palette.icon.main,
                         backgroundColor: (theme) =>
                             theme.palette.background.actions,
-                        transition: (theme) => theme.transitions.create(),
                         border: (theme) =>
                             `2px solid ${theme.palette.action.disabled}`,
                         "&:hover": {

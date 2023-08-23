@@ -139,28 +139,24 @@ export default function CustomComponents(props) {
     // ------------------
 
     // snackbar customizations
-    StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
-        "&.notistack-MuiContent-success": {
-            borderRadius: "15px",
-            backgroundColor: props.darkMode ? green[900] : green[300],
-            color: props.darkMode ? "white" : "black",
-        },
-        "&.notistack-MuiContent-error": {
-            borderRadius: "15px",
-            backgroundColor: props.darkMode ? red[900] : red[300],
-            color: props.darkMode ? "white" : "black",
-        },
-        "&.notistack-MuiContent-warning": {
-            borderRadius: "15px",
-            backgroundColor: props.darkMode ? orange[900] : orange[300],
-            color: props.darkMode ? "white" : "black",
-        },
-        "&.notistack-MuiContent-info": {
-            borderRadius: "15px",
-            backgroundColor: props.darkMode ? grey[900] : grey[300],
-            color: props.darkMode ? "white" : "black",
-        },
-    }));
+    StyledMaterialDesignContent = styled(MaterialDesignContent)(
+        ({ theme }) => ({
+            color: theme.palette.text.primary,
+            borderRadius: " 15px",
+            "&.notistack-MuiContent-success": {
+                backgroundColor: props.darkMode ? green[900] : green[300],
+            },
+            "&.notistack-MuiContent-error": {
+                backgroundColor: props.darkMode ? red[900] : red[300],
+            },
+            "&.notistack-MuiContent-warning": {
+                backgroundColor: props.darkMode ? orange[900] : orange[300],
+            },
+            "&.notistack-MuiContent-info": {
+                backgroundColor: props.darkMode ? grey[900] : grey[300],
+            },
+        })
+    );
 
     // BLOGS button that takes you to home page
     NavbarHomeButton = styled(Button)(({ theme }) => ({
@@ -186,7 +182,7 @@ export default function CustomComponents(props) {
     MyMenuItem = styled(MenuItem)(({ theme }) => ({
         fontSize: "18px",
         width: "100%",
-        padding: "20px 30px",
+        padding: "15px 30px",
         gap: "10px",
         fontWeight: "500",
         justifyContent: "flex-start",
@@ -221,18 +217,19 @@ export default function CustomComponents(props) {
 
     // big blog button
     BlogButton = styled(Button)(({ theme }) => ({
+        transition: theme.transitions.create(),
         textTransform: "none",
         borderRadius: "15px",
-        padding: props.isMobile ? "5px" : "20px 40px 20px 40px",
+        padding: props.isMobile ? "10px" : "20px 40px 20px 40px",
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "flex-start",
         cursor: "pointer",
         color: theme.palette.text.primary,
-        transition: theme.transitions.create(),
         gap: "20px",
         "&:hover": {
             backgroundColor: theme.palette.accent.hover,
+            boxShadow: theme.shadows[2],
         },
     }));
 
