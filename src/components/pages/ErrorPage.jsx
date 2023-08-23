@@ -1,40 +1,16 @@
 import { Home } from "@mui/icons-material";
-import {
-    Button,
-    Stack,
-    Typography,
-    styled,
-    useMediaQuery,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Stack, Typography } from "@mui/material";
+
+import { CustomButton, navigate } from "../shared/CustomComponents";
 
 export default function ErrorPage(props) {
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
-    const CustomButton = styled(Button)(({ theme }) => ({
-        textTransform: "none",
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 10px",
-        fontSize: "1.3rem",
-        width: isMobile ? "100%" : "15rem",
-        border: `2px solid ${theme.palette.action.disabled}`,
-        transition: theme.transitions.create(),
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
-            borderColor: theme.palette.accent.primary,
-        },
-    }));
-
     return (
         <Stack
             direction="column"
             spacing={4}
             justifyContent="center"
             alignItems="center"
-            width={isMobile ? "100%" : "50rem"}
+            width={props.isMobile ? "100%" : "50rem"}
             paddingTop="15vh"
             marginBottom={4}
         >
@@ -46,7 +22,10 @@ export default function ErrorPage(props) {
             <CustomButton
                 onClick={() => {
                     props.setShowLoading(true);
-                    navigate("/");
+                    setTimeout(() => {
+                        navigate("/");
+                        props.setShowLoading(false);
+                    }, 200);
                 }}
                 startIcon={<Home color="icon" />}
             >

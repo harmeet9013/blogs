@@ -8,27 +8,28 @@ import {
     Stack,
     ThemeProvider,
     createTheme,
-    styled,
     useMediaQuery,
 } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { ConfirmProvider } from "material-ui-confirm";
-import { Cancel, CheckCircle } from "@mui/icons-material";
-import { deepOrange, green, grey, orange, red } from "@mui/material/colors";
-import {
-    MaterialDesignContent,
-    SnackbarProvider,
-    enqueueSnackbar,
-} from "notistack";
+import { deepOrange, green, red } from "@mui/material/colors";
+import { SnackbarProvider, enqueueSnackbar } from "notistack";
 
 import AuthPage from "./components/pages/AuthPage";
 import ErrorPage from "./components/pages/ErrorPage";
 import ScrollToTop from "./components/shared/ScrollToTop";
+import { FooterButtons } from "./components/shared/Footer";
 import Blogs from "./components/pages/BlogsComponents/Blogs";
 import Header from "./components/shared/HeaderComponents/Header";
 import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
+import CustomComponents, {
+    DialogOptions,
+    StyledMaterialDesignContent,
+    serverOffline,
+    systemTheme,
+} from "./components/shared/CustomComponents";
 
 export const API_URL = "https://harmeet9013-blogs-api.vercel.app";
 // export const API_URL = "http://localhost:5000";
@@ -45,58 +46,90 @@ export default function App() {
     const [refresh, setRefresh] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
 
-    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
-        ? true
-        : false;
+    // isMobile constant
+    const isMobile = useMediaQuery("(max-width: 900px");
 
-    const StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
-        "&.notistack-MuiContent-success": {
-            borderRadius: "15px",
-            backgroundColor: darkMode ? green[900] : green[300],
-            color: darkMode ? "white" : "black",
+    // material ui theme
+    const customTheme = createTheme({
+        palette: {
+            mode: darkMode ? "dark" : "light",
+            ...(darkMode
+                ? {
+                      background: {
+                          default: "#000000",
+                          header: "#000000af",
+                          actions: "#000000e4",
+                          backdrop: "#000000af",
+                          button: "#1a1a1a",
+                      },
+                      accent: {
+                          primary: "#5a002d",
+                          secondary: "#feb8d4",
+                          success: green[900],
+                          hover: "#34001a",
+                      },
+                      textField: {
+                          main: deepOrange[300],
+                          error: red[200],
+                      },
+                      icon: {
+                          main: "#ff4f98",
+                      },
+                      iconSuccess: {
+                          main: green[500],
+                      },
+                  }
+                : {
+                      background: {
+                          default: "#f7f5f5",
+                          header: "#f7f5f5af",
+                          actions: "#f7f5f5e4",
+                          backdrop: "#f7f5f5af",
+                          button: "#e1e1e1",
+                      },
+                      accent: {
+                          primary: "#b2e5ff",
+                          secondary: "#C3ACD0",
+                          hover: "#e1f5ff",
+                          success: green[300],
+                      },
+                      textField: {
+                          main: deepOrange[800],
+                          error: red[500],
+                      },
+                      icon: {
+                          main: "#0056a3",
+                      },
+                      iconSuccess: {
+                          main: green[800],
+                      },
+                  }),
         },
-        "&.notistack-MuiContent-error": {
-            borderRadius: "15px",
-            backgroundColor: darkMode ? red[900] : red[300],
-            color: darkMode ? "white" : "black",
+        typography: {
+            fontFamily: "work sans",
         },
-        "&.notistack-MuiContent-warning": {
-            borderRadius: "15px",
-            backgroundColor: darkMode ? orange[900] : orange[300],
-            color: darkMode ? "white" : "black",
+        components: {
+            MuiCssBaseline: {
+                styleOverrides: {
+                    "html *": {
+                        fontFamily: "work sans",
+                        scrollBehavior: "smooth",
+                        "&:link": {
+                            color: darkMode
+                                ? "rgba(50, 255, 255, 1)"
+                                : "rgba(50, 120, 120, 1)",
+                        },
+                    },
+                    body: {
+                        textAlign: "center",
+                        justfifyContent: "center",
+                        alignItems: "center",
+                        transition: "all 0.2s ease",
+                    },
+                },
+            },
         },
-        "&.notistack-MuiContent-info": {
-            borderRadius: "15px",
-            backgroundColor: darkMode ? grey[900] : grey[300],
-            color: darkMode ? "white" : "black",
-        },
-    }));
-
-    const DialogButtonSX = {
-        color: (theme) => theme.palette.text.primary,
-        backgroundColor: (theme) => theme.palette.action.hover,
-        padding: "8px 15px",
-        fontSize: "1rem",
-        borderRadius: "15px",
-        "&:hover": {
-            backgroundColor: (theme) => theme.palette.accent.hover,
-        },
-    };
-
-    // fetch blogs function
-    const fetchBlogs = async () => {
-        setShowLoading(true);
-        try {
-            const response = await axios.get(`${API_URL}/api/blogs/allBlogs`);
-            setBlogs(response.data);
-        } catch (error) {
-            if (error.code === "ERR_NETWORK") {
-                enqueueSnackbar("Server offline.", { variant: "info" });
-            }
-            setBlogs(null);
-        }
-        setShowLoading(false);
-    };
+    });
 
     // update theme from cookies or system
     useEffect(() => {
@@ -141,7 +174,7 @@ export default function App() {
                     });
                 } catch (error) {
                     if (error.code === "ERR_NETWORK") {
-                        enqueueSnackbar("Server offline.", { variant: "info" });
+                        serverOffline();
                     } else if (
                         error.response.status === 403 ||
                         error.response.status === 401
@@ -174,145 +207,38 @@ export default function App() {
         verifyToken();
     }, []);
 
-    // stop loading progress after 200ms
-    useEffect(() => {
-        setTimeout(() => {
-            setShowLoading(false);
-        }, 200);
-    }, [showLoading]);
-
     //fetch Blogs when the component loads
     useEffect(() => {
+        // fetch blogs function
+        const fetchBlogs = async () => {
+            setShowLoading(true);
+            try {
+                const response = await axios.get(
+                    `${API_URL}/api/blogs/allBlogs`
+                );
+                setBlogs(response.data);
+            } catch (error) {
+                if (error.code === "ERR_NETWORK") {
+                    serverOffline();
+                }
+                setBlogs(null);
+            }
+
+            setShowLoading(false);
+        };
+
         if (refresh) fetchBlogs();
         setRefresh(false);
     }, [refresh]);
 
-    const CssBaselineStyles = {
-        typography: {
-            fontFamily: "work sans",
-        },
-        components: {
-            MuiCssBaseline: {
-                styleOverrides: {
-                    "html *": {
-                        fontFamily: "work sans",
-                        "&:link": {
-                            color: darkMode
-                                ? "rgba(50, 255, 255, 1)"
-                                : "rgba(50, 120, 120, 1)",
-                        },
-                    },
-                    body: {
-                        textAlign: "center",
-                        justfifyContent: "center",
-                        alignItems: "center",
-                        transition: "all 0.2s ease",
-                    },
-                },
-            },
-            MuiTooltip: {
-                styleOverrides: {},
-            },
-        },
-    };
-
-    const customTheme = createTheme({
-        palette: {
-            mode: darkMode ? "dark" : "light",
-            ...(darkMode
-                ? {
-                      background: {
-                          default: "#000000",
-                          header: "#0000008f",
-                          actions: "rgba(20, 20, 20, 0.98)",
-                      },
-                      backdrop: "rgba(0, 0, 0, 0.75)",
-                      accent: {
-                          primary: "#5a002d",
-                          secondary: "#feb8d4",
-                          success: green[900],
-                          hover: "#34001a",
-                      },
-                      textField: {
-                          main: deepOrange[300],
-                          error: red[200],
-                      },
-                      icon: {
-                          main: "#ff4f98",
-                      },
-                      iconSuccess: {
-                          main: green[500],
-                      },
-                  }
-                : {
-                      background: {
-                          default: "#f7f5f5",
-                          header: "#f7f5f5cf",
-                          actions: "rgba(240, 240, 240, 0.93)",
-                      },
-                      backdrop: "rgba(0, 0, 0, 0.8)",
-                      accent: {
-                          primary: "#b2e5ff",
-                          secondary: "#C3ACD0",
-                          hover: "#e1f5ff",
-                          success: green[300],
-                      },
-                      textField: {
-                          main: deepOrange[800],
-                          error: red[500],
-                      },
-                      icon: {
-                          main: "#0056a3",
-                      },
-                      iconSuccess: {
-                          main: green[800],
-                      },
-                  }),
-        },
-        ...CssBaselineStyles,
-    });
-
     return (
         <ThemeProvider theme={customTheme}>
-            {/* config of dialog autoconfirm */}
+            {/* dialog components */}
+            <ConfirmProvider defaultOptions={DialogOptions}>
+                {/* call the empty component to update the various custom components */}
+                <CustomComponents isMobile={isMobile} darkMode={darkMode} />
 
-            <ConfirmProvider
-                defaultOptions={{
-                    dialogProps: {
-                        maxWidth: "xs",
-                        disableScrollLock: true,
-
-                        PaperProps: {
-                            elevation: 0,
-                            sx: {
-                                padding: "15px 0px 15px 0px",
-                                justfifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: "15px",
-                                backgroundColor: (theme) =>
-                                    theme.palette.background.dialog,
-                            },
-                        },
-                    },
-                    titleProps: {
-                        fontSize: "2.5rem",
-                    },
-                    contentProps: {
-                        sx: {
-                            fontSize: "1.2rem",
-                        },
-                    },
-                    confirmationButtonProps: {
-                        autoFocus: true,
-                        startIcon: <CheckCircle color="icon" />,
-                        sx: DialogButtonSX,
-                    },
-                    cancellationButtonProps: {
-                        startIcon: <Cancel color="icon" />,
-                        sx: DialogButtonSX,
-                    },
-                }}
-            >
+                {/* snackbar component */}
                 <SnackbarProvider
                     preventDuplicate
                     Components={{
@@ -322,10 +248,13 @@ export default function App() {
                         info: StyledMaterialDesignContent,
                     }}
                 />
+
+                {/* needed */}
                 <CssBaseline enableColorScheme />
 
+                {/* header components */}
                 <Header
-                    darkMode={darkMode}
+                    isMobile={isMobile}
                     isLoggedIn={isLoggedIn}
                     selectedTheme={selectedTheme}
                     setRefresh={setRefresh}
@@ -338,7 +267,8 @@ export default function App() {
                 {/* Loading on the entire screen */}
                 <Backdrop
                     sx={{
-                        backgroundColor: (theme) => theme.palette.backdrop,
+                        backgroundColor: (theme) =>
+                            theme.palette.background.backdrop,
                         zIndex: 999,
                         display: "flex",
                         flexDirection: "column",
@@ -352,7 +282,8 @@ export default function App() {
                 <ScrollToTop />
 
                 <Stack
-                    component={Container}
+                    component={!isMobile ? Container : null}
+                    padding={isMobile && "0px 5px 0px 5px"}
                     justifyContent="center"
                     alignItems="center"
                 >
@@ -364,6 +295,8 @@ export default function App() {
                             element={
                                 <Blogs
                                     blogs={blogs}
+                                    isMobile={isMobile}
+                                    showLoading={showLoading}
                                     setRefresh={setRefresh}
                                     setShowLoading={setShowLoading}
                                 />
@@ -376,7 +309,9 @@ export default function App() {
                             path="/blog/:id"
                             element={
                                 <ShowBlog
+                                    isMobile={isMobile}
                                     isLoggedIn={isLoggedIn}
+                                    showLoading={showLoading}
                                     setRefresh={setRefresh}
                                     setShowLoading={setShowLoading}
                                 />
@@ -389,6 +324,7 @@ export default function App() {
                             path="/authUser"
                             element={
                                 <AuthPage
+                                    isMobile={isMobile}
                                     isLoggedIn={isLoggedIn}
                                     setIsLoggedIn={setIsLoggedIn}
                                     setShowLoading={setShowLoading}
@@ -403,6 +339,7 @@ export default function App() {
                             element={
                                 <CreateBlog
                                     darkMode={darkMode}
+                                    isMobile={isMobile}
                                     isLoggedIn={isLoggedIn}
                                     setRefresh={setRefresh}
                                     setShowLoading={setShowLoading}
@@ -413,10 +350,14 @@ export default function App() {
                             exact
                             path="*"
                             element={
-                                <ErrorPage setShowLoading={setShowLoading} />
+                                <ErrorPage
+                                    isMobile={isMobile}
+                                    setShowLoading={setShowLoading}
+                                />
                             }
                         />
                     </Routes>
+                    {!showLoading && <FooterButtons isMobile={isMobile} />}
                 </Stack>
             </ConfirmProvider>
         </ThemeProvider>

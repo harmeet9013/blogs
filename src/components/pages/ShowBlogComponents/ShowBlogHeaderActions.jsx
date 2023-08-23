@@ -6,25 +6,27 @@ import {
     Link,
 } from "@mui/icons-material";
 import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import { useConfirm } from "material-ui-confirm";
 import { Fragment, useEffect, useState } from "react";
-import { Button, Divider, Grow, Stack, styled } from "@mui/material";
+import { Divider, Grow, Stack, Tooltip } from "@mui/material";
+import {
+    ActionButton,
+    TooltipSX,
+    confirmDialog,
+    navigate,
+} from "../../shared/CustomComponents";
 
 export default function HeaderActions(props) {
-    const navigate = useNavigate();
-    const confirmDialog = useConfirm();
-
     // for the blog actions depending on the user's location
     const [headerSticky, setHeaderSticky] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
+
     const handleIntersection = (entries) => {
         const [entry] = entries;
         setHeaderSticky(!entry.isIntersecting);
     };
     useEffect(() => {
         const observer = new IntersectionObserver(handleIntersection, {
-            threshold: [0],
+            threshold: 0,
         });
 
         const headerActions = document.getElementById("header-actions");
@@ -54,15 +56,6 @@ export default function HeaderActions(props) {
         }, 8000);
     };
 
-    const ActionButton = styled(Button)(({ theme }) => ({
-        padding: "10px ",
-        color: theme.palette.text.primary,
-        transition: theme.transitions.create(),
-        "&:hover": {
-            backgroundColor: !props.isMobile && theme.palette.accent.hover,
-        },
-    }));
-
     return (
         <Fragment>
             <Grow in={true}>
@@ -77,7 +70,7 @@ export default function HeaderActions(props) {
                     zIndex={50}
                     borderRadius="30px"
                     overflow="hidden"
-                    boxShadow="0 1px 5px rgba(0, 0, 0, 0.2)"
+                    boxShadow="0 1px 5px rgba(0, 0, 0, 0.1)"
                     border={(theme) =>
                         `1px solid ${theme.palette.action.disabled}`
                     }
@@ -92,39 +85,54 @@ export default function HeaderActions(props) {
                         },
                     }}
                 >
-                    <ActionButton
-                        onClick={(e) => {
-                            e.preventDefault();
-                            props.setShowLoading(true);
-                            props.setRefresh(true);
-                            navigate("/");
-                        }}
+                    <Tooltip
+                        title="Back"
+                        disableInteractive
+                        componentsProps={TooltipSX}
                     >
-                        <ArrowBack color="icon" />
-                    </ActionButton>
+                        <ActionButton
+                            onClick={(e) => {
+                                e.preventDefault();
+                                props.setShowLoading(true);
+                                props.setRefresh(true);
+                                setTimeout(() => {
+                                    navigate("/");
+                                    props.setShowLoading(false);
+                                }, 200);
+                            }}
+                        >
+                            <ArrowBack />
+                        </ActionButton>
+                    </Tooltip>
 
                     <Divider orientation="vertical" variant="middle" flexItem />
 
                     {props.isLoggedIn.logged && (
-                        <ActionButton
-                            onClick={(e) => {
-                                e.preventDefault();
-                                confirmDialog({
-                                    title: "Edit",
-                                    description:
-                                        "This action is in development.",
-                                    hideCancelButton: true,
-                                })
-                                    .then(() => {
-                                        //
+                        <Tooltip
+                            title="Edit"
+                            disableInteractive
+                            componentsProps={TooltipSX}
+                        >
+                            <ActionButton
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    confirmDialog({
+                                        title: "Edit",
+                                        description:
+                                            "This action is in development.",
+                                        hideCancelButton: true,
                                     })
-                                    .catch(() => {
-                                        //
-                                    });
-                            }}
-                        >
-                            <Edit color="icon" />
-                        </ActionButton>
+                                        .then(() => {
+                                            //
+                                        })
+                                        .catch(() => {
+                                            //
+                                        });
+                                }}
+                            >
+                                <Edit />
+                            </ActionButton>
+                        </Tooltip>
                     )}
 
                     {props.isLoggedIn.logged && (
@@ -136,24 +144,30 @@ export default function HeaderActions(props) {
                     )}
 
                     {props.isLoggedIn.logged && (
-                        <ActionButton
-                            onClick={(e) => {
-                                e.preventDefault();
-                                confirmDialog({
-                                    title: "Delete blog",
-                                    description:
-                                        "Are you sure you want to delete this blog?",
-                                    confirmationText: "Yes",
-                                    cancellationText: "No",
-                                })
-                                    .then(props.deleteBlog)
-                                    .catch(() => {
-                                        //
-                                    });
-                            }}
+                        <Tooltip
+                            title="Delete"
+                            disableInteractive
+                            componentsProps={TooltipSX}
                         >
-                            <DeleteForever color="icon" />
-                        </ActionButton>
+                            <ActionButton
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    confirmDialog({
+                                        title: "Delete blog",
+                                        description:
+                                            "Are you sure you want to delete this blog?",
+                                        confirmationText: "Yes",
+                                        cancellationText: "No",
+                                    })
+                                        .then(props.deleteBlog)
+                                        .catch(() => {
+                                            //
+                                        });
+                                }}
+                            >
+                                <DeleteForever />
+                            </ActionButton>
+                        </Tooltip>
                     )}
 
                     {props.isLoggedIn.logged && (
@@ -164,36 +178,47 @@ export default function HeaderActions(props) {
                         />
                     )}
 
-                    <ActionButton onClick={handleCopyURL}>
-                        {isCopied ? (
-                            <Grow in={true}>
-                                <CheckCircle
-                                    color="iconSuccess"
-                                    sx={{
-                                        animation: "come-on-in 0.5s ease-in",
-                                        "@keyframes come-on-in": {
-                                            "0%": {
-                                                transform: "translateY(-100px)",
+                    <Tooltip
+                        title="Copy Link"
+                        disableInteractive
+                        componentsProps={TooltipSX}
+                    >
+                        <ActionButton onClick={handleCopyURL}>
+                            {isCopied ? (
+                                <Grow in={true}>
+                                    <CheckCircle
+                                        color="iconSuccess"
+                                        sx={{
+                                            animation:
+                                                "come-on-in 0.5s ease-in",
+                                            "@keyframes come-on-in": {
+                                                "0%": {
+                                                    transform:
+                                                        "translateY(-100px)",
+                                                },
+                                                "50%": {
+                                                    transform:
+                                                        "translateY(5px)",
+                                                },
+                                                "65%": {
+                                                    transform:
+                                                        "translateY(-10px)",
+                                                },
+                                                "100%": {
+                                                    transform:
+                                                        "translateY(0px)",
+                                                },
                                             },
-                                            "50%": {
-                                                transform: "translateY(5px)",
-                                            },
-                                            "65%": {
-                                                transform: "translateY(-10px)",
-                                            },
-                                            "100%": {
-                                                transform: "translateY(0px)",
-                                            },
-                                        },
-                                    }}
-                                />
-                            </Grow>
-                        ) : (
-                            <Grow in={true}>
-                                <Link color="icon" />
-                            </Grow>
-                        )}
-                    </ActionButton>
+                                        }}
+                                    />
+                                </Grow>
+                            ) : (
+                                <Grow in={true}>
+                                    <Link />
+                                </Grow>
+                            )}
+                        </ActionButton>
+                    </Tooltip>
                 </Stack>
             </Grow>
         </Fragment>

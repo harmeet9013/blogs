@@ -1,21 +1,16 @@
 import { Fragment, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
-    useMediaQuery,
     Stack,
-    Button,
-    styled,
-    Paper,
     TextField,
     Divider,
     Grow,
     Avatar,
     Typography,
+    Box,
 } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
-import { useConfirm } from "material-ui-confirm";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
 
@@ -23,17 +18,13 @@ import { API_URL } from "../../../App";
 import PermissionError from "./PermissionError";
 import ImageUpload from "../../shared/ImageUpload";
 import HeaderActions from "./CreateBlogHeaderActions";
+import {
+    confirmDialog,
+    navigate,
+    serverOffline,
+} from "../../shared/CustomComponents";
 
-export default function CreateBlog({
-    darkMode,
-    isLoggedIn,
-    setRefresh,
-    setShowLoading,
-}) {
-    const confirmDialog = useConfirm();
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+export default function CreateBlog(props) {
     const [isValid, setIsValid] = useState(false);
     const [inputs, setInputs] = useState({
         title: "",
@@ -41,25 +32,6 @@ export default function CreateBlog({
         image: "",
     });
 
-    const CustomButton = styled(Button)(({ theme }) => ({
-        textTransform: "none",
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "1rem",
-        width: "100%",
-        border: `1px solid ${theme.palette.action.disabled}`,
-        transition: theme.transitions.create(),
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
-            borderColor: theme.palette.accent.primary,
-        },
-    }));
-    const DividerHorizontalSX = {
-        borderBottomWidth: 2,
-        borderRadius: "15px",
-    };
     const editorConfig = {
         toolbar: {
             items: [
@@ -106,6 +78,7 @@ export default function CreateBlog({
     };
 
     const createBlogRequest = async () => {
+        props.setShowLoading(true);
         try {
             const formData = new FormData();
 
@@ -120,14 +93,14 @@ export default function CreateBlog({
                     "Content-Type": "multipart/form-data",
                 },
             });
-            setRefresh(true);
+            props.setRefresh(true);
             enqueueSnackbar("Your blog has been created!", {
                 variant: "success",
             });
             navigate("/");
         } catch (error) {
             if (error.code === "ERR_NETWORK") {
-                enqueueSnackbar("Server offline.", { variant: "info" });
+                serverOffline();
             } else if (
                 error.response.status === 403 ||
                 error.response.status === 401
@@ -159,35 +132,34 @@ export default function CreateBlog({
                     });
             }
         } finally {
-            setShowLoading(false);
+            props.setShowLoading(false);
         }
     };
 
     const handleSubmit = () => {
-        setShowLoading(true);
-
         const hasError =
             inputs.title === "" ||
             inputs.content === "" ||
             inputs.image === "" ||
             !isValid;
 
-        if (!hasError && isLoggedIn !== null) {
-            createBlogRequest();
-        } else {
-            confirmDialog({
-                title: "Invalid Inputs",
-                content: "Inputs are invalid or the user is not logged in!",
-                hideCancelButton: true,
-            })
-                .then(() => {
-                    //
+        setTimeout(() => {
+            if (!hasError && isLoggedIn !== null) {
+                createBlogRequest();
+            } else {
+                confirmDialog({
+                    title: "Invalid Inputs",
+                    content: "Inputs are invalid or the user is not logged in!",
+                    hideCancelButton: true,
                 })
-                .catch(() => {
-                    //
-                });
-        }
-        setShowLoading(false);
+                    .then(() => {
+                        //
+                    })
+                    .catch(() => {
+                        //
+                    });
+            }
+        }, 100);
     };
 
     return (
@@ -195,16 +167,20 @@ export default function CreateBlog({
             <Grow in={true}>
                 <Stack
                     direction="column"
-                    spacing={isMobile ? 4 : 8}
+                    spacing={props.isMobile ? 4 : 8}
                     paddingTop="7rem"
-                    width={isMobile ? "100%" : "50rem"}
+                    width={props.isMobile ? "95%" : "50rem"}
                     marginBottom={4}
                     sx={{
                         transition: (theme) => theme.transitions.create(),
                     }}
                 >
-                    {isLoggedIn.logged ? (
-                        <Stack direction="column" spacing={isMobile ? 2 : 4}>
+                    {props.isLoggedIn.logged ? (
+                        <Stack
+                            direction="column"
+                            spacing={props.isMobile ? 2 : 4}
+                            id="create-blog-container"
+                        >
                             <TextField
                                 fullWidth
                                 multiline
@@ -220,36 +196,38 @@ export default function CreateBlog({
                                 InputProps={{
                                     style: {
                                         fontSize: "45px",
+                                        fontWeight: "600",
                                     },
                                 }}
                             />
-                            <Typography
-                                component={Stack}
+
+                            <Stack
                                 direction="row"
                                 spacing={1}
-                                variant={isMobile ? "caption" : "body1"}
-                                sx={{ alignItems: "center" }}
-                            >
-                                Current user: <Avatar src={isLoggedIn.avatar} />
-                                <strong>{isLoggedIn.name}</strong>
-                            </Typography>
-
-                            <Paper
-                                elevation={0}
-                                component={Stack}
-                                direction="column"
                                 alignItems="center"
-                                justifyContent="center"
-                                spacing={2}
-                                sx={{
-                                    borderRadius: "15px",
-                                    padding: isMobile ? "10px" : "20px",
-                                    width: "100%",
-                                    overflow: "hidden",
-                                }}
+                            >
+                                <Avatar src={props.isLoggedIn.avatar} />
+                                <Typography
+                                    variant={
+                                        props.isMobile ? "caption" : "body1"
+                                    }
+                                    fontWeight="bold"
+                                >
+                                    {props.isLoggedIn.name}
+                                </Typography>
+                            </Stack>
+
+                            <Box
+                                borderRadius="15px"
+                                padding={props.isMobile ? 1 : 2}
+                                display="flex"
+                                flexDirection="column"
+                                gap={4}
+                                border={(theme) =>
+                                    `1px solid ${theme.palette.background.button}`
+                                }
                             >
                                 <ImageUpload
-                                    darkMode={darkMode}
                                     id="blog-image"
                                     onInput={(image) => {
                                         setInputs((prevInputs) => {
@@ -260,12 +238,11 @@ export default function CreateBlog({
                                         });
                                     }}
                                     isValid={isValid}
-                                    isMobile={isMobile}
-                                    CustomButton={CustomButton}
+                                    isMobile={props.isMobile}
                                     setIsValid={setIsValid}
                                 />
 
-                                <Divider flexItem sx={DividerHorizontalSX} />
+                                <Divider flexItem />
 
                                 <CKEditor
                                     editor={BalloonEditor}
@@ -280,26 +257,22 @@ export default function CreateBlog({
                                         });
                                     }}
                                     config={editorConfig}
-                                    style={{
-                                        color: "black",
-                                    }}
                                 />
-                            </Paper>
+                            </Box>
                         </Stack>
                     ) : (
                         <PermissionError
-                            isMobile={isMobile}
-                            NavigateButton={CustomButton}
-                            setShowLoading={setShowLoading}
+                            isMobile={props.isMobile}
+                            setShowLoading={props.setShowLoading}
                         />
                     )}
                 </Stack>
             </Grow>
-            {isLoggedIn.logged && (
+            {props.isLoggedIn.logged && (
                 <HeaderActions
-                    isMobile={isMobile}
-                    setShowLoading={setShowLoading}
+                    isMobile={props.isMobile}
                     handleSubmit={handleSubmit}
+                    setShowLoading={props.setShowLoading}
                 />
             )}
         </Fragment>

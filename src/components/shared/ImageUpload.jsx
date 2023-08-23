@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { Box, ButtonGroup, Grow, Stack } from "@mui/material";
 import { DeleteForever, UploadFile } from "@mui/icons-material";
-import { Box, ButtonGroup, Stack, Typography } from "@mui/material";
+
+import { CustomButton } from "./CustomComponents";
 
 export default function ImageUpload(props) {
     const [image, setImage] = useState(null);
@@ -29,25 +31,33 @@ export default function ImageUpload(props) {
             justifyContent="center"
             alignItems="center"
         >
-            {previewUrl && (
+            <Grow in={Boolean(props.isValid)}>
                 <Box
                     component="img"
                     className="image-preview"
                     src={previewUrl}
                     alt="Preview"
+                    onLoad={() => {
+                        props.setIsValid(true);
+                        props.onInput(image);
+                    }}
                     onError={() => {
                         setTimeout(() => {
                             props.setIsValid(false);
                             setPreviewUrl(null);
                             setImage(null);
-                        }, 2000);
+                        }, 5000);
                     }}
                     sx={{
                         width: "100%",
+                        height: previewUrl && "300px",
+                        objectFit: "cover",
+                        backgroundPosition: "center",
                         borderRadius: "15px",
                     }}
                 />
-            )}
+            </Grow>
+
             <input
                 id={props.id}
                 ref={clickRef}
@@ -59,36 +69,37 @@ export default function ImageUpload(props) {
                     if (e.target.files && e.target.files.length === 1) {
                         pickedImage = e.target.files[0];
                         setImage(pickedImage);
-                        props.setIsValid(true);
-                    } else {
-                        props.setIsValid(false);
                     }
-                    props.onInput(pickedImage);
                 }}
             />
-            <ButtonGroup color="icon">
-                <props.CustomButton
-                    onClick={() => {
-                        clickRef.current.click();
-                    }}
-                    startIcon={<UploadFile color="icon" />}
-                >
-                    {image ? "Change" : "Upload Image"}
-                </props.CustomButton>
 
-                {image && (
-                    <props.CustomButton
+            <Grow in={true}>
+                <ButtonGroup>
+                    <CustomButton
                         onClick={() => {
-                            setImage(null);
-                            setPreviewUrl(null);
-                            setIsValid(false);
+                            clickRef.current.click();
                         }}
-                        startIcon={<DeleteForever color="icon" />}
+                        startIcon={<UploadFile color="icon" />}
                     >
-                        Remove
-                    </props.CustomButton>
-                )}
-            </ButtonGroup>
+                        {image ? "Change" : "Upload Image"}
+                    </CustomButton>
+
+                    {image && (
+                        <CustomButton
+                            onClick={() => {
+                                props.setIsValid(false);
+                                setTimeout(() => {
+                                    setPreviewUrl(null);
+                                    setImage(null);
+                                }, 200);
+                            }}
+                            startIcon={<DeleteForever color="icon" />}
+                        >
+                            Remove
+                        </CustomButton>
+                    )}
+                </ButtonGroup>
+            </Grow>
         </Stack>
     );
 }

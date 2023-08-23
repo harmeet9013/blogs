@@ -1,35 +1,37 @@
-import { useNavigate } from "react-router-dom";
-import { Box, Grow, Typography, Container, Stack, styled } from "@mui/material";
+import { Grow, Typography, Container, Stack } from "@mui/material";
+import {
+    BlogButton,
+    BlogsImageBox,
+    navigate,
+} from "../../shared/CustomComponents";
 
 export default function RenderBlogs(props) {
-    const navigate = useNavigate();
-
-    const ImageBox = styled(Box)(({ theme }) => ({
-        position: "relative",
-        borderRadius: "15px",
-        width: "100%",
-        height: "300px",
-        objectFit: "cover",
-        pointerEvents: "none",
-        border: `1px solid ${theme.palette.action.disabled}`,
-    }));
-
-    return Object.keys(props.blogs).map((key) => {
+    return Object.keys(props.blogs).map((key, index) => {
         const { _id, title, image, author, date } = props.blogs[key];
 
         return (
-            <Grow in={true} key={_id}>
-                <props.BlogButton
+            <Grow
+                in={true}
+                key={_id}
+                style={{
+                    transitionDelay: index * 100,
+                }}
+            >
+                <BlogButton
                     onClick={() => {
-                        navigate(`/blog/${_id}`);
+                        setTimeout(() => {
+                            navigate(`/blog/${_id}`);
+                            props.setShowLoading(false);
+                        }, 200);
                         props.setShowLoading(true);
                     }}
                 >
-                    <ImageBox component="img" src={image} alt={title} />
+                    <BlogsImageBox component="img" src={image} alt={title} />
 
                     <Stack spacing={2} component={Container}>
                         <Typography
                             sx={{ textAlign: "left", cursor: "pointer" }}
+                            fontWeight="600"
                             variant="h4"
                         >
                             {title}
@@ -49,7 +51,7 @@ export default function RenderBlogs(props) {
                             <Typography variant="body2">{date}</Typography>
                         </Stack>
                     </Stack>
-                </props.BlogButton>
+                </BlogButton>
             </Grow>
         );
     });
