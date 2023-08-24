@@ -245,11 +245,10 @@ export default function App() {
 
     return (
         <ThemeProvider theme={customTheme}>
-            {/* call the empty component to update the various custom components */}
-            <CustomComponents isMobile={isMobile} darkMode={darkMode} />
-
             {/* dialog component */}
             <ConfirmProvider defaultOptions={DialogOptions}>
+                {/* call the empty component to update the various custom components */}
+                <CustomComponents isMobile={isMobile} darkMode={darkMode} />
                 {/* snackbar component */}
                 <SnackbarProvider
                     preventDuplicate
@@ -278,135 +277,134 @@ export default function App() {
                             <Close />
                         </IconButton>
                     )}
+                />
+                {/* needed */}
+                <CssBaseline enableColorScheme />
+
+                {/* header components */}
+                <Header
+                    isMobile={isMobile}
+                    isLoggedIn={isLoggedIn}
+                    selectedTheme={selectedTheme}
+                    setRefresh={setRefresh}
+                    setDarkMode={setDarkMode}
+                    setIsLoggedIn={setIsLoggedIn}
+                    setShowLoading={setShowLoading}
+                    setSelectedTheme={setSelectedTheme}
+                />
+
+                {/* Loading on the entire screen */}
+                <Backdrop
+                    sx={{
+                        transition: (theme) =>
+                            `${theme.transitions.create()} !important`,
+                        backgroundColor: (theme) =>
+                            theme.palette.background.backdrop,
+                        zIndex: 999,
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                    open={showLoading}
                 >
-                    {/* needed */}
-                    <CssBaseline enableColorScheme />
+                    <CircularProgress color="icon" />
+                </Backdrop>
 
-                    {/* header components */}
-                    <Header
-                        isMobile={isMobile}
-                        isLoggedIn={isLoggedIn}
-                        selectedTheme={selectedTheme}
-                        setRefresh={setRefresh}
-                        setDarkMode={setDarkMode}
-                        setIsLoggedIn={setIsLoggedIn}
-                        setShowLoading={setShowLoading}
-                        setSelectedTheme={setSelectedTheme}
-                    />
+                {/* button that takes you to heaven */}
+                <ScrollToTop />
 
-                    {/* Loading on the entire screen */}
-                    <Backdrop
-                        sx={{
-                            transition: (theme) =>
-                                `${theme.transitions.create()} !important`,
-                            backgroundColor: (theme) =>
-                                theme.palette.background.backdrop,
-                            zIndex: 999,
-                            display: "flex",
-                            flexDirection: "column",
-                        }}
-                        open={showLoading}
-                    >
-                        <CircularProgress color="icon" />
-                    </Backdrop>
+                <Stack
+                    component={!isMobile ? Container : null}
+                    padding={isMobile && "0px 10px 0px 10px"}
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                        transition: (theme) =>
+                            `${theme.transitions.create()} !important`,
+                    }}
+                >
+                    <Routes>
+                        {/* Home page route */}
+                        <Route
+                            exact
+                            path="/"
+                            element={
+                                <Blogs
+                                    blogs={blogs}
+                                    isMobile={isMobile}
+                                    showLoading={showLoading}
+                                    setRefresh={setRefresh}
+                                    setShowLoading={setShowLoading}
+                                />
+                            }
+                        />
 
-                    {/* button that takes you to heaven */}
-                    <ScrollToTop />
+                        {/* Show blog seaparately */}
+                        <Route
+                            exact
+                            path="/blog/:id"
+                            element={
+                                <ShowBlog
+                                    isMobile={isMobile}
+                                    isLoggedIn={isLoggedIn}
+                                    showLoading={showLoading}
+                                    setRefresh={setRefresh}
+                                    setShowLoading={setShowLoading}
+                                />
+                            }
+                        />
 
-                    <Stack
-                        component={!isMobile ? Container : null}
-                        padding={isMobile && "0px 10px 0px 10px"}
-                        justifyContent="center"
-                        alignItems="center"
-                        sx={{
-                            transition: (theme) =>
-                                `${theme.transitions.create()} !important`,
-                        }}
-                    >
-                        <Routes>
-                            {/* Home page route */}
-                            <Route
-                                exact
-                                path="/"
-                                element={
-                                    <Blogs
-                                        blogs={blogs}
-                                        isMobile={isMobile}
-                                        showLoading={showLoading}
-                                        setRefresh={setRefresh}
-                                        setShowLoading={setShowLoading}
-                                    />
-                                }
-                            />
+                        <Route
+                            exact
+                            path="/about"
+                            element={
+                                <AboutPage
+                                    isMobile={isMobile}
+                                    showLoading={showLoading}
+                                />
+                            }
+                        />
 
-                            {/* Show blog seaparately */}
-                            <Route
-                                exact
-                                path="/blog/:id"
-                                element={
-                                    <ShowBlog
-                                        isMobile={isMobile}
-                                        isLoggedIn={isLoggedIn}
-                                        showLoading={showLoading}
-                                        setRefresh={setRefresh}
-                                        setShowLoading={setShowLoading}
-                                    />
-                                }
-                            />
+                        {/* Login page */}
+                        <Route
+                            exact
+                            path="/authUser"
+                            element={
+                                <AuthPage
+                                    isMobile={isMobile}
+                                    isLoggedIn={isLoggedIn}
+                                    setIsLoggedIn={setIsLoggedIn}
+                                    setShowLoading={setShowLoading}
+                                />
+                            }
+                        />
 
-                            <Route
-                                exact
-                                path="/about"
-                                element={
-                                    <AboutPage
-                                        isMobile={isMobile}
-                                        showLoading={showLoading}
-                                    />
-                                }
-                            />
-
-                            {/* Login page */}
-                            <Route
-                                exact
-                                path="/authUser"
-                                element={
-                                    <AuthPage
-                                        isMobile={isMobile}
-                                        isLoggedIn={isLoggedIn}
-                                        setIsLoggedIn={setIsLoggedIn}
-                                        setShowLoading={setShowLoading}
-                                    />
-                                }
-                            />
-
-                            {/* Create blog */}
-                            <Route
-                                exact
-                                path="/createBlog"
-                                element={
-                                    <CreateBlog
-                                        darkMode={darkMode}
-                                        isMobile={isMobile}
-                                        isLoggedIn={isLoggedIn}
-                                        setRefresh={setRefresh}
-                                        setShowLoading={setShowLoading}
-                                    />
-                                }
-                            />
-                            <Route
-                                exact
-                                path="*"
-                                element={
-                                    <ErrorPage
-                                        isMobile={isMobile}
-                                        setShowLoading={setShowLoading}
-                                    />
-                                }
-                            />
-                        </Routes>
-                        {!showLoading && <FooterButtons isMobile={isMobile} />}
-                    </Stack>
-                </SnackbarProvider>
+                        {/* Create blog */}
+                        <Route
+                            exact
+                            path="/createBlog"
+                            element={
+                                <CreateBlog
+                                    darkMode={darkMode}
+                                    isMobile={isMobile}
+                                    isLoggedIn={isLoggedIn}
+                                    setRefresh={setRefresh}
+                                    setShowLoading={setShowLoading}
+                                />
+                            }
+                        />
+                        <Route
+                            exact
+                            path="*"
+                            element={
+                                <ErrorPage
+                                    isMobile={isMobile}
+                                    setShowLoading={setShowLoading}
+                                />
+                            }
+                        />
+                    </Routes>
+                    {!showLoading && <FooterButtons isMobile={isMobile} />}
+                </Stack>
             </ConfirmProvider>
         </ThemeProvider>
     );
