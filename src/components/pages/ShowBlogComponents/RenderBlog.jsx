@@ -1,10 +1,22 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
-import { Avatar, Container, Grow, Stack, Typography } from "@mui/material";
+import {
+    Avatar,
+    CircularProgress,
+    Container,
+    Grow,
+    Skeleton,
+    Stack,
+    Typography,
+} from "@mui/material";
 
 import { BlogImageBox, BlogTitle } from "../../shared/CustomComponents";
+import { useState } from "react";
 
 export default function RenderBlog(props) {
+    const [imageLoading, setImageLoading] = useState(true);
+    const [avatarLoading, setAvatarLoading] = useState(true);
+
     return (
         <Grow in={true}>
             <Stack
@@ -27,7 +39,17 @@ export default function RenderBlog(props) {
                     </BlogTitle>
 
                     <Stack direction="row" alignItems="center" spacing={2}>
-                        <Avatar src={props.currentBlog.avatar} />
+                        {avatarLoading ? (
+                            <Skeleton variant="circular">
+                                <Avatar
+                                    src={props.currentBlog.avatar}
+                                    onLoad={() => setAvatarLoading(false)}
+                                />
+                            </Skeleton>
+                        ) : (
+                            <Avatar src={props.currentBlog.avatar} />
+                        )}
+
                         <Stack direction="column" spacing={0} textAlign="left">
                             <Typography variant="body1" fontWeight="bold">
                                 {props.currentBlog.author}
@@ -45,11 +67,19 @@ export default function RenderBlog(props) {
                     component={Container}
                     id="blog-container"
                 >
-                    <BlogImageBox
-                        component="img"
-                        src={props.currentBlog.image}
-                        alt={props.currentBlog.title}
-                    />
+                    {imageLoading && <CircularProgress color="icon" />}
+
+                    <Grow in={!imageLoading}>
+                        <BlogImageBox
+                            component="img"
+                            src={props.currentBlog.image}
+                            alt={props.currentBlog.title}
+                            onLoad={() => setImageLoading(false)}
+                            sx={{
+                                display: imageLoading && "none",
+                            }}
+                        />
+                    </Grow>
 
                     <CKEditor
                         editor={BalloonEditor}

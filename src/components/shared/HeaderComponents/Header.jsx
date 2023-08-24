@@ -55,6 +55,7 @@ export default function Header(props) {
                             fontSize: props.isMobile ? "1.8rem" : "2.2rem",
                             letterSpacing: props.isMobile ? 4 : 8,
                             fontWeight: "bold",
+                            border: "none",
                             "&:hover": {
                                 backgroundColor: "transparent",
                             },

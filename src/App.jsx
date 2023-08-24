@@ -23,6 +23,7 @@ import ErrorPage from "./components/pages/ErrorPage";
 import ScrollToTop from "./components/shared/ScrollToTop";
 import { FooterButtons } from "./components/shared/Footer";
 import Blogs from "./components/pages/BlogsComponents/Blogs";
+import AboutPage from "./components/pages/AboutPage/AboutPage";
 import Header from "./components/shared/HeaderComponents/Header";
 import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
@@ -244,11 +245,11 @@ export default function App() {
 
     return (
         <ThemeProvider theme={customTheme}>
-            {/* dialog components */}
-            <ConfirmProvider defaultOptions={DialogOptions}>
-                {/* call the empty component to update the various custom components */}
-                <CustomComponents isMobile={isMobile} darkMode={darkMode} />
+            {/* call the empty component to update the various custom components */}
+            <CustomComponents isMobile={isMobile} darkMode={darkMode} />
 
+            {/* dialog component */}
+            <ConfirmProvider defaultOptions={DialogOptions}>
                 {/* snackbar component */}
                 <SnackbarProvider
                     preventDuplicate
@@ -296,6 +297,8 @@ export default function App() {
                     {/* Loading on the entire screen */}
                     <Backdrop
                         sx={{
+                            transition: (theme) =>
+                                `${theme.transitions.create()} !important`,
                             backgroundColor: (theme) =>
                                 theme.palette.background.backdrop,
                             zIndex: 999,
@@ -315,6 +318,10 @@ export default function App() {
                         padding={isMobile && "0px 10px 0px 10px"}
                         justifyContent="center"
                         alignItems="center"
+                        sx={{
+                            transition: (theme) =>
+                                `${theme.transitions.create()} !important`,
+                        }}
                     >
                         <Routes>
                             {/* Home page route */}
@@ -343,6 +350,17 @@ export default function App() {
                                         showLoading={showLoading}
                                         setRefresh={setRefresh}
                                         setShowLoading={setShowLoading}
+                                    />
+                                }
+                            />
+
+                            <Route
+                                exact
+                                path="/about"
+                                element={
+                                    <AboutPage
+                                        isMobile={isMobile}
+                                        showLoading={showLoading}
                                     />
                                 }
                             />

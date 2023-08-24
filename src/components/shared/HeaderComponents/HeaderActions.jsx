@@ -10,12 +10,14 @@ import {
     DesktopMac,
     DesktopMacOutlined,
     AddCircle,
+    InfoRounded,
 } from "@mui/icons-material";
 import {
     Avatar,
+    CircularProgress,
     Container,
     Divider,
-    Fade,
+    Grow,
     IconButton,
     Menu,
     Skeleton,
@@ -37,7 +39,7 @@ import {
 
 export default function DesktopActions(props) {
     const [iconAnchor, setIconAnchor] = useState(null);
-    const [avatarImgLoad, setAvatarImgLoad] = useState(false);
+    const [isAvatarLoading, setIsAvatarLoading] = useState(true);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -49,21 +51,6 @@ export default function DesktopActions(props) {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-
-    const RenderAvatar = () => {
-        return avatarImgLoad ? (
-            <MyAvatar src={props.isLoggedIn.avatar} />
-        ) : (
-            <Skeleton variant="circular">
-                <Avatar
-                    src={props.isLoggedIn.avatar}
-                    onLoad={() => {
-                        setAvatarImgLoad(true);
-                    }}
-                />
-            </Skeleton>
-        );
-    };
 
     const handleLogout = () => {
         props.setShowLoading(true);
@@ -82,22 +69,17 @@ export default function DesktopActions(props) {
 
     return (
         <Fragment>
-            {/* home button */}
             <NavbarHomeButton
                 onClick={() => {
                     setTimeout(() => {
-                        if (props.isLoggedIn.logged) {
-                            navigate("/createBlog");
-                        } else {
-                            navigate("/authUser");
-                        }
+                        navigate("/about");
                         props.setShowLoading(false);
                     }, 200);
                     props.setShowLoading(true);
                 }}
-                startIcon={<AddCircle color="icon" />}
+                startIcon={<InfoRounded color="icon" />}
             >
-                New
+                About
             </NavbarHomeButton>
 
             <Divider
@@ -115,14 +97,33 @@ export default function DesktopActions(props) {
                         backgroundColor: (theme) => theme.palette.accent.hover,
                     },
                 }}
-                onMouseOver={(e) => {
-                    !props.isMobile && setIconAnchor(e.currentTarget);
-                }}
                 onClick={(e) => {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {props.isLoggedIn.logged ? RenderAvatar() : <MyAvatar />}
+                {props.isLoggedIn.logged ? (
+                    <Fragment>
+                        {isAvatarLoading && (
+                            <Skeleton variant="circular">
+                                <Avatar />
+                            </Skeleton>
+                        )}
+
+                        <Grow in={!isAvatarLoading}>
+                            <MyAvatar
+                                src={props.isLoggedIn.avatar}
+                                onLoad={() => setIsAvatarLoading(false)}
+                                sx={{
+                                    display: isAvatarLoading && "none",
+                                }}
+                            />
+                        </Grow>
+                    </Fragment>
+                ) : (
+                    <Grow in={true}>
+                        <MyAvatar />
+                    </Grow>
+                )}
             </IconButton>
 
             {/* menu */}
@@ -135,17 +136,14 @@ export default function DesktopActions(props) {
                     setIconAnchor(null);
                 }}
                 disableScrollLock={true}
+                TransitionComponent={Grow}
                 PaperProps={{
                     elevation: 0,
                     sx: {
                         borderRadius: "15px",
                         transition: (theme) => theme.transitions.create(),
                     },
-                    onMouseLeave: () => {
-                        !props.isMobile && setIconAnchor(null);
-                    },
                 }}
-                TransitionComponent={Fade}
             >
                 <Container disableGutters>
                     {/* login/logout buttons */}
@@ -162,8 +160,33 @@ export default function DesktopActions(props) {
                                     },
                                 }}
                             >
-                                {RenderAvatar()}
+                                {isAvatarLoading ? (
+                                    <CircularProgress size={25} color="icon" />
+                                ) : (
+                                    <MyAvatar
+                                        src={props.isLoggedIn.avatar}
+                                        onLoad={() => setIsAvatarLoading(false)}
+                                        sx={{
+                                            display: isAvatarLoading && "none",
+                                        }}
+                                    />
+                                )}
+
                                 {props.isLoggedIn.name}
+                            </MyMenuItem>
+
+                            <MyMenuItem
+                                onClick={() => {
+                                    setIconAnchor(null);
+
+                                    setTimeout(() => {
+                                        navigate("/createBlog");
+                                        props.setShowLoading(false);
+                                    }, 200);
+                                    props.setShowLoading(true);
+                                }}
+                            >
+                                <AddCircle color="icon" /> New Blog
                             </MyMenuItem>
 
                             <MyMenuItem

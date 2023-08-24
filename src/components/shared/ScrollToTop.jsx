@@ -25,7 +25,8 @@ export default function ScrollToTop(props) {
             >
                 <Fab
                     sx={{
-                        transition: (theme) => theme.transitions.create(),
+                        transition: (theme) =>
+                            `${theme.transitions.create()} !important`,
                         position: "fixed",
                         bottom: 25,
                         right: props.isMobile ? 30 : 50,

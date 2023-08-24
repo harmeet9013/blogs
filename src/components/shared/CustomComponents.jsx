@@ -3,6 +3,7 @@ import {
     Avatar,
     Box,
     Button,
+    IconButton,
     MenuItem,
     Typography,
     styled,
@@ -31,6 +32,7 @@ export let StyledMaterialDesignContent;
 export let DialogOptions;
 export let TooltipSX;
 export let TextFieldSX;
+export let SocialIconButton;
 
 export default function CustomComponents(props) {
     // navigation for going to other pages
@@ -68,6 +70,8 @@ export default function CustomComponents(props) {
                     alignItems: "center",
                     borderRadius: "15px",
                     backgroundColor: (theme) => theme.palette.background.dialog,
+                    transition: (theme) =>
+                        `${theme.transitions.create()} !important`,
                 },
             },
         },
@@ -98,7 +102,8 @@ export default function CustomComponents(props) {
                 color: (theme) => theme.palette.text.primary,
                 fontSize: "0.8rem",
                 borderRadius: "15px",
-                transition: (theme) => theme.transitions.create(),
+                transition: (theme) =>
+                    `${theme.transitions.create()} !important`,
             },
         },
     };
@@ -106,7 +111,7 @@ export default function CustomComponents(props) {
     // TextField customizations
     TextFieldSX = {
         borderRadius: "15px",
-        transition: (theme) => theme.transitions.create(),
+        transition: (theme) => `${theme.transitions.create()} !important`,
         "&.Mui-focused": {
             backgroundColor: (theme) => theme.palette.action.hover,
         },
@@ -143,6 +148,7 @@ export default function CustomComponents(props) {
         ({ theme }) => ({
             color: theme.palette.text.primary,
             borderRadius: " 15px",
+            transition: (theme) => `${theme.transitions.create()} !important`,
             "&.notistack-MuiContent-success": {
                 backgroundColor: props.darkMode ? green[900] : green[300],
             },
@@ -162,10 +168,10 @@ export default function CustomComponents(props) {
     NavbarHomeButton = styled(Button)(({ theme }) => ({
         textTransform: "none",
         color: theme.palette.text.primary,
-        fontSize: props.isMobile ? "18px" : "24px",
         padding: "8px 20px",
-        borderRadius: "15px",
+        fontSize: props.isMobile ? "18px" : "24px",
         fontWeight: "500",
+        borderRadius: "15px",
         transition: theme.transitions.create(),
         "&:hover": {
             backgroundColor: theme.palette.accent.hover,
@@ -194,6 +200,7 @@ export default function CustomComponents(props) {
 
     // avatar on the header
     MyAvatar = styled(Avatar)(({ theme }) => ({
+        transition: theme.transitions.create(),
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.action.hover,
     }));
@@ -208,7 +215,7 @@ export default function CustomComponents(props) {
         fontSize: "1.3rem",
         width: "100%",
         border: `2px solid ${theme.palette.action.disabled}`,
-        transition: theme.transitions.create(),
+        transition: `${theme.transitions.create()} !important`,
         "&:hover": {
             backgroundColor: theme.palette.accent.hover,
             border: `2px solid ${theme.palette.accent.primary}`,
@@ -217,24 +224,25 @@ export default function CustomComponents(props) {
 
     // big blog button
     BlogButton = styled(Button)(({ theme }) => ({
-        transition: theme.transitions.create(),
+        transition: `${theme.transitions.create()}`,
         textTransform: "none",
         borderRadius: "15px",
         padding: props.isMobile ? "10px" : "20px 40px 20px 40px",
         flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
         cursor: "pointer",
         color: theme.palette.text.primary,
+        border: `1px solid ${theme.palette.divider}`,
         gap: "20px",
-        "&:hover": {
+        "&:hover": !props.isMobile && {
             backgroundColor: theme.palette.accent.hover,
-            boxShadow: theme.shadows[2],
+            transform: "translateY(-0.5rem) !important",
+            boxShadow: theme.shadows[4],
         },
     }));
 
     // blog image styles
     BlogsImageBox = styled(Box)(({ theme }) => ({
+        transition: theme.transitions.create(),
         position: "relative",
         borderRadius: "15px",
         width: "100%",
@@ -246,6 +254,7 @@ export default function CustomComponents(props) {
 
     // blog title (solo blog)
     BlogTitle = styled(Typography)(({ theme }) => ({
+        transition: theme.transitions.create(),
         textAlign: "left",
         letterSpacing: "2px",
         fontWeight: "600",
@@ -253,6 +262,7 @@ export default function CustomComponents(props) {
 
     // blog image (solo blog)
     BlogImageBox = styled(Box)(({ theme }) => ({
+        transition: theme.transitions.create(),
         borderRadius: "15px",
         width: "100%",
         height: props.isMobile ? "300px" : "500px",
@@ -264,9 +274,19 @@ export default function CustomComponents(props) {
     ActionButton = styled(Button)(({ theme }) => ({
         padding: "10px ",
         color: theme.palette.icon.main,
-        transition: theme.transitions.create(),
+        transition: `${theme.transitions.create()} !important`,
         "&:hover": {
             backgroundColor: theme.palette.accent.hover,
+        },
+    }));
+
+    SocialIconButton = styled(IconButton)(({ theme }) => ({
+        transition: theme.transitions.create(),
+        "&:hover": {
+            transform: "translateY(-0.2rem)",
+            color: theme.palette.icon.main,
+            backgroundColor: theme.palette.accent.primary,
+            boxShadow: theme.shadows[4],
         },
     }));
 
