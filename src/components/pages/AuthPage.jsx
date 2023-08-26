@@ -8,6 +8,8 @@ import {
     Box,
     Grow,
     Collapse,
+    styled,
+    Button,
 } from "@mui/material";
 import {
     AlternateEmail,
@@ -24,17 +26,52 @@ import { useState } from "react";
 import { enqueueSnackbar } from "notistack";
 
 import { API_URL } from "../../App";
-import {
-    CustomButton,
-    TextFieldSX,
-    navigate,
-    serverOffline,
-} from "../shared/CustomComponents";
+import { navigate, serverOffline } from "../shared/CustomComponents";
 
 export default function AuthPage(props) {
     const [showPassword, setShowPassword] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
+    // TextField customizations
+    const TextFieldSX = (theme) => ({
+        borderRadius: 50,
+        transition: `${theme.transitions.create()} !important`,
+        "&.Mui-focused": {
+            backgroundColor: theme.palette.background.low,
+        },
+        "&.MuiOutlinedInput-root": {
+            "& fieldset": {
+                transition: theme.transitions.create(),
+                border: 2,
+                borderColor: theme.palette.dividervar,
+            },
+            "&:hover fieldset": {
+                borderColor: theme.palette.tertiary.container.on,
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: theme.palette.primary.container.on,
+            },
+        },
+    });
+
+    // global button used for various purposes
+    const CustomButton = styled(Button)(({ theme }) => ({
+        textTransform: "none",
+        color: theme.palette.primary.main,
+        borderRadius: 40,
+        backgroundColor: theme.palette.background.low,
+        padding: "0.6rem",
+        fontSize: theme.typography.h5.fontSize,
+        width: "100%",
+        border: `2px solid ${theme.palette.dividervar}`,
+        transition: `${theme.transitions.create()} !important`,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+            border: `2px solid ${theme.palette.primary.main}`,
+        },
+    }));
+
+    // login click event
     const handleClick = async (e) => {
         e.preventDefault();
         props.setShowLoading(true);
@@ -103,9 +140,9 @@ export default function AuthPage(props) {
                 marginTop="7rem"
                 marginBottom="2rem"
                 width={props.isMobile ? "100%" : "30rem"}
-                sx={{
-                    transition: (theme) => theme.transitions.create(),
-                }}
+                sx={(theme) => ({
+                    transition: theme.transitions.create(),
+                })}
             >
                 <Typography
                     variant="h2"
@@ -137,13 +174,12 @@ export default function AuthPage(props) {
                         placeholder="Email Address"
                         id="email"
                         variant="outlined"
-                        color="textField"
                         type="text"
                         InputProps={{
                             sx: TextFieldSX,
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <AlternateEmail color="icon" />
+                                    <AlternateEmail color="primary" />
                                 </InputAdornment>
                             ),
                         }}
@@ -161,7 +197,7 @@ export default function AuthPage(props) {
                             sx: TextFieldSX,
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Password color="icon" />
+                                    <Password color="primary" />
                                 </InputAdornment>
                             ),
                             endAdornment: (
@@ -183,7 +219,12 @@ export default function AuthPage(props) {
                                         >
                                             {/* the user can click on thus button to display/hide their password. */}
                                             {showPassword ? (
-                                                <Visibility color="warning" />
+                                                <Visibility
+                                                    sx={(theme) => ({
+                                                        color: theme.palette
+                                                            .tertiary.main,
+                                                    })}
+                                                />
                                             ) : (
                                                 <VisibilityOff />
                                             )}
@@ -194,17 +235,14 @@ export default function AuthPage(props) {
                         }}
                     />
 
-                    <CustomButton
-                        type="submit"
-                        startIcon={<Login color="icon" />}
-                    >
+                    <CustomButton type="submit" startIcon={<Login />}>
                         Login
                     </CustomButton>
                 </Box>
             </Stack>
         </Grow>
     ) : (
-        <Grow in={true}>
+        <Grow in={props.isLoggedIn.logged}>
             <Stack spacing={4} paddingTop="7rem" paddingBottom={4}>
                 <Typography variant={props.isMobile ? "h5" : "h4"}>
                     <BackHand /> Where you tryna go? <br />
@@ -218,7 +256,7 @@ export default function AuthPage(props) {
                             props.setShowLoading(false);
                         }, 200);
                     }}
-                    startIcon={<Home color="icon" />}
+                    startIcon={<Home />}
                 >
                     Home
                 </CustomButton>

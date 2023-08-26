@@ -6,13 +6,13 @@ import {
     Avatar,
     CircularProgress,
     Skeleton,
+    styled,
+    Button,
+    Box,
 } from "@mui/material";
-import {
-    BlogButton,
-    BlogsImageBox,
-    navigate,
-} from "../../shared/CustomComponents";
 import { useState } from "react";
+
+import { navigate } from "../../shared/CustomComponents";
 
 export default function RenderBlogs(props) {
     return Object.keys(props.blogs).map((key) => {
@@ -20,6 +20,36 @@ export default function RenderBlogs(props) {
 
         const [isImageLoading, setIsImageLoading] = useState(true);
         const [isAvatarLoading, setIsAvatarLoading] = useState(true);
+
+        // big blog button
+        const BlogButton = styled(Button)(({ theme }) => ({
+            transition: `${theme.transitions.create()}`,
+            textTransform: "none",
+            borderRadius: 50,
+            padding: props.isMobile ? "1.5rem 0.8rem" : "2rem",
+            flexDirection: "column",
+            cursor: "pointer",
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.background.low,
+            gap: 10,
+            "&:hover": !props.isMobile && {
+                backgroundColor: theme.palette.primary.container.main,
+                transform: "translateY(-0.5rem) !important",
+                boxShadow: theme.shadows[2],
+            },
+        }));
+
+        // blog image styles
+        const BlogsImageBox = styled(Box)(({ theme }) => ({
+            transition: theme.transitions.create(),
+            position: "relative",
+            borderRadius: 50,
+            width: "100%",
+            height: "300px",
+            objectFit: "cover",
+            pointerEvents: "none",
+            border: `1px solid ${theme.palette.secondary.container.main}`,
+        }));
 
         return (
             <Grow
@@ -39,7 +69,7 @@ export default function RenderBlogs(props) {
                     }}
                 >
                     {isImageLoading && (
-                        <CircularProgress color="icon" size={30} />
+                        <CircularProgress color="primary" size={30} />
                     )}
 
                     <BlogsImageBox
@@ -57,42 +87,51 @@ export default function RenderBlogs(props) {
 
                     <Stack spacing={2} component={Container}>
                         <Typography
+                            textAlign="left"
+                            fontWeight={600}
+                            variant="h4"
+                            color={(theme) => theme.palette.primary.main}
                             sx={{
-                                textAlign: "left",
                                 cursor: "pointer",
                             }}
-                            fontWeight="600"
-                            variant="h4"
                         >
                             {title}
                         </Typography>
-                        <Stack spacing={2} direction="row">
-                            {isAvatarLoading && (
+                        <Stack spacing={2} direction="row" alignItems="center">
+                            {isAvatarLoading ? (
                                 <Skeleton variant="circular">
-                                    <Avatar />
+                                    <Avatar
+                                        src={avatar && avatar}
+                                        onLoad={() => setIsAvatarLoading(false)}
+                                    />
                                 </Skeleton>
+                            ) : (
+                                <Grow in={!isAvatarLoading}>
+                                    <Avatar
+                                        src={avatar && avatar}
+                                        sx={(theme) => ({
+                                            border: `2px solid ${theme.palette.tertiary.main}`,
+                                        })}
+                                    />
+                                </Grow>
                             )}
 
-                            <Grow in={true}>
-                                <Avatar
-                                    src={avatar && avatar}
-                                    onLoad={() => setIsAvatarLoading(false)}
-                                    sx={{
-                                        display: isAvatarLoading && "none",
-                                    }}
-                                />
-                            </Grow>
                             <Stack
                                 direction="column"
                                 alignItems="flex-start"
                                 justifyContent="flex-start"
-                                sx={{
-                                    color: (theme) =>
-                                        theme.palette.text.disabled,
-                                }}
+                                sx={(theme) => ({
+                                    color: theme.palette.secondary.main,
+                                })}
                             >
-                                <Typography variant="body2">
-                                    By <strong>{author}</strong>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight={600}
+                                    sx={(theme) => ({
+                                        color: theme.palette.tertiary.main,
+                                    })}
+                                >
+                                    By {author}
                                 </Typography>
                                 <Typography variant="body2">{date}</Typography>
                             </Stack>
