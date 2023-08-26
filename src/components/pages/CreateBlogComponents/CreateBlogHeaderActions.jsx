@@ -1,17 +1,26 @@
 import { enqueueSnackbar } from "notistack";
+import { useEffect, useState } from "react";
 import { ArrowBack, Save } from "@mui/icons-material";
-import { Divider, Grow, Stack, Tooltip } from "@mui/material";
+import { Button, Divider, Grow, Stack, Tooltip, styled } from "@mui/material";
 
 import {
-    ActionButton,
     TooltipSX,
     confirmDialog,
     navigate,
 } from "../../shared/CustomComponents";
-import { useEffect, useState } from "react";
 
 export default function HeaderActions(props) {
     const [headerSticky, setHeaderSticky] = useState(false);
+
+    // small buttons that appear for solog blog and create blog components
+    const ActionButton = styled(Button)(({ theme }) => ({
+        padding: "0.6rem 2rem",
+        color: theme.palette.primary.main,
+        transition: `${theme.transitions.create()} !important`,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+        },
+    }));
 
     const handleIntersection = ([entry]) =>
         setHeaderSticky(!entry.isIntersecting);
@@ -40,33 +49,30 @@ export default function HeaderActions(props) {
         <Grow in={true}>
             <Stack
                 direction="row"
-                justifyContent="center"
-                alignItems="center"
-                position={headerSticky ? "fixed" : "sticky"}
-                top={headerSticky && 0}
-                bottom={!headerSticky && "100px"}
-                width="8rem"
-                marginBottom="2rem"
-                zIndex={50}
-                borderRadius="30px"
-                overflow="hidden"
-                boxShadow="0 1px 5px rgba(0, 0, 0, 0.2)"
-                border={(theme) => `1px solid ${theme.palette.action.disabled}`}
                 id="create-blog-actions"
-                sx={{
-                    backdropFilter: "blur(5px)",
-                    opacity: "0.5",
-                    transition: (theme) => theme.transitions.create(),
-                    backgroundColor: (theme) =>
-                        theme.palette.background.actions,
-                    "&:hover": {
-                        backgroundColor: (theme) =>
-                            theme.palette.background.default,
-                    },
-                }}
+                sx={(theme) => ({
+                    ...(headerSticky
+                        ? {
+                              position: "fixed",
+                              top: 0,
+                          }
+                        : {
+                              position: "sticky",
+                              bottom: props.isMobile ? 100 : 50,
+                          }),
+                    width: "8rem",
+                    zIndex: 50,
+                    borderRadius: 50,
+                    marginBottom: 4,
+                    overflow: "hidden",
+                    transition: theme.transitions.create(),
+                    backgroundColor: theme.palette.background.default,
+                    border: `1px solid ${theme.palette.action.disabled}`,
+                })}
             >
                 <Tooltip
                     title="Discard"
+                    placement="top"
                     disableInteractive
                     componentsProps={TooltipSX}
                 >
@@ -92,7 +98,7 @@ export default function HeaderActions(props) {
                                 });
                         }}
                     >
-                        <ArrowBack color="icon" />
+                        <ArrowBack />
                     </ActionButton>
                 </Tooltip>
 
@@ -100,6 +106,7 @@ export default function HeaderActions(props) {
 
                 <Tooltip
                     title="Save"
+                    placement="top"
                     disableInteractive
                     componentsProps={TooltipSX}
                 >
@@ -116,7 +123,7 @@ export default function HeaderActions(props) {
                                 });
                         }}
                     >
-                        <Save color="icon" />
+                        <Save />
                     </ActionButton>
                 </Tooltip>
             </Stack>

@@ -10,9 +10,8 @@ import {
     Stack,
     Tooltip,
     Typography,
+    styled,
 } from "@mui/material";
-import HS_Image from "../../shared/assets/pictures/harmeet_singh.jpg";
-import { SocialIconButton, TooltipSX } from "../../shared/CustomComponents";
 import {
     DownloadRounded,
     EmailRounded,
@@ -20,7 +19,22 @@ import {
     LinkedIn,
 } from "@mui/icons-material";
 
+import { TooltipSX } from "../../shared/CustomComponents";
+import HS_Image from "../../shared/assets/pictures/harmeet_singh.jpg";
+
 export default function AboutPage(props) {
+    const SocialIconButton = styled(IconButton)(({ theme }) => ({
+        transition: theme.transitions.create(),
+        backgroundColor: theme.palette.secondary.fixed.on,
+        color: theme.palette.secondary.fixed.main,
+        "&:hover": {
+            transform: "translateY(-0.2rem)",
+            color: theme.palette.secondary.fixed.main,
+            backgroundColor: theme.palette.secondary.fixed.onvar,
+            boxShadow: theme.shadows[4],
+        },
+    }));
+
     return (
         !props.showLoading && (
             <Grow in={true}>
@@ -36,7 +50,7 @@ export default function AboutPage(props) {
                         src={HS_Image}
                         sx={{
                             width: props.isMobile ? "100%" : "30rem",
-                            borderRadius: "15px",
+                            borderRadius: 40,
                             transition: (theme) => theme.transitions.create(),
                             objectFit: "cover",
                             "&:hover": {
@@ -56,9 +70,10 @@ export default function AboutPage(props) {
                         }}
                     >
                         <Typography
-                            variant={props.isMobile ? "h4" : "h2"}
+                            variant="h2"
                             letterSpacing={10}
-                            fontWeight={400}
+                            fontWeight={500}
+                            color="primary"
                         >
                             About
                         </Typography>
@@ -68,20 +83,28 @@ export default function AboutPage(props) {
                             sx={{
                                 borderBottomWidth: 5,
                                 width: "20%",
+                                borderRadius: 50,
                             }}
                         />
 
                         <Card
-                            sx={{
-                                borderRadius: "15px",
-                                transition: (theme) =>
-                                    theme.transitions.create(),
-                            }}
+                            sx={(theme) => ({
+                                borderRadius: 20,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                padding: "0.6rem 1.2rem",
+                                transition: theme.transitions.create(),
+                                backgroundColor:
+                                    theme.palette.secondary.container.on,
+                            })}
                         >
                             <CardContent>
                                 <Typography
                                     variant={props.isMobile ? "body1" : "h5"}
                                     textAlign="center"
+                                    color={(theme) =>
+                                        theme.palette.secondary.container.main
+                                    }
                                 >
                                     My name is Harmeet Singh, and I am a fresher{" "}
                                     <b> MERN Stack Web Developer</b>.

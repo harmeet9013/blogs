@@ -171,9 +171,9 @@ export default function CreateBlog(props) {
                     paddingTop="7rem"
                     width={props.isMobile ? "95%" : "50rem"}
                     marginBottom={4}
-                    sx={{
-                        transition: (theme) => theme.transitions.create(),
-                    }}
+                    sx={(theme) => ({
+                        transition: theme.transitions.create(),
+                    })}
                 >
                     {props.isLoggedIn.logged ? (
                         <Stack
@@ -191,13 +191,14 @@ export default function CreateBlog(props) {
                                 value={inputs.title}
                                 onChange={handleChange}
                                 autoFocus
-                                color="textField"
                                 size="large"
                                 InputProps={{
-                                    style: {
-                                        fontSize: "45px",
+                                    sx: (theme) => ({
+                                        fontSize: props.isMobile
+                                            ? theme.typography.h4.fontSize
+                                            : theme.typography.h2.fontSize,
                                         fontWeight: "600",
-                                    },
+                                    }),
                                 }}
                             />
 
@@ -206,26 +207,28 @@ export default function CreateBlog(props) {
                                 spacing={1}
                                 alignItems="center"
                             >
-                                <Avatar src={props.isLoggedIn.avatar} />
+                                <Avatar
+                                    src={props.isLoggedIn.avatar}
+                                    sx={(theme) => ({
+                                        height: 60,
+                                        width: 60,
+                                        border: `2px solid ${theme.palette.primary.main}`,
+                                    })}
+                                />
                                 <Typography
-                                    variant={
-                                        props.isMobile ? "caption" : "body1"
-                                    }
-                                    fontWeight="bold"
+                                    variant={props.isMobile ? "body1" : "h6"}
+                                    fontWeight={500}
                                 >
                                     {props.isLoggedIn.name}
                                 </Typography>
                             </Stack>
 
                             <Box
-                                borderRadius="15px"
+                                borderRadius={30}
                                 padding={props.isMobile ? 1 : 2}
                                 display="flex"
                                 flexDirection="column"
                                 gap={4}
-                                border={(theme) =>
-                                    `1px solid ${theme.palette.background.button}`
-                                }
                             >
                                 <ImageUpload
                                     id="blog-image"

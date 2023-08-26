@@ -1,14 +1,29 @@
 import { useState, useRef, useEffect } from "react";
-import { Box, ButtonGroup, Grow, Stack } from "@mui/material";
 import { DeleteForever, UploadFile } from "@mui/icons-material";
-
-import { CustomButton } from "./CustomComponents";
+import { Box, Button, ButtonGroup, Grow, Stack, styled } from "@mui/material";
 
 export default function ImageUpload(props) {
     const [image, setImage] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
 
     const clickRef = useRef();
+
+    // global button used for various purposes
+    const CustomButton = styled(Button)(({ theme }) => ({
+        textTransform: "none",
+        color: theme.palette.primary.main,
+        borderRadius: 40,
+        backgroundColor: theme.palette.background.low,
+        padding: "0.6rem 1.2rem",
+        fontSize: theme.typography.h5.fontSize,
+        width: "100%",
+        border: `2px solid ${theme.palette.dividervar}`,
+        transition: `${theme.transitions.create()} !important`,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+            border: `2px solid ${theme.palette.primary.main}`,
+        },
+    }));
 
     useEffect(() => {
         if (!image) {
@@ -48,13 +63,14 @@ export default function ImageUpload(props) {
                             setImage(null);
                         }, 5000);
                     }}
-                    sx={{
+                    sx={(theme) => ({
                         width: "100%",
-                        height: previewUrl && "300px",
+                        height: previewUrl && "500px",
                         objectFit: "cover",
                         backgroundPosition: "center",
-                        borderRadius: "15px",
-                    }}
+                        borderRadius: 30,
+                        border: `2px solid ${theme.palette.secondary.container.main}`,
+                    })}
                 />
             </Grow>
 
@@ -79,7 +95,7 @@ export default function ImageUpload(props) {
                         onClick={() => {
                             clickRef.current.click();
                         }}
-                        startIcon={<UploadFile color="icon" />}
+                        startIcon={<UploadFile />}
                     >
                         {image ? "Change" : "Upload Image"}
                     </CustomButton>
@@ -93,7 +109,7 @@ export default function ImageUpload(props) {
                                     setImage(null);
                                 }, 200);
                             }}
-                            startIcon={<DeleteForever color="icon" />}
+                            startIcon={<DeleteForever />}
                         >
                             Remove
                         </CustomButton>
