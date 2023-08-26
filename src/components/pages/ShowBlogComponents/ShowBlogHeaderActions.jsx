@@ -7,9 +7,8 @@ import {
 } from "@mui/icons-material";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { Divider, Grow, Stack, Tooltip } from "@mui/material";
+import { Button, Divider, Grow, Stack, Tooltip, styled } from "@mui/material";
 import {
-    ActionButton,
     TooltipSX,
     confirmDialog,
     navigate,
@@ -21,6 +20,17 @@ export default function HeaderActions(props) {
     const [isCopied, setIsCopied] = useState(false);
     const [animateButton, setAnimateButton] = useState(true);
 
+    // small buttons that appear for solog blog and create blog components
+    const ActionButton = styled(Button)(({ theme }) => ({
+        padding: "0.6rem 2rem",
+        color: theme.palette.primary.main,
+        transition: `${theme.transitions.create()} !important`,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+        },
+    }));
+
+    // intersection handling
     const handleIntersection = (entries) => {
         const [entry] = entries;
         setHeaderSticky(!entry.isIntersecting);
@@ -43,61 +53,59 @@ export default function HeaderActions(props) {
         };
     }, [headerSticky]);
 
+    // copy the link function
     const handleCopyURL = async (e) => {
         e.preventDefault();
         try {
             await navigator.clipboard.writeText(window.location.href);
             setAnimateButton(false);
-            setTimeout(() => {
-                setIsCopied(true);
-                setAnimateButton(true);
-            }, 200);
+
+            setIsCopied(true);
+            setAnimateButton(true);
         } catch (error) {
             enqueueSnackbar("Could not copy link!", { variant: "error" });
 
             setAnimateButton(false);
-            setTimeout(() => {
-                setIsCopied(false);
-                setAnimateButton(true);
-            }, 200);
+
+            setIsCopied(false);
+            setAnimateButton(true);
         }
         setTimeout(() => {
             setAnimateButton(false);
-            setTimeout(() => {
-                setIsCopied(false);
-                setAnimateButton(true);
-            }, 200);
+
+            setIsCopied(false);
+            setAnimateButton(true);
         }, 8000);
     };
 
     return (
-        <Grow in={true}>
+        <Grow in={!props.showLoading}>
             <Stack
                 direction="row"
                 id="header-actions"
-                position={headerSticky ? "fixed" : "sticky"}
-                top={headerSticky && 0}
-                bottom={!headerSticky && "100px"}
-                width={props.isLoggedIn.logged ? "16rem" : "8rem"}
-                marginBottom="2rem"
-                zIndex={50}
-                borderRadius="30px"
-                overflow="hidden"
-                boxShadow="0 1px 5px rgba(0, 0, 0, 0.1)"
-                border={(theme) => `1px solid ${theme.palette.action.disabled}`}
-                sx={{
-                    backdropFilter: "blur(5px)",
-                    transition: (theme) => theme.transitions.create(),
-                    backgroundColor: (theme) =>
-                        theme.palette.background.actions,
-                    "&:hover": {
-                        backgroundColor: (theme) =>
-                            theme.palette.background.default,
-                    },
-                }}
+                sx={(theme) => ({
+                    ...(headerSticky
+                        ? {
+                              position: "fixed",
+                              top: 0,
+                          }
+                        : {
+                              position: "sticky",
+                              bottom: props.isMobile ? 100 : 50,
+                          }),
+                    width: props.isLoggedIn.logged ? "16rem" : "8rem",
+                    zIndex: 50,
+                    borderRadius: 50,
+                    marginBottom: 4,
+                    overflow: "hidden",
+                    transition: theme.transitions.create(),
+                    backgroundColor: theme.palette.background.default,
+                    border: `1px solid ${theme.palette.action.disabled}`,
+                })}
             >
                 <Tooltip
                     title="Back"
+                    placement="top"
                     disableInteractive
                     componentsProps={TooltipSX}
                 >
@@ -121,6 +129,7 @@ export default function HeaderActions(props) {
                 {props.isLoggedIn.logged && (
                     <Tooltip
                         title="Edit"
+                        placement="top"
                         disableInteractive
                         componentsProps={TooltipSX}
                     >
@@ -153,6 +162,7 @@ export default function HeaderActions(props) {
                 {props.isLoggedIn.logged && (
                     <Tooltip
                         title="Delete"
+                        placement="top"
                         disableInteractive
                         componentsProps={TooltipSX}
                     >
@@ -182,14 +192,19 @@ export default function HeaderActions(props) {
                 )}
 
                 <Tooltip
-                    title="Copy Link"
+                    title={!isCopied && "Create Link"}
+                    placement="top"
                     disableInteractive
                     componentsProps={TooltipSX}
                 >
                     <ActionButton onClick={handleCopyURL}>
-                        <Grow in={animateButton} unmountOnExit>
+                        <Grow in={animateButton}>
                             {isCopied ? (
-                                <CheckCircle color="iconSuccess" />
+                                <CheckCircle
+                                    sx={(theme) => ({
+                                        color: theme.palette.tertiary.main,
+                                    })}
+                                />
                             ) : (
                                 <Link />
                             )}

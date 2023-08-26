@@ -13,9 +13,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Close } from "@mui/icons-material";
+import { CancelRounded, CheckCircleRounded, Close } from "@mui/icons-material";
 import { ConfirmProvider } from "material-ui-confirm";
-import { deepOrange, green, red } from "@mui/material/colors";
 import { SnackbarProvider, closeSnackbar, enqueueSnackbar } from "notistack";
 
 import AuthPage from "./components/pages/AuthPage";
@@ -28,16 +27,14 @@ import Header from "./components/shared/HeaderComponents/Header";
 import ShowBlog from "./components/pages/ShowBlogComponents/ShowBlog";
 import CreateBlog from "./components/pages/CreateBlogComponents/CreateBlog";
 import CustomComponents, {
-    DialogOptions,
     StyledMaterialDesignContent,
     serverOffline,
-    systemTheme,
 } from "./components/shared/CustomComponents";
 
 export const API_URL = "https://harmeet9013-blogs-api.vercel.app";
-// export const API_URL = "http://localhost:5000";
 
 export default function App() {
+    // state hooks
     const [blogs, setBlogs] = useState(null);
     const [darkMode, setDarkMode] = useState(true);
     const [selectedTheme, setSelectedTheme] = useState("system");
@@ -52,60 +49,129 @@ export default function App() {
     // isMobile constant
     const isMobile = useMediaQuery("(max-width: 900px");
 
-    // material ui theme
-    const customTheme = createTheme({
+    // system theme (dynamic)
+    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
+        ? true
+        : false;
+
+    // material you theme!
+    const material3Theme = createTheme({
         palette: {
             mode: darkMode ? "dark" : "light",
             ...(darkMode
                 ? {
+                      primary: {
+                          main: "#ffb3b4",
+                          on: "#5f131c",
+                          container: {
+                              main: "#7e2a30",
+                              on: "#ffdad9",
+                          },
+                          fixed: {
+                              main: "#ffdad9",
+                              dim: "#ffb3b4",
+                              on: "#40000a",
+                              onvar: "#7e2a30",
+                          },
+                      },
+                      secondary: {
+                          main: "#e6bdbc",
+                          on: "#5f131c",
+                          container: {
+                              main: "#5d3f3f",
+                              on: "#ffdad9",
+                          },
+                          fixed: {
+                              main: "#ffdad9",
+                              dim: "#e6bdbc",
+                              on: "#2c1516",
+                              onvar: "#5d3f3f",
+                          },
+                      },
+                      tertiary: {
+                          main: "#e5c18d",
+                          on: "#422c05",
+                          container: {
+                              main: "#5b421a",
+                              on: "#ffddaf",
+                          },
+                          fixed: {
+                              main: "#ffddaf",
+                              dim: "#e5c18d",
+                              on: "#281800",
+                              onvar: "#633b48",
+                          },
+                      },
+
                       background: {
-                          default: "#000000",
-                          header: "#000000c5",
-                          actions: "#000000e4",
-                          backdrop: "#000000af",
-                          button: "#1a1a1a",
+                          default: "#120d0d",
+                          low: "#201a1a",
+                          med: "#241e1e",
+                          high: "#2f2828",
+                          highest: "#3a3333",
+                          header: "#120d0dda",
                       },
-                      accent: {
-                          primary: "#5a002d",
-                          secondary: "#feb8d4",
-                          success: green[900],
-                          hover: "#34001a",
-                      },
-                      textField: {
-                          main: deepOrange[300],
-                          error: red[200],
-                      },
-                      icon: {
-                          main: "#ff4f98",
-                      },
-                      iconSuccess: {
-                          main: green[500],
-                      },
+
+                      divider: "#a08c8c",
+                      dividervar: "#524343",
+                      backdrop: "#120d0dba",
                   }
                 : {
+                      primary: {
+                          main: "#9c4146",
+                          on: "#ffffff",
+                          container: {
+                              main: "#ffdad9",
+                              on: "#40000a",
+                          },
+                          fixed: {
+                              main: "#ffdad9",
+                              dim: "#ffb3b4",
+                              on: "#40000a",
+                              onvar: "#7e2a30",
+                          },
+                      },
+                      secondary: {
+                          main: "#775656",
+                          on: "#ffffff",
+                          container: {
+                              main: "#ffdad9",
+                              on: "#2c1516",
+                          },
+                          fixed: {
+                              main: "#ffdad9",
+                              dim: "#e6bdbc",
+                              on: "#2c1516",
+                              onvar: "#5d3f3f",
+                          },
+                      },
+                      tertiary: {
+                          main: "#755a2f",
+                          on: "#ffffff",
+                          container: {
+                              main: "#ffddaf",
+                              on: "#281800",
+                          },
+                          fixed: {
+                              main: "#ffddaf",
+                              dim: "#e5c18d",
+                              on: "#281800",
+                              onvar: "#5b421a",
+                          },
+                      },
+
                       background: {
-                          default: "#f7f5f5",
-                          header: "#f7f5f5c5",
-                          actions: "#f7f5f5e4",
-                          backdrop: "#f7f5f5af",
-                          button: "#e1e1e1",
+                          default: "#ffffff",
+                          low: "#fef1f0",
+                          med: "#f8ebea",
+                          high: "#f2e5e5",
+                          highest: "#ece0df",
+                          header: "#ffffffda",
                       },
-                      accent: {
-                          primary: "#b2e5ff",
-                          secondary: "#C3ACD0",
-                          hover: "#e1f5ff",
-                          success: green[300],
-                      },
-                      textField: {
-                          main: deepOrange[800],
-                          error: red[500],
-                      },
-                      icon: {
-                          main: "#0056a3",
-                      },
-                      iconSuccess: {
-                          main: green[800],
-                      },
+
+                      divider: "#d7c1c1",
+                      dividervar: "#857373",
+                      backdrop: "#ffffffba",
                   }),
         },
         typography: {
@@ -116,7 +182,6 @@ export default function App() {
                 styleOverrides: {
                     "html *": {
                         fontFamily: "work sans",
-                        scrollBehavior: "smooth",
                         "&:link": {
                             color: darkMode
                                 ? "rgba(50, 255, 255, 1)"
@@ -127,12 +192,68 @@ export default function App() {
                         textAlign: "center",
                         justfifyContent: "center",
                         alignItems: "center",
-                        transition: "all 0.2s ease",
+                        transition: "all 0.25s ease",
                     },
                 },
             },
         },
     });
+
+    // dialog button SX object
+    const DialogButtonSX = (theme) => ({
+        color: theme.palette.primary.main,
+        backgroundColor: theme.palette.background.high,
+        padding: "0.6rem 1rem",
+        fontSize: theme.typography.button.fontSize,
+        borderRadius: 10,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+        },
+    });
+
+    // default config for dialog
+    const DialogOptions = {
+        dialogProps: {
+            maxWidth: "xs",
+            disableScrollLock: true,
+            slotProps: {
+                backdrop: {
+                    sx: {
+                        backgroundColor: (theme) => theme.palette.backdrop,
+                    },
+                },
+            },
+            PaperProps: {
+                elevation: 0,
+                sx: {
+                    padding: "0rem 0px 1rem 0px",
+                    justfifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 5,
+                    backgroundColor: (theme) => theme.palette.background.low,
+                    transition: (theme) =>
+                        `${theme.transitions.create()} !important`,
+                },
+            },
+        },
+        titleProps: {
+            fontSize: (theme) => theme.typography.h4.fontSize,
+            fontWeight: 500,
+            color: (theme) => theme.palette.primary.main,
+        },
+        contentProps: {
+            sx: (theme) => theme.typography.body1,
+        },
+        confirmationButtonProps: {
+            autoFocus: true,
+            startIcon: <CheckCircleRounded />,
+            sx: DialogButtonSX,
+        },
+        cancellationButtonProps: {
+            startIcon: <CancelRounded />,
+            sx: DialogButtonSX,
+        },
+    };
 
     // update theme from cookies or system
     useEffect(() => {
@@ -244,7 +365,7 @@ export default function App() {
     }, [refresh]);
 
     return (
-        <ThemeProvider theme={customTheme}>
+        <ThemeProvider theme={material3Theme}>
             {/* dialog component */}
             <ConfirmProvider defaultOptions={DialogOptions}>
                 {/* call the empty component to update the various custom components */}
@@ -258,11 +379,10 @@ export default function App() {
                             <CircularProgress
                                 disableShrink
                                 size={20}
-                                sx={{
-                                    color: (theme) =>
-                                        theme.palette.text.primary,
+                                sx={(theme) => ({
+                                    color: theme.palette.text.primary,
                                     marginRight: 1,
-                                }}
+                                })}
                             />
                         ),
                     }}
@@ -285,6 +405,7 @@ export default function App() {
                 <Header
                     isMobile={isMobile}
                     isLoggedIn={isLoggedIn}
+                    systemTheme={systemTheme}
                     selectedTheme={selectedTheme}
                     setRefresh={setRefresh}
                     setDarkMode={setDarkMode}
@@ -295,26 +416,24 @@ export default function App() {
 
                 {/* Loading on the entire screen */}
                 <Backdrop
-                    sx={{
-                        transition: (theme) =>
-                            `${theme.transitions.create()} !important`,
-                        backgroundColor: (theme) =>
-                            theme.palette.background.backdrop,
+                    sx={(theme) => ({
+                        transition: `${theme.transitions.create()} !important`,
+                        backgroundColor: theme.palette.backdrop,
                         zIndex: 999,
                         display: "flex",
                         flexDirection: "column",
-                    }}
+                    })}
                     open={showLoading}
                 >
-                    <CircularProgress color="icon" />
+                    <CircularProgress disableShrink color="primary" />
                 </Backdrop>
 
                 {/* button that takes you to heaven */}
-                <ScrollToTop />
+                <ScrollToTop isMobile={isMobile} />
 
                 <Stack
                     component={!isMobile ? Container : null}
-                    padding={isMobile && "0px 10px 0px 10px"}
+                    padding={isMobile && "0px 1rem 0px 1rem"}
                     justifyContent="center"
                     alignItems="center"
                     sx={{
@@ -323,7 +442,6 @@ export default function App() {
                     }}
                 >
                     <Routes>
-                        {/* Home page route */}
                         <Route
                             exact
                             path="/"
@@ -338,7 +456,6 @@ export default function App() {
                             }
                         />
 
-                        {/* Show blog seaparately */}
                         <Route
                             exact
                             path="/blog/:id"
@@ -364,7 +481,6 @@ export default function App() {
                             }
                         />
 
-                        {/* Login page */}
                         <Route
                             exact
                             path="/authUser"
@@ -378,7 +494,6 @@ export default function App() {
                             }
                         />
 
-                        {/* Create blog */}
                         <Route
                             exact
                             path="/createBlog"
@@ -392,6 +507,7 @@ export default function App() {
                                 />
                             }
                         />
+
                         <Route
                             exact
                             path="*"

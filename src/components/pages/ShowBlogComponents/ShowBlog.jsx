@@ -75,62 +75,62 @@ export default function ShowBlog(props) {
     };
 
     // Find the blog post with the given ID
-    useEffect(() => {
-        const fetchBlog = async () => {
-            props.setShowLoading(true);
-            try {
-                // fetch form api
-                const result = await axios.get(`${API_URL}/api/blogs/${id}`);
-                setCurrentBlog(result.data);
-            } catch (error) {
-                // server offline
-                if (error.code === "ERR_NETWORK") {
-                    props.setRefresh(true);
-                    serverOffline();
-                    navigate("/");
-                }
-
-                // blog not found error
-                else {
-                    confirmDialog({
-                        title: "Blog not found!",
-                        content:
-                            "The blog does not exist. Go back to home page.",
-                        hideCancelButton: true,
-                    })
-                        .then(() => {
-                            props.setShowLoading(true);
-                            props.setRefresh(true);
-                            setTimeout(() => {
-                                navigate("/");
-                                props.setShowLoading(false);
-                            }, 200);
-                        })
-                        .catch(() => {
-                            /* */
-                        });
-                }
-            } finally {
-                props.setShowLoading(false);
+    const fetchBlog = async () => {
+        props.setShowLoading(true);
+        try {
+            // fetch form api
+            const result = await axios.get(`${API_URL}/api/blogs/${id}`);
+            setCurrentBlog(result.data);
+        } catch (error) {
+            // server offline
+            if (error.code === "ERR_NETWORK") {
+                props.setRefresh(true);
+                serverOffline();
+                navigate("/");
             }
-        };
 
+            // blog not found error
+            else {
+                confirmDialog({
+                    title: "Blog not found!",
+                    content: "The blog does not exist. Go back to home page.",
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        props.setShowLoading(true);
+                        props.setRefresh(true);
+                        setTimeout(() => {
+                            navigate("/");
+                            props.setShowLoading(false);
+                        }, 200);
+                    })
+                    .catch(() => {
+                        /* */
+                    });
+            }
+        } finally {
+            props.setShowLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchBlog();
     }, []);
 
     return (
-        currentBlog &&
-        !props.showLoading && (
+        currentBlog && (
             <Fragment>
                 <RenderBlog
                     currentBlog={currentBlog}
                     isMobile={props.isMobile}
+                    showLoading={props.showLoading}
                 />
 
                 <HeaderActions
                     isMobile={props.isMobile}
                     deleteBlog={deleteBlog}
                     isLoggedIn={props.isLoggedIn}
+                    showLoading={props.showLoading}
                     setRefresh={props.setRefresh}
                     setShowLoading={props.setShowLoading}
                 />
