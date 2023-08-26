@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
-import { Stack, Slide, Fade } from "@mui/material";
+import { Stack, Slide, Fade, styled, Button } from "@mui/material";
 
 import HeaderActions from "./HeaderActions";
-import { NavbarHomeButton, navigate } from "../CustomComponents";
+import { navigate } from "../CustomComponents";
 
 export default function Header(props) {
     const [showHeader, setShowHeader] = useState(true);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
+
+    // BLOGS button that takes you to home page
+    const NavbarHomeButton = styled(Button)(({ theme }) => ({
+        transition: theme.transitions.create(),
+        textTransform: "none",
+        color: theme.palette.primary.main,
+        padding: "0.2rem 1.2rem",
+        fontSize: theme.typography.h5.fontSize,
+        fontWeight: 500,
+        borderRadius: 40,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+        },
+    }));
 
     const handleScroll = () => {
         const currentScrollPos = window.scrollY;
@@ -33,7 +47,7 @@ export default function Header(props) {
                 width="100%"
                 overflow="hidden"
                 zIndex="50"
-                borderBottom={(theme) => `2px solid ${theme.palette.divider}`}
+                borderBottom={(theme) => `1px solid ${theme.palette.divider}`}
                 sx={{
                     transition: (theme) => theme.transitions.create(),
                     backgroundColor: (theme) => theme.palette.background.header,
@@ -44,6 +58,7 @@ export default function Header(props) {
 
                 <Fade in={true}>
                     <NavbarHomeButton
+                        disableRipple
                         onClick={() => {
                             props.setShowLoading(true);
                             props.setRefresh(true);
@@ -51,21 +66,20 @@ export default function Header(props) {
                                 navigate("/");
                             }, 200);
                         }}
-                        sx={{
-                            fontSize: props.isMobile ? "1.8rem" : "2.2rem",
+                        sx={(theme) => ({
+                            fontSize: theme.typography.h4.fontSize,
                             letterSpacing: props.isMobile ? 4 : 8,
                             fontWeight: "bold",
                             border: "none",
                             "&:hover": {
                                 backgroundColor: "transparent",
                             },
-                            background: (theme) =>
-                                `linear-gradient(to right, ${theme.palette.icon.main}, ${theme.palette.accent.secondary})`,
+                            background: `linear-gradient(to left, ${theme.palette.tertiary.main}, ${theme.palette.primary.main})`,
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
-                        }}
+                        })}
                     >
-                        Blogs
+                        BLOGS
                     </NavbarHomeButton>
                 </Fade>
 
@@ -74,7 +88,9 @@ export default function Header(props) {
                         <HeaderActions
                             isMobile={props.isMobile}
                             isLoggedIn={props.isLoggedIn}
+                            systemTheme={props.systemTheme}
                             selectedTheme={props.selectedTheme}
+                            NavbarHomeButton={NavbarHomeButton}
                             setDarkMode={props.setDarkMode}
                             setIsLoggedIn={props.setIsLoggedIn}
                             setShowLoading={props.setShowLoading}

@@ -24,23 +24,19 @@ export default function ScrollToTop(props) {
                 componentsProps={TooltipSX}
             >
                 <Fab
-                    sx={{
-                        transition: (theme) =>
-                            `${theme.transitions.create()} !important`,
+                    sx={(theme) => ({
+                        transition: `${theme.transitions.create()} !important`,
                         position: "fixed",
                         bottom: 25,
-                        right: props.isMobile ? 30 : 50,
-                        backdropFilter: "blur(10px)",
-                        color: (theme) => theme.palette.icon.main,
-                        backgroundColor: (theme) =>
-                            theme.palette.background.actions,
-                        border: (theme) =>
-                            `2px solid ${theme.palette.action.disabled}`,
+                        right: props.isMobile ? 40 : 100,
+                        color: theme.palette.primary.main,
+                        backgroundColor: theme.palette.background.default,
+                        border: `1px solid ${theme.palette.action.disabled}`,
                         "&:hover": {
-                            backgroundColor: (theme) =>
-                                theme.palette.accent.hover,
+                            backgroundColor:
+                                theme.palette.primary.container.main,
                         },
-                    }}
+                    })}
                     onClick={(e) => {
                         e.preventDefault();
                         window.scrollTo({
