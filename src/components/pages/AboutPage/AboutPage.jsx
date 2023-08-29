@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Box,
     Card,
@@ -23,6 +24,8 @@ import { TooltipSX } from "../../shared/CustomComponents";
 import HS_Image from "../../shared/assets/pictures/harmeet_singh.jpg";
 
 export default function AboutPage(props) {
+    const [pageLoaded, setPageLoaded] = useState(false);
+
     const SocialIconButton = styled(IconButton)(({ theme }) => ({
         transition: theme.transitions.create(),
         backgroundColor: theme.palette.secondary.fixed.on,
@@ -37,7 +40,7 @@ export default function AboutPage(props) {
 
     return (
         !props.showLoading && (
-            <Grow in={true}>
+            <Grow in={pageLoaded}>
                 <Stack
                     component={Container}
                     spacing={4}
@@ -48,15 +51,17 @@ export default function AboutPage(props) {
                     <Box
                         component="img"
                         src={HS_Image}
-                        sx={{
+                        onLoad={() => setPageLoaded(true)}
+                        sx={(theme) => ({
                             width: props.isMobile ? "100%" : "30rem",
                             borderRadius: 40,
-                            transition: (theme) => theme.transitions.create(),
+                            transition: theme.transitions.create(),
                             objectFit: "cover",
+                            border: `2px solid ${theme.palette.secondary.container.on}`,
                             "&:hover": {
-                                boxShadow: (theme) => theme.shadows[4],
+                                boxShadow: theme.shadows[4],
                             },
-                        }}
+                        })}
                     />
 
                     <Stack

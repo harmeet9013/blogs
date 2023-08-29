@@ -232,11 +232,11 @@ export default function CreateBlog(props) {
                             >
                                 <ImageUpload
                                     id="blog-image"
-                                    onInput={(image) => {
+                                    onInput={(newImage) => {
                                         setInputs((prevInputs) => {
                                             return {
                                                 ...prevInputs,
-                                                image: image,
+                                                image: newImage,
                                             };
                                         });
                                     }}
