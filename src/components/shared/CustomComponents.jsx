@@ -64,7 +64,7 @@ export default function CustomComponents(props) {
             },
             "&.notistack-MuiContent-info": {
                 color: theme.palette.tertiary.main,
-                backgroundColor: theme.palette.tertiary.container.on,
+                backgroundColor: theme.palette.background.high,
             },
         })
     );

@@ -278,7 +278,7 @@ export default function App() {
             const userID = Cookies.get("userID");
 
             if (token && userID) {
-                enqueueSnackbar("Verifying ession, Please wait.", {
+                enqueueSnackbar("Verifying session, Please wait.", {
                     variant: "warning",
                 });
 

@@ -7,7 +7,7 @@ export default function ScrollToTop(props) {
     // for scroll to top button calc scroll direction
     const [showScrollTopButton, setShowScrollTopButton] = useState(false);
     const handleScroll = () => {
-        setShowScrollTopButton(window.scrollY > 200 ? true : false);
+        setShowScrollTopButton(window.scrollY > 400 ? true : false);
     };
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);

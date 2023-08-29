@@ -81,6 +81,7 @@ export default function ImageUpload(props) {
                 type="file"
                 accept=".jpg,.png,.jpeg"
                 onChange={(e) => {
+                    console.log(e.target.files);
                     let pickedImage;
                     if (e.target.files && e.target.files.length === 1) {
                         pickedImage = e.target.files[0];
@@ -89,21 +90,43 @@ export default function ImageUpload(props) {
                 }}
             />
 
-            <Grow in={true}>
-                <ButtonGroup>
+            <Grow in={!previewUrl}>
+                <ButtonGroup
+                    sx={{
+                        display: previewUrl && "none",
+                    }}
+                >
                     <CustomButton
                         onClick={() => {
                             clickRef.current.click();
                         }}
                         startIcon={<UploadFile />}
                     >
-                        {image ? "Change" : "Upload Image"}
+                        Upload Image
+                    </CustomButton>
+                </ButtonGroup>
+            </Grow>
+
+            <Grow in={previewUrl}>
+                <ButtonGroup
+                    sx={{
+                        display: !previewUrl && "none",
+                    }}
+                >
+                    <CustomButton
+                        onClick={() => {
+                            clickRef.current.click();
+                        }}
+                        startIcon={<UploadFile />}
+                    >
+                        Change
                     </CustomButton>
 
                     {image && (
                         <CustomButton
                             onClick={() => {
                                 props.setIsValid(false);
+                                props.onInput(null);
                                 setTimeout(() => {
                                     setPreviewUrl(null);
                                     setImage(null);
