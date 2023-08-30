@@ -3,25 +3,41 @@ import {
     CheckCircle,
     Edit,
     DeleteForever,
-    Share,
     Link,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
+import { useEffect, useState } from "react";
 import { Button, Divider, Grow, Stack, Tooltip, styled } from "@mui/material";
-import { Fragment, useEffect, useState } from "react";
+import {
+    TooltipSX,
+    confirmDialog,
+    navigate,
+} from "../../shared/CustomComponents";
 
 export default function HeaderActions(props) {
-    const navigate = useNavigate();
-
     // for the blog actions depending on the user's location
     const [headerSticky, setHeaderSticky] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
+    const [animateButton, setAnimateButton] = useState(true);
+
+    // small buttons that appear for solog blog and create blog components
+    const ActionButton = styled(Button)(({ theme }) => ({
+        padding: "0.6rem 2rem",
+        color: theme.palette.primary.main,
+        transition: `${theme.transitions.create()} !important`,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+        },
+    }));
+
+    // intersection handling
     const handleIntersection = (entries) => {
         const [entry] = entries;
         setHeaderSticky(!entry.isIntersecting);
     };
     useEffect(() => {
         const observer = new IntersectionObserver(handleIntersection, {
-            threshold: [0],
+            threshold: 0,
         });
 
         const headerActions = document.getElementById("header-actions");
@@ -37,166 +53,165 @@ export default function HeaderActions(props) {
         };
     }, [headerSticky]);
 
+    // copy the link function
     const handleCopyURL = async (e) => {
         e.preventDefault();
         try {
             await navigator.clipboard.writeText(window.location.href);
-            props.setIsCopied(true);
+            setAnimateButton(false);
+
+            setIsCopied(true);
+            setAnimateButton(true);
         } catch (error) {
-            props.setIsCopied(false);
-            props.setSnackbarInputs({
-                open: true,
-                message: "Sorry. Could not copy link.",
-            });
+            enqueueSnackbar("Could not copy link!", { variant: "error" });
+
+            setAnimateButton(false);
+
+            setIsCopied(false);
+            setAnimateButton(true);
         }
         setTimeout(() => {
-            props.setIsCopied(false);
+            setAnimateButton(false);
+
+            setIsCopied(false);
+            setAnimateButton(true);
         }, 8000);
     };
 
-    const ActionButton = styled(Button)(({ theme }) => ({
-        transition: theme.transitions.create(),
-        padding: "10px ",
-        color: theme.palette.text.primary,
-        "&:hover": {
-            backgroundColor: !props.isMobile && theme.palette.accent.hover,
-        },
-    }));
-
     return (
-        <Fragment>
-            <Grow in={true}>
-                <Stack
-                    direction="row"
-                    id="header-actions"
-                    sx={{
-                        position: headerSticky ? "fixed" : "sticky",
-                        top: headerSticky && 0,
-                        bottom: !headerSticky && "100px",
-                        width: props.isLoggedIn.logged ? "16rem" : "8rem",
-                        marginBottom: "2rem",
-                        zIndex: "50",
-                        borderRadius: "30px",
-                        overflow: "hidden",
-                        backdropFilter: "blur(5px)",
-                        boxShadow: "0 1px 5px rgba(0,0,0,0.2)",
-                        transition: (theme) => theme.transitions.create(),
-                        backgroundColor: (theme) =>
-                            theme.palette.background.actions,
-                        border: (theme) =>
-                            `1px solid ${theme.palette.action.disabled}`,
-                        "&:hover": {
-                            backgroundColor: (theme) =>
-                                theme.palette.background.default,
-                        },
-                    }}
+        <Grow in={!props.showLoading}>
+            <Stack
+                direction="row"
+                id="header-actions"
+                sx={(theme) => ({
+                    ...(headerSticky
+                        ? {
+                              position: "fixed",
+                              top: 0,
+                          }
+                        : {
+                              position: "sticky",
+                              bottom: props.isMobile ? 100 : 50,
+                          }),
+                    width: props.isLoggedIn.logged ? "16rem" : "8rem",
+                    zIndex: 50,
+                    borderRadius: 50,
+                    marginBottom: 4,
+                    overflow: "hidden",
+                    transition: theme.transitions.create(),
+                    backgroundColor: theme.palette.background.default,
+                    border: `1px solid ${theme.palette.action.disabled}`,
+                })}
+            >
+                <Tooltip
+                    title="Back"
+                    placement="top"
+                    disableInteractive
+                    componentsProps={TooltipSX}
                 >
                     <ActionButton
                         onClick={(e) => {
                             e.preventDefault();
-                            setTimeout(() => {
-                                navigate("/blogs");
-                                props.setShowLoading(false);
-                            }, 300);
                             props.setShowLoading(true);
                             props.setRefresh(true);
+                            setTimeout(() => {
+                                navigate("/");
+                                props.setShowLoading(false);
+                            }, 200);
                         }}
                     >
-                        <ArrowBack color="icon" />
+                        <ArrowBack />
                     </ActionButton>
+                </Tooltip>
 
+                <Divider orientation="vertical" variant="middle" flexItem />
+
+                {props.isLoggedIn.logged && (
+                    <Tooltip
+                        title="Edit"
+                        placement="top"
+                        disableInteractive
+                        componentsProps={TooltipSX}
+                    >
+                        <ActionButton
+                            onClick={(e) => {
+                                e.preventDefault();
+                                confirmDialog({
+                                    title: "Edit",
+                                    description:
+                                        "This action is in development.",
+                                    hideCancelButton: true,
+                                })
+                                    .then(() => {
+                                        //
+                                    })
+                                    .catch(() => {
+                                        //
+                                    });
+                            }}
+                        >
+                            <Edit />
+                        </ActionButton>
+                    </Tooltip>
+                )}
+
+                {props.isLoggedIn.logged && (
                     <Divider orientation="vertical" variant="middle" flexItem />
-                    {props.isLoggedIn.logged && (
-                        <ActionButton
-                            onClick={(e) => {
-                                e.preventDefault();
-                                props.isLoggedIn.logged
-                                    ? props.setDialogInputs({
-                                          open: true,
-                                          title: "Edit",
-                                          desc: "This action is in development.",
-                                          button: false,
-                                      })
-                                    : props.setDialogInputs({
-                                          open: true,
-                                          title: "Login",
-                                          desc: "You need to login to perform this action.",
-                                          button: false,
-                                      });
-                            }}
-                        >
-                            <Edit color="icon" />
-                        </ActionButton>
-                    )}
-                    {props.isLoggedIn.logged && (
-                        <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                        />
-                    )}
-                    {props.isLoggedIn.logged && (
-                        <ActionButton
-                            onClick={(e) => {
-                                e.preventDefault();
-                                props.isLoggedIn.logged
-                                    ? props.setDialogInputs({
-                                          open: true,
-                                          title: "Delete blog",
-                                          desc: "Are you sure you want to remove this blog?",
-                                          button: true,
-                                      })
-                                    : props.setDialogInputs({
-                                          open: true,
-                                          title: "Login",
-                                          desc: "You need to login to perform this action.",
-                                          button: false,
-                                      });
-                            }}
-                        >
-                            <DeleteForever color="icon" />
-                        </ActionButton>
-                    )}
-                    {props.isLoggedIn.logged && (
-                        <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                        />
-                    )}
+                )}
 
+                {props.isLoggedIn.logged && (
+                    <Tooltip
+                        title="Delete"
+                        placement="top"
+                        disableInteractive
+                        componentsProps={TooltipSX}
+                    >
+                        <ActionButton
+                            onClick={(e) => {
+                                e.preventDefault();
+                                confirmDialog({
+                                    title: "Delete blog",
+                                    description:
+                                        "Are you sure you want to delete this blog?",
+                                    confirmationText: "Yes",
+                                    cancellationText: "No",
+                                })
+                                    .then(props.deleteBlog)
+                                    .catch(() => {
+                                        //
+                                    });
+                            }}
+                        >
+                            <DeleteForever />
+                        </ActionButton>
+                    </Tooltip>
+                )}
+
+                {props.isLoggedIn.logged && (
+                    <Divider orientation="vertical" variant="middle" flexItem />
+                )}
+
+                <Tooltip
+                    title={!isCopied && "Create Link"}
+                    placement="top"
+                    disableInteractive
+                    componentsProps={TooltipSX}
+                >
                     <ActionButton onClick={handleCopyURL}>
-                        {props.isCopied ? (
-                            <Grow in={true}>
+                        <Grow in={animateButton}>
+                            {isCopied ? (
                                 <CheckCircle
-                                    color="iconSuccess"
-                                    sx={{
-                                        animation: "come-on-in 0.5s ease-in",
-                                        "@keyframes come-on-in": {
-                                            "0%": {
-                                                transform: "translateY(-100px)",
-                                            },
-                                            "50%": {
-                                                transform: "translateY(5px)",
-                                            },
-                                            "65%": {
-                                                transform: "translateY(-10px)",
-                                            },
-                                            "100%": {
-                                                transform: "translateY(0px)",
-                                            },
-                                        },
-                                    }}
+                                    sx={(theme) => ({
+                                        color: theme.palette.tertiary.main,
+                                    })}
                                 />
-                            </Grow>
-                        ) : (
-                            <Grow in={true}>
-                                <Link color="icon" />
-                            </Grow>
-                        )}
+                            ) : (
+                                <Link />
+                            )}
+                        </Grow>
                     </ActionButton>
-                </Stack>
-            </Grow>
-        </Fragment>
+                </Tooltip>
+            </Stack>
+        </Grow>
     );
 }

@@ -1,47 +1,30 @@
 import { Fragment, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
-    useMediaQuery,
     Stack,
-    Button,
-    styled,
-    Paper,
     TextField,
     Divider,
     Grow,
     Avatar,
     Typography,
-    Container,
+    Box,
 } from "@mui/material";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
-import Cookies from "js-cookie";
-
-import ImageUpload from "../../shared/ImageUpload";
-import CreateBlogDialog from "./CreateBlogDialog";
-import PermissionError from "./PermissionError";
-import HeaderActions from "./CreateBlogHeaderActions";
 
 import { API_URL } from "../../../App";
+import PermissionError from "./PermissionError";
+import ImageUpload from "../../shared/ImageUpload";
+import HeaderActions from "./CreateBlogHeaderActions";
+import {
+    confirmDialog,
+    navigate,
+    serverOffline,
+} from "../../shared/CustomComponents";
 
-export default function CreateBlog({
-    darkMode,
-    isLoggedIn,
-    setShowLoading,
-    setRefresh,
-    setSnackbarInputs,
-}) {
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
-    const [dialogInputs, setDialogInputs] = useState({
-        open: false,
-        title: "",
-        content: "",
-        navigate: "",
-        button: true,
-    });
+export default function CreateBlog(props) {
     const [isValid, setIsValid] = useState(false);
     const [inputs, setInputs] = useState({
         title: "",
@@ -49,29 +32,6 @@ export default function CreateBlog({
         image: "",
     });
 
-    const DialogButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.background.header,
-        transition: theme.transitions.create(),
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "16px",
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
-        },
-    }));
-    const CustomButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.background.header,
-        fontSize: isMobile ? "16px" : "18px",
-        padding: isMobile ? "15px 20px" : "15px 30px",
-        transition: theme.transitions.create(),
-    }));
-    const DividerHorizontalSX = {
-        borderBottomWidth: 2,
-        borderRadius: "15px",
-    };
     const editorConfig = {
         toolbar: {
             items: [
@@ -118,6 +78,7 @@ export default function CreateBlog({
     };
 
     const createBlogRequest = async () => {
+        props.setShowLoading(true);
         try {
             const formData = new FormData();
 
@@ -125,54 +86,57 @@ export default function CreateBlog({
             formData.append("content", inputs.content);
             formData.append("image", inputs.image);
 
-            const result = await axios.post(
-                `${API_URL}/api/blogs/create`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${Cookies.get("token")}`,
-                        userID: Cookies.get("userID"),
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
-            setRefresh(true);
-            setSnackbarInputs({
-                open: true,
-                message: "Your blog has been created!",
+            await axios.post(`${API_URL}/api/blogs/create`, formData, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get("token")}`,
+                    userID: Cookies.get("userID"),
+                    "Content-Type": "multipart/form-data",
+                },
             });
-            navigate("/blogs");
+            props.setRefresh(true);
+            enqueueSnackbar("Your blog has been created!", {
+                variant: "success",
+            });
+            navigate("/");
         } catch (error) {
-            if (
+            if (error.code === "ERR_NETWORK") {
+                serverOffline();
+            } else if (
                 error.response.status === 403 ||
                 error.response.status === 401
             ) {
-                setDialogInputs({
-                    open: true,
+                confirmDialog({
                     title: "Session Expired",
                     content:
                         "This session is expired. Please login again. Please save your work first.",
-                    navigate: "",
-                    button: false,
-                });
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        //
+                    })
+                    .catch(() => {
+                        //
+                    });
             } else {
-                setDialogInputs({
-                    open: true,
+                confirmDialog({
                     title: "Unexpected Error",
                     content:
                         "Server error. Please try again later. Please save your work somewhere.",
-                    navigate: "",
-                    button: false,
-                });
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        //
+                    })
+                    .catch(() => {
+                        //
+                    });
             }
         } finally {
-            setShowLoading(false);
+            props.setShowLoading(false);
         }
     };
 
     const handleSubmit = () => {
-        setShowLoading(true);
-
         const hasError =
             inputs.title === "" ||
             inputs.content === "" ||
@@ -180,56 +144,43 @@ export default function CreateBlog({
             !isValid;
 
         setTimeout(() => {
-            if (dialogInputs.navigate === "/") {
-                setShowLoading(true);
-                setTimeout(() => {
-                    setSnackbarInputs({
-                        open: true,
-                        message: "Blog was discarded!",
-                    });
-                    navigate("/blogs");
-                    setShowLoading(false);
-                }, 300);
+            if (!hasError && isLoggedIn !== null) {
+                createBlogRequest();
             } else {
-                if (!hasError && isLoggedIn !== null) {
-                    createBlogRequest();
-                } else {
-                    setDialogInputs({
-                        open: true,
-                        title: "Invalid Inputs",
-                        content:
-                            "Inputs are invalid or the user is not logged in!",
-                        navigate: "",
-                        button: false,
+                confirmDialog({
+                    title: "Invalid Inputs",
+                    content: "Inputs are invalid or the user is not logged in!",
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        //
+                    })
+                    .catch(() => {
+                        //
                     });
-                    setShowLoading(false);
-                }
             }
-        }, 300);
+        }, 100);
     };
 
     return (
         <Fragment>
-            <CreateBlogDialog
-                dialogInputs={dialogInputs}
-                DialogButton={DialogButton}
-                handleSubmit={handleSubmit}
-                setDialogInputs={setDialogInputs}
-            />
-
             <Grow in={true}>
                 <Stack
                     direction="column"
-                    spacing={isMobile ? 4 : 8}
-                    sx={{
-                        transition: (theme) => theme.transitions.create(),
-                        paddingTop: isMobile ? "7rem" : "10rem",
-                        width: isMobile ? "100%" : "50rem",
-                        marginBottom: "30px",
-                    }}
+                    spacing={props.isMobile ? 4 : 8}
+                    paddingTop="7rem"
+                    width={props.isMobile ? "95%" : "50rem"}
+                    marginBottom={4}
+                    sx={(theme) => ({
+                        transition: theme.transitions.create(),
+                    })}
                 >
-                    {isLoggedIn.logged ? (
-                        <Stack direction="column" spacing={isMobile ? 2 : 4}>
+                    {props.isLoggedIn.logged ? (
+                        <Stack
+                            direction="column"
+                            spacing={props.isMobile ? 2 : 4}
+                            id="create-blog-container"
+                        >
                             <TextField
                                 fullWidth
                                 multiline
@@ -240,59 +191,61 @@ export default function CreateBlog({
                                 value={inputs.title}
                                 onChange={handleChange}
                                 autoFocus
-                                color="textField"
                                 size="large"
                                 InputProps={{
-                                    style: {
-                                        fontSize: "45px",
-                                        fontWeight: "bold",
-                                    },
+                                    sx: (theme) => ({
+                                        fontSize: props.isMobile
+                                            ? theme.typography.h4.fontSize
+                                            : theme.typography.h2.fontSize,
+                                        fontWeight: "600",
+                                    }),
                                 }}
                             />
-                            <Typography
-                                component={Stack}
+
+                            <Stack
                                 direction="row"
                                 spacing={1}
-                                variant={isMobile ? "caption" : "body1"}
-                                sx={{ alignItems: "center" }}
-                            >
-                                <i>Current user:</i>
-                                <Avatar src={isLoggedIn.avatar} />{" "}
-                                <strong>{isLoggedIn.name}</strong>
-                            </Typography>
-
-                            <Paper
-                                elevation={1}
-                                component={Stack}
-                                direction="column"
                                 alignItems="center"
-                                justifyContent="center"
-                                spacing={2}
-                                sx={{
-                                    borderRadius: "15px",
-                                    padding: isMobile ? "10px" : "20px",
-                                    width: "100%",
-                                    overflow: "hidden",
-                                }}
+                            >
+                                <Avatar
+                                    src={props.isLoggedIn.avatar}
+                                    sx={(theme) => ({
+                                        height: 60,
+                                        width: 60,
+                                        border: `2px solid ${theme.palette.primary.main}`,
+                                    })}
+                                />
+                                <Typography
+                                    variant={props.isMobile ? "body1" : "h6"}
+                                    fontWeight={500}
+                                >
+                                    {props.isLoggedIn.name}
+                                </Typography>
+                            </Stack>
+
+                            <Box
+                                borderRadius={30}
+                                padding={props.isMobile ? 1 : 2}
+                                display="flex"
+                                flexDirection="column"
+                                gap={4}
                             >
                                 <ImageUpload
-                                    darkMode={darkMode}
                                     id="blog-image"
-                                    onInput={(image) => {
+                                    onInput={(newImage) => {
                                         setInputs((prevInputs) => {
                                             return {
                                                 ...prevInputs,
-                                                image: image,
+                                                image: newImage,
                                             };
                                         });
                                     }}
                                     isValid={isValid}
-                                    isMobile={isMobile}
-                                    CustomButton={CustomButton}
+                                    isMobile={props.isMobile}
                                     setIsValid={setIsValid}
                                 />
 
-                                <Divider flexItem sx={DividerHorizontalSX} />
+                                <Divider flexItem />
 
                                 <CKEditor
                                     editor={BalloonEditor}
@@ -307,25 +260,22 @@ export default function CreateBlog({
                                         });
                                     }}
                                     config={editorConfig}
-                                    style={{
-                                        color: "black",
-                                    }}
                                 />
-                            </Paper>
+                            </Box>
                         </Stack>
                     ) : (
                         <PermissionError
-                            isMobile={isMobile}
-                            NavigateButton={CustomButton}
-                            setShowLoading={setShowLoading}
+                            isMobile={props.isMobile}
+                            setShowLoading={props.setShowLoading}
                         />
                     )}
                 </Stack>
             </Grow>
-            {isLoggedIn.logged && (
+            {props.isLoggedIn.logged && (
                 <HeaderActions
-                    isMobile={isMobile}
-                    setDialogInputs={setDialogInputs}
+                    isMobile={props.isMobile}
+                    handleSubmit={handleSubmit}
+                    setShowLoading={props.setShowLoading}
                 />
             )}
         </Fragment>

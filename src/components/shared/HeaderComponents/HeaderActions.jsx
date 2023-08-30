@@ -1,63 +1,66 @@
 import { Fragment, useEffect, useState } from "react";
 import {
-    Add,
-    Logout,
-    Login,
-    GitHub,
-    DarkMode,
-    LightMode,
-    LightModeOutlined,
-    DarkModeOutlined,
-    DesktopMac,
-    DesktopMacOutlined,
-} from "@mui/icons-material";
-import {
     Avatar,
-    Container,
+    CircularProgress,
     Divider,
+    Grow,
     IconButton,
     Menu,
     MenuItem,
     Skeleton,
+    Stack,
+    ToggleButton,
+    ToggleButtonGroup,
+    Tooltip,
+    Typography,
     styled,
-    useMediaQuery,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import {
+    GitHub,
+    LightModeOutlined,
+    DarkModeOutlined,
+    DesktopMacOutlined,
+    InfoRounded,
+    LogoutRounded,
+    AddCircleRounded,
+    LoginRounded,
+    LightModeRounded,
+    DesktopMacRounded,
+    DarkModeRounded,
+} from "@mui/icons-material";
 import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
+
+import { TooltipSX, confirmDialog, navigate } from "../CustomComponents";
 
 export default function DesktopActions(props) {
     const [iconAnchor, setIconAnchor] = useState(null);
-    const [avatarImgLoad, setAvatarImgLoad] = useState(false);
+    const [isAvatarLoading, setIsAvatarLoading] = useState(true);
 
-    const navigate = useNavigate();
-
-    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
-        ? true
-        : false;
-
-    const MyMenuItem = styled(MenuItem)(({ theme }) => ({
-        fontSize: props.isMobile ? "16px" : "18px",
-        width: "100%",
-        padding: props.isMobile ? "20px 30px" : "10px 30px",
-        gap: "10px",
-        justifyContent: "flex-start",
-        transition: theme.transitions.create(),
-    }));
-
+    // avatar on the header
     const MyAvatar = styled(Avatar)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.action.hover,
+        transition: theme.transitions.create(),
+        color: theme.palette.primary.container.main,
+        backgroundColor: theme.palette.primary.container.on,
     }));
 
-    const DividerHorizontalSX = {
-        borderBottomWidth: 2,
-        borderRadius: "15px",
-    };
-    const DividerVerticalSX = {
-        borderRightWidth: 2,
-        borderRadius: "15px",
-    };
+    // menu items
+    const MyMenuItem = styled(MenuItem)(({ theme }) => ({
+        transition: theme.transitions.create(),
+        fontSize: theme.typography.subtitle1.fontSize,
+        padding: "1.2rem",
+        gap: 10,
+        fontWeight: 500,
+        borderRadius: 50,
+        justifyContent: "flex-start",
+        color: theme.palette.primary.main,
+        backgroundColor: theme.palette.background.highest,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.container.main,
+        },
+    }));
 
+    // scroll check
     useEffect(() => {
         const handleScroll = () => {
             setIconAnchor(null);
@@ -69,49 +72,78 @@ export default function DesktopActions(props) {
         };
     }, []);
 
-    const RenderAvatar = () => {
-        return avatarImgLoad ? (
-            <MyAvatar src={props.isLoggedIn.avatar} />
-        ) : (
-            <Skeleton variant="circular">
-                <Avatar
-                    src={props.isLoggedIn.avatar}
-                    onLoad={() => {
-                        setAvatarImgLoad(true);
-                    }}
-                />
-            </Skeleton>
-        );
+    // logout click handle
+    const handleLogout = () => {
+        props.setShowLoading(true);
+        setTimeout(() => {
+            Cookies.remove("token");
+            Cookies.remove("userID");
+            props.setIsLoggedIn({
+                logged: false,
+                name: "",
+                avatar: "",
+            });
+            props.setShowLoading(false);
+            enqueueSnackbar("You are logged out!", { variant: "info" });
+        }, 200);
     };
 
     return (
         <Fragment>
-            <props.NavbarButton
+            <props.NavbarHomeButton
                 onClick={() => {
                     setTimeout(() => {
-                        if (props.isLoggedIn.logged) {
-                            navigate("/blogs/createBlog");
-                        } else {
-                            navigate("/blogs/authUser");
-                        }
+                        navigate("/about");
                         props.setShowLoading(false);
                     }, 200);
                     props.setShowLoading(true);
                 }}
-                startIcon={<Add color="icon" />}
+                startIcon={<InfoRounded />}
             >
-                New
-            </props.NavbarButton>
+                About
+            </props.NavbarHomeButton>
 
-            <Divider orientation="vertical" flexItem sx={DividerVerticalSX} />
+            <Divider orientation="vertical" variant="middle" flexItem />
 
+            {/* avatar/menu button */}
             <IconButton
+                sx={(theme) => ({
+                    transition: `${theme.transitions.create()} !important`,
+                    "&:hover": {
+                        backgroundColor: theme.palette.primary.container.main,
+                    },
+                })}
                 onClick={(e) => {
                     setIconAnchor(e.currentTarget);
                 }}
             >
-                {props.isLoggedIn.logged ? RenderAvatar() : <MyAvatar />}
+                {props.isLoggedIn.logged ? (
+                    isAvatarLoading ? (
+                        <Skeleton variant="circular">
+                            <MyAvatar
+                                src={props.isLoggedIn.avatar}
+                                onLoad={() => setIsAvatarLoading(false)}
+                            />
+                        </Skeleton>
+                    ) : (
+                        <Grow in={!isAvatarLoading}>
+                            <MyAvatar
+                                src={props.isLoggedIn.avatar}
+                                sx={(theme) => ({
+                                    display: isAvatarLoading && "none",
+                                    border: `2px solid ${theme.palette.primary.main}`,
+                                })}
+                            />
+                        </Grow>
+                    )
+                ) : (
+                    <Grow in={true}>
+                        <MyAvatar />
+                    </Grow>
+                )}
             </IconButton>
+
+            {/* menu */}
             <Menu
                 open={Boolean(iconAnchor)}
                 anchorEl={iconAnchor}
@@ -122,46 +154,96 @@ export default function DesktopActions(props) {
                 }}
                 disableScrollLock={true}
                 PaperProps={{
-                    style: {
-                        borderRadius: "15px",
-                    },
+                    elevation: 0,
+                    sx: (theme) => ({
+                        marginTop: 2,
+                        borderRadius: 10,
+                        padding: 1.5,
+                        backgroundColor: theme.palette.background.med,
+                        transition: theme.transitions.create(),
+                    }),
                 }}
             >
-                <Container disableGutters>
+                <Stack spacing={2}>
+                    {/* login/logout buttons */}
                     {props.isLoggedIn.logged ? (
                         <Fragment>
                             <MyMenuItem
                                 disabled
-                                dense
-                                sx={{
+                                sx={(theme) => ({
                                     justifyContent: "center",
-                                    gap: "10px",
+                                    gap: theme.spacing(1),
+                                    padding: "0.8rem 1.2rem",
+                                    backgroundColor:
+                                        theme.palette.background.high,
                                     opacity: "1",
                                     "&.Mui-disabled": {
                                         opacity: 0.8,
                                     },
-                                }}
+                                })}
                             >
-                                {RenderAvatar()}
-                                <i>{props.isLoggedIn.name}</i>
+                                {isAvatarLoading ? (
+                                    <CircularProgress
+                                        size={25}
+                                        color="primary"
+                                    />
+                                ) : (
+                                    <MyAvatar
+                                        src={props.isLoggedIn.avatar}
+                                        onLoad={() => setIsAvatarLoading(false)}
+                                        sx={(theme) => ({
+                                            display: isAvatarLoading && "none",
+                                            border: `2px solid ${theme.palette.primary.main}`,
+                                        })}
+                                    />
+                                )}
+                                <Stack
+                                    justifyContent="flex-start"
+                                    alignItems="flex-start"
+                                    spacing={0}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        marginBottom={-1}
+                                    >
+                                        Hey,
+                                    </Typography>
+                                    {props.isLoggedIn.name}
+                                </Stack>
                             </MyMenuItem>
 
                             <MyMenuItem
-                                dense
                                 onClick={() => {
                                     setIconAnchor(null);
 
-                                    props.setDialogInputs({
-                                        open: true,
+                                    setTimeout(() => {
+                                        navigate("/createBlog");
+                                        props.setShowLoading(false);
+                                    }, 200);
+                                    props.setShowLoading(true);
+                                }}
+                            >
+                                <AddCircleRounded /> New Blog
+                            </MyMenuItem>
+
+                            <MyMenuItem
+                                onClick={() => {
+                                    setIconAnchor(null);
+
+                                    confirmDialog({
                                         title: "Logout",
                                         content:
                                             "Are you sure you want to logout?",
-                                        navigate: "logout",
-                                        icon: <Logout color="icon" />,
-                                    });
+                                        confirmationText: "Yes",
+                                        cancellationText: "No",
+                                    })
+                                        .then(handleLogout)
+                                        .catch(() => {
+                                            /* */
+                                        });
                                 }}
                             >
-                                <Logout color="icon" />
+                                <LogoutRounded />
                                 Logout
                             </MyMenuItem>
                         </Fragment>
@@ -169,145 +251,124 @@ export default function DesktopActions(props) {
                         <MyMenuItem
                             onClick={() => {
                                 setTimeout(() => {
-                                    navigate("/blogs/authUser");
+                                    navigate("/authUser");
                                     props.setShowLoading(false);
                                 }, 200);
                                 setIconAnchor(null);
                                 props.setShowLoading(true);
                             }}
                         >
-                            <Login color="icon" /> Login
+                            <LoginRounded /> Login
                         </MyMenuItem>
                     )}
-                    <Divider
-                        flexItem
-                        variant="middle"
-                        sx={DividerHorizontalSX}
-                    />
+
+                    {/* source code button */}
                     <MyMenuItem
-                        dense
                         onClick={() => {
-                            props.setDialogInputs({
-                                open: true,
-                                title: "GitHub",
+                            confirmDialog({
+                                title: "Source Code",
                                 content: "View source code on GitHub?",
-                                navigate:
-                                    "https://github.com/harmeet9013/blogs",
-                                icon: <GitHub color="icon" />,
-                            });
+                                confirmationText: "Yes",
+                                cancellationText: "No",
+                            })
+                                .then(() => {
+                                    window.open(
+                                        "https://github.com/harmeet9013/blogs"
+                                    );
+                                })
+                                .catch(() => {
+                                    /* */
+                                });
                             setIconAnchor(null);
                         }}
                     >
-                        <GitHub color="icon" /> Source Code
+                        <GitHub /> Source Code
                     </MyMenuItem>
 
-                    <Divider
-                        flexItem
-                        variant="middle"
-                        sx={DividerHorizontalSX}
-                    />
-
-                    <MyMenuItem
-                        dense
-                        onClick={() => {
-                            Cookies.set("theme", "light");
-                            props.setSelectedTheme("light");
-                            props.setDarkMode(false);
+                    {/* theme options in menu */}
+                    <ToggleButtonGroup
+                        value={props.selectedTheme}
+                        exclusive
+                        onChange={(event, nextView) => {
+                            if (nextView !== null) {
+                                props.setSelectedTheme(nextView);
+                                if (nextView === "system") {
+                                    Cookies.remove("theme");
+                                    props.setDarkMode(props.systemTheme);
+                                } else {
+                                    Cookies.set("theme", nextView);
+                                    props.setDarkMode(
+                                        nextView === "dark" ? true : false
+                                    );
+                                }
+                            }
                         }}
-                        sx={
-                            props.selectedTheme === "light" && {
-                                backgroundColor: (theme) =>
-                                    theme.palette.accent.primary,
+                        sx={(theme) => ({
+                            ".MuiToggleButtonGroup-grouped": {
+                                transition: theme.transitions.create(),
+                                marginLeft: theme.spacing(1),
+                                marginRight: theme.spacing(1),
+                                padding: "1.2rem",
+                                border: 0,
+                                backgroundColor:
+                                    theme.palette.background.highest,
                                 "&:hover": {
-                                    backgroundColor: (theme) =>
-                                        theme.palette.accent.primary,
+                                    backgroundColor:
+                                        theme.palette.primary.container.main,
                                 },
-                            }
-                        }
-                    >
-                        {props.selectedTheme === "light" ? (
-                            <LightMode color="icon" />
-                        ) : (
-                            <LightModeOutlined />
-                        )}
-                        Light mode
-                    </MyMenuItem>
-                    <MyMenuItem
-                        dense
-                        onClick={() => {
-                            props.setDarkMode(systemTheme);
-                            props.setSelectedTheme("system");
-                            Cookies.remove("theme");
-                        }}
-                        sx={
-                            props.selectedTheme === "system" && {
-                                backgroundColor: (theme) =>
-                                    theme.palette.accent.primary,
-                                "&:hover": {
-                                    backgroundColor: (theme) =>
-                                        theme.palette.accent.primary,
-                                },
-                            }
-                        }
-                    >
-                        {props.selectedTheme === "system" ? (
-                            <DesktopMac color="icon" />
-                        ) : (
-                            <DesktopMacOutlined />
-                        )}
-                        System
-                    </MyMenuItem>
-                    <MyMenuItem
-                        dense
-                        onClick={() => {
-                            Cookies.set("theme", "dark");
-                            props.setSelectedTheme("dark");
-                            props.setDarkMode(true);
-                        }}
-                        sx={
-                            props.selectedTheme === "dark" && {
-                                backgroundColor: (theme) =>
-                                    theme.palette.accent.primary,
-                                "&:hover": {
-                                    backgroundColor: (theme) =>
-                                        theme.palette.accent.primary,
-                                },
-                            }
-                        }
-                    >
-                        {props.selectedTheme === "dark" ? (
-                            <DarkMode color="icon" />
-                        ) : (
-                            <DarkModeOutlined />
-                        )}
-                        Dark Mode
-                    </MyMenuItem>
 
-                    {/* <MyMenuItem
-                        dense
-                        onClick={() => {
-                            const theme = !props.darkMode;
-
-                            props.setDarkMode(theme);
-                            Cookies.remove("theme");
-                            if (theme === true) {
-                                Cookies.set("theme", "dark");
-                            } else if (theme === false) {
-                                Cookies.set("theme", "light");
-                            }
-                        }}
+                                "&:not(:first-of-type)": {
+                                    borderRadius: 6,
+                                },
+                                "&:first-of-type": {
+                                    borderRadius: 6,
+                                },
+                            },
+                        })}
                     >
-                        {props.darkMode ? (
-                            <Fragment>
-                                <LightMode color="icon" /> Light Mode
-                            </Fragment>
-                        ) : (
-                            <Fragment>
-                                <DarkMode color="icon" /> Dark Mode
-                            </Fragment>
-                        )}
-                    </MyMenuItem> */}
-                </Container>
+                        <Tooltip
+                            title="Light Mode"
+                            disableInteractive
+                            componentsProps={TooltipSX}
+                        >
+                            <ToggleButton value="light" aria-label="light">
+                                {props.selectedTheme === "light" ? (
+                                    <LightModeRounded color="primary" />
+                                ) : (
+                                    <LightModeOutlined />
+                                )}
+                            </ToggleButton>
+                        </Tooltip>
+
+                        <Tooltip
+                            title="System"
+                            disableInteractive
+                            componentsProps={TooltipSX}
+                        >
+                            <ToggleButton value="system" aria-label="system">
+                                {props.selectedTheme === "system" ? (
+                                    <DesktopMacRounded color="primary" />
+                                ) : (
+                                    <DesktopMacOutlined />
+                                )}
+                            </ToggleButton>
+                        </Tooltip>
+
+                        <Tooltip
+                            title="Dark Mode"
+                            disableInteractive
+                            componentsProps={TooltipSX}
+                        >
+                            <ToggleButton value="dark" aria-label="dark">
+                                {props.selectedTheme === "dark" ? (
+                                    <DarkModeRounded color="primary" />
+                                ) : (
+                                    <DarkModeOutlined />
+                                )}
+                            </ToggleButton>
+                        </Tooltip>
+                    </ToggleButtonGroup>
+                </Stack>
             </Menu>
         </Fragment>
     );
