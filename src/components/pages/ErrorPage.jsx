@@ -1,27 +1,23 @@
 import { Home } from "@mui/icons-material";
-import {
-    Button,
-    Stack,
-    Typography,
-    styled,
-    useMediaQuery,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Button, Stack, Typography, styled } from "@mui/material";
+
+import { navigate } from "../shared/CustomComponents";
 
 export default function ErrorPage(props) {
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+    // global button used for various purposes
     const CustomButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.background.header,
-        fontSize: isMobile ? "16px" : "18px",
-        padding: isMobile ? "15px 20px" : "15px 30px",
-        transition: theme.transitions.create(),
-        border: `2px solid ${theme.palette.divider}`,
+        textTransform: "none",
+        color: theme.palette.primary.main,
+        borderRadius: 40,
+        backgroundColor: theme.palette.background.low,
+        padding: "0.6rem 1.6rem",
+        fontSize: theme.typography.h5.fontSize,
+        width: "100%",
+        border: `2px solid ${theme.palette.dividervar}`,
+        transition: `${theme.transitions.create()} !important`,
         "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
+            backgroundColor: theme.palette.primary.container.main,
+            border: `2px solid ${theme.palette.primary.main}`,
         },
     }));
 
@@ -31,23 +27,29 @@ export default function ErrorPage(props) {
             spacing={4}
             justifyContent="center"
             alignItems="center"
-            sx={{
-                transition: (theme) => theme.transitions.create(),
-                paddingTop: isMobile ? "7rem" : "10rem",
-                width: isMobile ? "100%" : "50rem",
-                marginBottom: "30px",
-            }}
+            width={props.isMobile ? "100%" : "50rem"}
+            paddingTop="15vh"
+            marginBottom={4}
         >
-            <Typography variant="h6">
+            <Typography
+                variant="h4"
+                sx={(theme) => ({
+                    color: theme.palette.tertiary.main,
+                })}
+            >
                 Uh oh, seems like you have wandered off somewhere else. <br />
                 Don't worry, I gotchu.
             </Typography>
 
             <CustomButton
                 onClick={() => {
-                    navigate("/blogs");
+                    props.setShowLoading(true);
+                    setTimeout(() => {
+                        navigate("/");
+                        props.setShowLoading(false);
+                    }, 200);
                 }}
-                startIcon={<Home color="icon" />}
+                startIcon={<Home />}
             >
                 Latest Blogs
             </CustomButton>

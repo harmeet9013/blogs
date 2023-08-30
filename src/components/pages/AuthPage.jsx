@@ -3,176 +3,183 @@ import {
     InputAdornment,
     IconButton,
     Divider,
-    Paper,
     Stack,
-    useMediaQuery,
-    Button,
     Typography,
-    Container,
-    styled,
+    Box,
     Grow,
+    Collapse,
+    styled,
+    Button,
 } from "@mui/material";
 import {
     AlternateEmail,
     BackHand,
     Home,
+    Login,
     Password,
     Visibility,
     VisibilityOff,
 } from "@mui/icons-material";
-
-import { Fragment, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { useState } from "react";
+import { enqueueSnackbar } from "notistack";
 
 import { API_URL } from "../../App";
-import { FooterButtons } from "../shared/Footer";
+import { navigate, serverOffline } from "../shared/CustomComponents";
 
-export default function AuthPage({
-    darkMode,
-    isLoggedIn,
-    setRefresh,
-    setShowLoading,
-    setIsLoggedIn,
-    setSnackbarInputs,
-}) {
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+export default function AuthPage(props) {
     const [showPassword, setShowPassword] = useState(false);
-    const [showResponse, setShowResponse] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [emailError, setEmailError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
-    const LoginButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "20px",
-        width: isMobile ? "100%" : "40%",
-        border: `2px solid ${theme.palette.action.disabled}`,
-        transition: theme.transitions.create(),
+    // TextField customizations
+    const TextFieldSX = (theme) => ({
+        borderRadius: 50,
+        transition: `${theme.transitions.create()} !important`,
+        "&.Mui-focused": {
+            backgroundColor: theme.palette.background.low,
+        },
+        "&.MuiOutlinedInput-root": {
+            "& fieldset": {
+                transition: theme.transitions.create(),
+                border: 2,
+                borderColor: theme.palette.dividervar,
+            },
+            "&:hover fieldset": {
+                borderColor: theme.palette.tertiary.container.on,
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: theme.palette.primary.container.on,
+            },
+        },
+    });
+
+    // global button used for various purposes
+    const CustomButton = styled(Button)(({ theme }) => ({
+        textTransform: "none",
+        color: theme.palette.primary.main,
+        borderRadius: 40,
+        backgroundColor: theme.palette.background.low,
+        padding: "0.6rem",
+        fontSize: theme.typography.h5.fontSize,
+        width: "100%",
+        border: `2px solid ${theme.palette.dividervar}`,
+        transition: `${theme.transitions.create()} !important`,
         "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
+            backgroundColor: theme.palette.primary.container.main,
+            border: `2px solid ${theme.palette.primary.main}`,
         },
     }));
 
-    const handleKeyPress = (event) => {
-        if (event.key === "Enter") {
-            document.getElementById("submitButton").click();
-        }
-    };
+    // login click event
+    const handleClick = async (e) => {
+        e.preventDefault();
+        props.setShowLoading(true);
 
-    const loginRequest = async () => {
-        setShowLoading(true);
-        const loginData = { email, password };
+        const loginData = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
 
         try {
             const result = await axios.post(`${API_URL}/api/users/login`, {
                 loginData,
             });
 
+            // set cookies
             Cookies.set("token", result.data.token, {
-                expires: 1 / 24,
                 secure: false,
                 httpOnly: false,
             });
             Cookies.set("userID", result.data.userID, {
-                expires: 1 / 24,
                 secure: false,
                 httpOnly: false,
             });
 
-            setIsLoggedIn({
+            // updateState
+            props.setIsLoggedIn({
                 name: result.data.name,
                 avatar: result.data.avatar,
             });
-            setShowResponse("");
 
-            setSnackbarInputs({
-                open: true,
-                message: "You are now logged in!",
-            });
-            setRefresh(true);
-            navigate("/blogs");
+            // show snackbar
+            enqueueSnackbar("You are now logged in!", { variant: "success" });
+
+            // go to home page
+            navigate("/");
         } catch (error) {
-            setShowResponse("Invalid Credentials. Please try again.");
+            if (error.code === "ERR_NETWORK") {
+                serverOffline();
+            } else {
+                confirmDialog({
+                    title: "Wrong credentials.",
+                    description:
+                        "Email or password is wrong. Please try again.",
+                    hideCancelButton: true,
+                })
+                    .then(() => {
+                        //
+                    })
+                    .catch(() => {
+                        //
+                    });
+            }
         } finally {
-            setShowLoading(false);
+            props.setShowLoading(false);
         }
     };
 
-    const handleClick = async (e) => {
-        e.preventDefault();
-
-        // Check if the fields are not empty
-        if (email === "") {
-            setEmailError(true);
-        }
-        if (password === "") {
-            setPasswordError(true);
-        }
-
-        if (emailError && passwordError) {
-            return;
-        } else {
-            loginRequest();
-        }
-    };
-
-    return !isLoggedIn.logged ? (
-        <Fragment>
-            <Grow in={true}>
-                <Paper
-                    elevation={4}
-                    component={Stack}
-                    spacing={2}
+    return !props.isLoggedIn.logged ? (
+        <Grow in={true}>
+            <Stack
+                spacing={3}
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                borderRadius="15px"
+                padding={props.isMobile ? 4 : 5}
+                marginTop="7rem"
+                marginBottom="2rem"
+                width={props.isMobile ? "100%" : "30rem"}
+                sx={(theme) => ({
+                    transition: theme.transitions.create(),
+                })}
+            >
+                <Typography
+                    variant="h2"
+                    letterSpacing={2}
                     sx={{
-                        borderRadius: "15px",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: isMobile ? 4 : 5,
-                        transition: (theme) => theme.transitions.create(),
-                        marginTop: isMobile ? "25vh" : "25vh",
-                        width: isMobile ? "100%" : "30rem",
-                        marginBottom: "30px",
+                        cursor: "default",
                     }}
                 >
-                    <Typography variant={isMobile ? "h4" : "h3"}>
-                        <strong>Sign in</strong>
-                    </Typography>
-                    <Divider flexItem />
+                    Sign in
+                </Typography>
 
-                    {/* Input fields */}
+                <Divider flexItem />
 
+                {/* Input fields */}
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    width="100%"
+                    justifyContent="center"
+                    alignItems="center"
+                    gap={(theme) => theme.spacing(3)}
+                    component="form"
+                    onSubmit={handleClick}
+                >
                     <TextField
                         fullWidth
                         required
-                        onKeyDown={handleKeyPress}
-                        error={emailError}
-                        helperText={
-                            emailError
-                                ? "Email is required"
-                                : "Please enter your email address"
-                        }
-                        value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                            setEmailError(false);
-                        }}
-                        label="Email Address"
+                        helperText="Enter a valid email address"
+                        placeholder="Email Address"
                         id="email"
                         variant="outlined"
-                        color="textField"
                         type="text"
                         InputProps={{
+                            sx: TextFieldSX,
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <AlternateEmail color="icon" />
+                                    <AlternateEmail color="primary" />
                                 </InputAdornment>
                             ),
                         }}
@@ -181,100 +188,79 @@ export default function AuthPage({
                     <TextField
                         fullWidth
                         required
-                        onKeyDown={handleKeyPress}
-                        error={passwordError}
-                        helperText={
-                            passwordError
-                                ? "Password is required"
-                                : "Please enter your password"
-                        }
-                        value={password}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                            setPasswordError(false);
-                        }}
-                        label="Password"
+                        helperText="Please enter your password"
+                        placeholder="Password"
                         id="password"
                         variant="outlined"
-                        color="textField"
-                        type={`${showPassword ? "text" : "password"}`}
+                        type={showPassword ? "text" : "password"}
                         InputProps={{
+                            sx: TextFieldSX,
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Password color="icon" />
+                                    <Password color="primary" />
                                 </InputAdornment>
                             ),
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <IconButton
-                                        onClick={() => {
-                                            setShowPassword(!showPassword);
-                                        }}
-                                        edge="end"
-                                    >
-                                        {/* the user can click on thus button to display/hide their password. */}
-                                        {showPassword ? (
-                                            <VisibilityOff
-                                                sx={{
-                                                    color: `${
-                                                        darkMode
-                                                            ? "white"
-                                                            : "black"
-                                                    }`,
-                                                }}
-                                            />
-                                        ) : (
-                                            <Visibility
-                                                sx={{
-                                                    color: `${
-                                                        darkMode
-                                                            ? "white"
-                                                            : "black"
-                                                    }`,
-                                                }}
-                                            />
-                                        )}
-                                    </IconButton>
+                                    <Divider orientation="vertical" flexItem />
+                                    <Collapse in={!isAnimating}>
+                                        <IconButton
+                                            disableRipple
+                                            onClick={() => {
+                                                setIsAnimating(true);
+                                                setTimeout(() => {
+                                                    setShowPassword(
+                                                        !showPassword
+                                                    );
+                                                    setIsAnimating(false);
+                                                }, 100);
+                                            }}
+                                            edge="end"
+                                        >
+                                            {/* the user can click on thus button to display/hide their password. */}
+                                            {showPassword ? (
+                                                <Visibility
+                                                    sx={(theme) => ({
+                                                        color: theme.palette
+                                                            .tertiary.main,
+                                                    })}
+                                                />
+                                            ) : (
+                                                <VisibilityOff />
+                                            )}
+                                        </IconButton>
+                                    </Collapse>
                                 </InputAdornment>
                             ),
                         }}
                     />
 
-                    <LoginButton
-                        id="submitButton"
-                        type="submit"
-                        onClick={handleClick}
-                    >
+                    <CustomButton type="submit" startIcon={<Login />}>
                         Login
-                    </LoginButton>
-                    <Typography variant="button">{showResponse}</Typography>
-                </Paper>
-            </Grow>
-            <FooterButtons />
-        </Fragment>
+                    </CustomButton>
+                </Box>
+            </Stack>
+        </Grow>
     ) : (
-        <Stack
-            component={Container}
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-                transition: (theme) => theme.transitions.create(),
-                paddingTop: isMobile ? "7rem" : "10rem",
-                width: isMobile ? "100%" : "50rem",
-            }}
-        >
-            <Typography variant="h4">
-                <BackHand /> You are already logged in.
-            </Typography>
-            <LoginButton
-                onClick={() => {
-                    navigate("/blogs");
-                }}
-                startIcon={<Home color="icon" />}
-            >
-                HOME
-            </LoginButton>
-        </Stack>
+        <Grow in={props.isLoggedIn.logged}>
+            <Stack spacing={4} paddingTop="7rem" paddingBottom={4}>
+                <Typography variant={props.isMobile ? "h5" : "h4"}>
+                    <BackHand /> Where you tryna go? <br />
+                    You are already logged in.
+                </Typography>
+                <CustomButton
+                    onClick={() => {
+                        props.setShowLoading(true);
+                        setTimeout(() => {
+                            navigate("/");
+                            props.setShowLoading(false);
+                        }, 200);
+                    }}
+                    startIcon={<Home />}
+                >
+                    Home
+                </CustomButton>
+            </Stack>
+        </Grow>
     );
 }

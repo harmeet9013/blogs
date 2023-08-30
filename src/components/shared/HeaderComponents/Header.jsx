@@ -1,56 +1,24 @@
-import { Button, styled, Stack, useMediaQuery, Slide } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { Fragment, useEffect, useState } from "react";
-import HeaderShowDialog from "./HeaderShowDialog";
+import { useEffect, useState } from "react";
+import { Stack, Slide, Fade, styled, Button } from "@mui/material";
+
 import HeaderActions from "./HeaderActions";
+import { navigate } from "../CustomComponents";
 
-export default function Header({
-    darkMode,
-    isLoggedIn,
-    verifyToken,
-    updateThemeFromCookies,
-    checkToken,
-    selectedTheme,
-    setSelectedTheme,
-    setDarkMode,
-    setShowLoading,
-    setRefresh,
-    setIsLoggedIn,
-    setSnackbarInputs,
-}) {
-    const navigate = useNavigate();
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
-
+export default function Header(props) {
     const [showHeader, setShowHeader] = useState(true);
     const [prevScrollPos, setPrevScrollPos] = useState(0);
 
-    const [dialogInputs, setDialogInputs] = useState({
-        open: false,
-        title: "",
-        content: "",
-        navigate: "",
-        icon: "",
-    });
-
-    const NavbarButton = styled(Button)(({ theme }) => ({
-        backgroundColor: "transparent",
-        color: theme.palette.text.primary,
-        fontSize: isMobile ? "18px" : "24px",
-        padding: "8px 20px",
-        borderRadius: "15px",
-        fontWeight: "600",
+    // BLOGS button that takes you to home page
+    const NavbarHomeButton = styled(Button)(({ theme }) => ({
+        transition: theme.transitions.create(),
+        textTransform: "none",
+        color: theme.palette.primary.main,
+        padding: "0.2rem 1.2rem",
+        fontSize: theme.typography.h5.fontSize,
+        fontWeight: 500,
+        borderRadius: 40,
         "&:hover": {
-            backgroundColor: theme.palette.accent.primary,
-        },
-    }));
-    const DialogButton = styled(Button)(({ theme }) => ({
-        color: theme.palette.text.primary,
-        borderRadius: "15px",
-        backgroundColor: theme.palette.action.hover,
-        padding: isMobile ? "8px 15px" : "8px 20px",
-        fontSize: "16px",
-        "&:hover": {
-            backgroundColor: theme.palette.accent.hover,
+            backgroundColor: theme.palette.primary.container.main,
         },
     }));
 
@@ -69,87 +37,68 @@ export default function Header({
         };
     }, [prevScrollPos]);
 
-    useEffect(() => {
-        verifyToken();
-        updateThemeFromCookies();
-    }, []);
-
     return (
-        <Fragment>
-            {/* Dialog component specifically for header usage */}
-            <HeaderShowDialog
-                dialogInputs={dialogInputs}
-                DialogButton={DialogButton}
-                isMobile={isMobile}
-                checkToken={checkToken}
-                setDialogInputs={setDialogInputs}
-                setIsLoggedIn={setIsLoggedIn}
-                setSnackbarInputs={setSnackbarInputs}
-                setRefresh={setRefresh}
-                setShowLoading={setShowLoading}
-            />
+        <Slide direction="down" in={showHeader}>
+            <Stack
+                direction="row"
+                justifyContent="space-around"
+                alignItems="center"
+                position="fixed"
+                width="100%"
+                overflow="hidden"
+                zIndex="50"
+                borderBottom={(theme) => `1px solid ${theme.palette.divider}`}
+                sx={{
+                    transition: (theme) => theme.transitions.create(),
+                    backgroundColor: (theme) => theme.palette.background.header,
+                    backdropFilter: "blur(10px)",
+                }}
+            >
+                {/* Takes you to home page when you click on BLOGS */}
 
-            {/* Component that renders the header */}
-            <Slide direction="down" in={showHeader}>
-                <Stack
-                    direction="row"
-                    justifyContent="space-around"
-                    alignItems="center"
-                    sx={{
-                        position: "fixed",
-                        backgroundColor: (theme) =>
-                            theme.palette.background.header,
-                        backdropFilter: "blur(10px)",
-                        width: "100%",
-                        overflow: "hidden",
-                        zIndex: "50",
-                        transition: (theme) => theme.transitions.create(),
-                        borderBottom: (theme) =>
-                            `1px solid ${theme.palette.action.disabled}`,
-                    }}
-                >
-                    {/* Takes you to home page when you click on BLOGS */}
+                <Fade in={true}>
+                    <NavbarHomeButton
+                        disableRipple
+                        onClick={() => {
+                            props.setShowLoading(true);
+                            props.setRefresh(true);
+                            setTimeout(() => {
+                                navigate("/");
+                            }, 200);
+                        }}
+                        sx={(theme) => ({
+                            fontSize: theme.typography.h4.fontSize,
+                            letterSpacing: props.isMobile ? 4 : 8,
+                            fontWeight: "bold",
+                            border: "none",
+                            "&:hover": {
+                                backgroundColor: "transparent",
+                            },
+                            background: `linear-gradient(to left, ${theme.palette.tertiary.main}, ${theme.palette.primary.main})`,
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                        })}
+                    >
+                        BLOGS
+                    </NavbarHomeButton>
+                </Fade>
 
-                    <Stack direction="row" alignItems="baseline">
-                        <NavbarButton
-                            onClick={() => {
-                                setTimeout(() => {
-                                    navigate("/blogs");
-                                }, 200);
-                                setShowLoading(true);
-                                setRefresh(true);
-                            }}
-                            sx={{
-                                fontSize: isMobile ? "28px" : "35px",
-                                letterSpacing: isMobile ? "4px" : "8px",
-                                "&:hover": {
-                                    backgroundColor: "transparent",
-                                },
-
-                                background: (theme) =>
-                                    `linear-gradient(to right, ${theme.palette.icon.main}, ${theme.palette.accent.secondary})`,
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                            }}
-                        >
-                            BLOGS
-                        </NavbarButton>
-                    </Stack>
-
-                    <Stack direction="row" spacing={isMobile ? 1 : 3}>
+                <Fade in={true}>
+                    <Stack direction="row" spacing={props.isMobile ? 1 : 3}>
                         <HeaderActions
-                            isLoggedIn={isLoggedIn}
-                            darkMode={darkMode}
-                            NavbarButton={NavbarButton}
-                            selectedTheme={selectedTheme}
-                            setSelectedTheme={setSelectedTheme}
-                            setDarkMode={setDarkMode}
-                            setShowLoading={setShowLoading}
-                            setDialogInputs={setDialogInputs}
+                            isMobile={props.isMobile}
+                            isLoggedIn={props.isLoggedIn}
+                            systemTheme={props.systemTheme}
+                            selectedTheme={props.selectedTheme}
+                            NavbarHomeButton={NavbarHomeButton}
+                            setDarkMode={props.setDarkMode}
+                            setIsLoggedIn={props.setIsLoggedIn}
+                            setShowLoading={props.setShowLoading}
+                            setSelectedTheme={props.setSelectedTheme}
                         />
                     </Stack>
-                </Stack>
-            </Slide>
-        </Fragment>
+                </Fade>
+            </Stack>
+        </Slide>
     );
 }
