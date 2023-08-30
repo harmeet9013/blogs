@@ -54,12 +54,12 @@ export default function RenderBlogs(props) {
         return (
             <Grow
                 in={true}
+                key={_id}
                 style={{
                     transitionDelay: key * 100,
                 }}
             >
                 <BlogButton
-                    key={_id}
                     onClick={() => {
                         setTimeout(() => {
                             navigate(`/blog/${_id}`);
