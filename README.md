@@ -2,12 +2,11 @@
 This is a simple blog website built using MERN stack. It is listed in my portfolio to show my expertise my building full stack web applications. However, seeing the scope of this project, I will develop it more and hopefully open it to the public for their own uses soon.
 
 ## features
-* Responsive Design
-* Beautiful UI/UX
+* Material 3 design language with a responsive design
 * User Authentication
 * JWT and JSCRYPT for user authentication
-* Cookies storage
-* Dark/Light Theme
+* Cookie storage for session verification
+* System or user based dark/light theming
 
 ## Technologies and Dependencies used
 * MongoDB (Mongoose for communicating with Mongo)
@@ -22,15 +21,11 @@ This is a simple blog website built using MERN stack. It is listed in my portfol
 
 ## Deployment
 * Backend - **Vercel**
-* Frontend - **GitHub**
+* Frontend - **Vercel**
 * Database - **MongoDBAtlas**
 
-To run this app locally you need have MongoDB installed and running it's shell service along with NodeJS and its package manager (npm).
-
-1. You can clone the git respository. Run ``npm install`` in both the root folder and the **backend** folder.
-2. Afterwards, run commands ``npm run dev`` and ``npm start`` in the root and backend directory respectively.
-
-* Any internal server errors are console logged while authentication or invalid URl are presented to the user.
+## Deployment
+You can visit the website through the link provided next to the description. Running this app locally is not recommended as the server code is private.
 
 ## Contact
 This project is still in heavy development. So if you want to contribute, that would be amazing.
