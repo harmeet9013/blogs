@@ -2,7 +2,7 @@
 This is a simple blog website built using MERN stack. It is listed in my portfolio to show my expertise my building full stack web applications. However, seeing the scope of this project, I will develop it more and hopefully open it to the public for their own uses soon.
 
 ## features
-* Material 3 design language with a responsive design
+* Material 2 design language with a responsive design
 * User Authentication
 * JWT and JSCRYPT for user authentication
 * Cookie storage for session verification
