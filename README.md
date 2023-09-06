@@ -1,5 +1,8 @@
 # blogs
-This is a simple blog website built using MERN stack. It is listed in my portfolio to show my expertise my building full stack web applications. However, seeing the scope of this project, I will develop it more and hopefully open it to the public for their own uses soon.
+A very simple personal bloggin website. Built using the MERN stack, the website hosts many features including a responsive and beautiful UI/UX.
+
+* [**Material 3 (LATEST)**](https://harmeet9013-blogs.vercel.app/)
+* [Material 2 (DEPRECATED)](https://harmeet9013.github.io/blogs)
 
 ## features
 * Material 3 design language with a responsive design
