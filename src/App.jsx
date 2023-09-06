@@ -34,9 +34,17 @@ import CustomComponents, {
 export const API_URL = "https://harmeet9013-blogs-api.vercel.app";
 
 export default function App() {
+    // isMobile constant
+    const isMobile = useMediaQuery("(max-width: 900px");
+
+    // system theme (dynamic)
+    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
+        ? true
+        : false;
+
     // state hooks
     const [blogs, setBlogs] = useState(null);
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode, setDarkMode] = useState(systemTheme);
     const [selectedTheme, setSelectedTheme] = useState("system");
     const [isLoggedIn, setIsLoggedIn] = useState({
         logged: false,
@@ -45,14 +53,6 @@ export default function App() {
     });
     const [refresh, setRefresh] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
-
-    // isMobile constant
-    const isMobile = useMediaQuery("(max-width: 900px");
-
-    // system theme (dynamic)
-    const systemTheme = useMediaQuery("(prefers-color-scheme: dark)")
-        ? true
-        : false;
 
     // material you theme!
     const material3Theme = createTheme({
@@ -114,7 +114,7 @@ export default function App() {
 
                       divider: "#a08c8c",
                       dividervar: "#524343",
-                      backdrop: "#120d0dba",
+                      backdrop: "#000000ba",
                   }
                 : {
                       primary: {
@@ -171,7 +171,7 @@ export default function App() {
 
                       divider: "#d7c1c1",
                       dividervar: "#857373",
-                      backdrop: "#ffffffba",
+                      backdrop: "#000000ba",
                   }),
         },
         typography: {
@@ -214,7 +214,6 @@ export default function App() {
     // default config for dialog
     const DialogOptions = {
         dialogProps: {
-            maxWidth: "xs",
             disableScrollLock: true,
             slotProps: {
                 backdrop: {
@@ -226,10 +225,11 @@ export default function App() {
             PaperProps: {
                 elevation: 0,
                 sx: {
-                    padding: "0rem 0px 1rem 0px",
+                    padding: "0.5rem 0px 1rem 0px",
+                    width: "25rem",
                     justfifyContent: "center",
                     alignItems: "center",
-                    borderRadius: 5,
+                    borderRadius: 10,
                     backgroundColor: (theme) => theme.palette.background.low,
                     transition: (theme) =>
                         `${theme.transitions.create()} !important`,
@@ -370,6 +370,7 @@ export default function App() {
             <ConfirmProvider defaultOptions={DialogOptions}>
                 {/* call the empty component to update the various custom components */}
                 <CustomComponents isMobile={isMobile} darkMode={darkMode} />
+
                 {/* snackbar component */}
                 <SnackbarProvider
                     preventDuplicate
@@ -417,11 +418,9 @@ export default function App() {
                 {/* Loading on the entire screen */}
                 <Backdrop
                     sx={(theme) => ({
-                        transition: `${theme.transitions.create()} !important`,
+                        transition: theme.transitions.create(),
                         backgroundColor: theme.palette.backdrop,
                         zIndex: 999,
-                        display: "flex",
-                        flexDirection: "column",
                     })}
                     open={showLoading}
                 >

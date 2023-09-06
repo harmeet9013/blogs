@@ -40,8 +40,8 @@ export default function DesktopActions(props) {
     // avatar on the header
     const MyAvatar = styled(Avatar)(({ theme }) => ({
         transition: theme.transitions.create(),
-        color: theme.palette.primary.container.main,
-        backgroundColor: theme.palette.primary.container.on,
+        color: theme.palette.primary.main,
+        backgroundColor: theme.palette.secondary.container.main,
     }));
 
     // menu items
@@ -54,7 +54,7 @@ export default function DesktopActions(props) {
         borderRadius: 50,
         justifyContent: "flex-start",
         color: theme.palette.primary.main,
-        backgroundColor: theme.palette.background.highest,
+        backgroundColor: theme.palette.background.low,
         "&:hover": {
             backgroundColor: theme.palette.primary.container.main,
         },
@@ -89,7 +89,7 @@ export default function DesktopActions(props) {
     };
 
     return (
-        <Fragment>
+        <Stack direction="row" spacing={props.isMobile ? 1 : 3}>
             <props.NavbarHomeButton
                 onClick={() => {
                     setTimeout(() => {
@@ -107,15 +107,15 @@ export default function DesktopActions(props) {
 
             {/* avatar/menu button */}
             <IconButton
+                onClick={(e) => {
+                    setIconAnchor(e.currentTarget);
+                }}
                 sx={(theme) => ({
-                    transition: `${theme.transitions.create()} !important`,
+                    transition: theme.transitions.create(),
                     "&:hover": {
                         backgroundColor: theme.palette.primary.container.main,
                     },
                 })}
-                onClick={(e) => {
-                    setIconAnchor(e.currentTarget);
-                }}
             >
                 {props.isLoggedIn.logged ? (
                     isAvatarLoading ? (
@@ -147,21 +147,37 @@ export default function DesktopActions(props) {
             <Menu
                 open={Boolean(iconAnchor)}
                 anchorEl={iconAnchor}
-                transformOrigin={{ horizontal: "right", vertical: "top" }}
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                onClose={() => {
-                    setIconAnchor(null);
+                onClose={() => setIconAnchor(null)}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
                 }}
-                disableScrollLock={true}
-                PaperProps={{
-                    elevation: 0,
-                    sx: (theme) => ({
-                        marginTop: 2,
-                        borderRadius: 10,
-                        padding: 1.5,
-                        backgroundColor: theme.palette.background.med,
-                        transition: theme.transitions.create(),
-                    }),
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                disableScrollLock
+                slotProps={{
+                    paper: {
+                        elevation: 0,
+                        sx: (theme) => ({
+                            marginTop: 2,
+                            borderRadius: 10,
+                            padding: 1.5,
+                            border: `1px solid ${theme.palette.divider}`,
+                            backgroundColor: theme.palette.background.header,
+                            transition: theme.transitions.create(),
+                            WebkitBackfaceVisibility: "hidden",
+                            WebkitPerspective: "1000",
+                            WebkitTransform: "translate3d(0,0,0)",
+                            WebkitTransform: "translateZ(0)",
+                            backfaceVisibility: "hidden",
+                            perspective: "1000",
+                            transform: "translate3d(0,0,0)",
+                            transform: "translateZ(0)",
+                            backdropFilter: "blur(10px)",
+                        }),
+                    },
                 }}
             >
                 <Stack spacing={2}>
@@ -310,13 +326,11 @@ export default function DesktopActions(props) {
                                 marginRight: theme.spacing(1),
                                 padding: "1.2rem",
                                 border: 0,
-                                backgroundColor:
-                                    theme.palette.background.highest,
+                                backgroundColor: theme.palette.background.low,
                                 "&:hover": {
                                     backgroundColor:
                                         theme.palette.primary.container.main,
                                 },
-
                                 "&:not(:first-of-type)": {
                                     borderRadius: 6,
                                 },
@@ -370,6 +384,6 @@ export default function DesktopActions(props) {
                     </ToggleButtonGroup>
                 </Stack>
             </Menu>
-        </Fragment>
+        </Stack>
     );
 }
