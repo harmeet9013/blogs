@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack, Slide, Fade, styled, Button } from "@mui/material";
+import { Stack, Slide, styled, Button } from "@mui/material";
 
 import HeaderActions from "./HeaderActions";
 import { navigate } from "../CustomComponents";
@@ -51,53 +51,54 @@ export default function Header(props) {
                 sx={{
                     transition: (theme) => theme.transitions.create(),
                     backgroundColor: (theme) => theme.palette.background.header,
+                    WebkitBackfaceVisibility: "hidden",
+                    WebkitPerspective: "1000",
+                    WebkitTransform: "translate3d(0,0,0)",
+                    WebkitTransform: "translateZ(0)",
+                    backfaceVisibility: "hidden",
+                    perspective: "1000",
+                    transform: "translate3d(0,0,0)",
+                    transform: "translateZ(0)",
                     backdropFilter: "blur(10px)",
                 }}
             >
                 {/* Takes you to home page when you click on BLOGS */}
+                <NavbarHomeButton
+                    disableRipple
+                    onClick={() => {
+                        props.setShowLoading(true);
+                        props.setRefresh(true);
+                        setTimeout(() => {
+                            navigate("/");
+                        }, 200);
+                    }}
+                    sx={(theme) => ({
+                        fontSize: theme.typography.h4.fontSize,
+                        letterSpacing: props.isMobile ? 4 : 8,
+                        fontWeight: "bold",
+                        border: "none",
+                        background: `linear-gradient(to left, ${theme.palette.tertiary.main}, ${theme.palette.primary.main})`,
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        "&:hover": {
+                            backgroundColor: "transparent",
+                        },
+                    })}
+                >
+                    BLOGS
+                </NavbarHomeButton>
 
-                <Fade in={true}>
-                    <NavbarHomeButton
-                        disableRipple
-                        onClick={() => {
-                            props.setShowLoading(true);
-                            props.setRefresh(true);
-                            setTimeout(() => {
-                                navigate("/");
-                            }, 200);
-                        }}
-                        sx={(theme) => ({
-                            fontSize: theme.typography.h4.fontSize,
-                            letterSpacing: props.isMobile ? 4 : 8,
-                            fontWeight: "bold",
-                            border: "none",
-                            "&:hover": {
-                                backgroundColor: "transparent",
-                            },
-                            background: `linear-gradient(to left, ${theme.palette.tertiary.main}, ${theme.palette.primary.main})`,
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                        })}
-                    >
-                        BLOGS
-                    </NavbarHomeButton>
-                </Fade>
-
-                <Fade in={true}>
-                    <Stack direction="row" spacing={props.isMobile ? 1 : 3}>
-                        <HeaderActions
-                            isMobile={props.isMobile}
-                            isLoggedIn={props.isLoggedIn}
-                            systemTheme={props.systemTheme}
-                            selectedTheme={props.selectedTheme}
-                            NavbarHomeButton={NavbarHomeButton}
-                            setDarkMode={props.setDarkMode}
-                            setIsLoggedIn={props.setIsLoggedIn}
-                            setShowLoading={props.setShowLoading}
-                            setSelectedTheme={props.setSelectedTheme}
-                        />
-                    </Stack>
-                </Fade>
+                <HeaderActions
+                    isMobile={props.isMobile}
+                    isLoggedIn={props.isLoggedIn}
+                    systemTheme={props.systemTheme}
+                    selectedTheme={props.selectedTheme}
+                    NavbarHomeButton={NavbarHomeButton}
+                    setDarkMode={props.setDarkMode}
+                    setIsLoggedIn={props.setIsLoggedIn}
+                    setShowLoading={props.setShowLoading}
+                    setSelectedTheme={props.setSelectedTheme}
+                />
             </Stack>
         </Slide>
     );
