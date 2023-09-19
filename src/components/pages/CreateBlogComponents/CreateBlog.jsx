@@ -144,7 +144,7 @@ export default function CreateBlog(props) {
             !isValid;
 
         setTimeout(() => {
-            if (!hasError && isLoggedIn !== null) {
+            if (!hasError && props.isLoggedIn !== null) {
                 createBlogRequest();
             } else {
                 confirmDialog({

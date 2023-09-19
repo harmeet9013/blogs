@@ -81,7 +81,6 @@ export default function ImageUpload(props) {
                 type="file"
                 accept=".jpg,.png,.jpeg"
                 onChange={(e) => {
-                    console.log(e.target.files);
                     let pickedImage;
                     if (e.target.files && e.target.files.length === 1) {
                         pickedImage = e.target.files[0];
