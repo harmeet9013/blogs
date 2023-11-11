@@ -8,7 +8,7 @@ import { settingsContext } from "./settings-context";
 export default function SettingsProvider({ children }) {
     const isMobile = useMediaQuery("(max-width: 900px");
     const systemTheme = useMediaQuery("(prefers-color-scheme: dark)");
-    const [darkMode, setDarkMode] = useState(systemTheme);
+    const [darkMode, setDarkMode] = useState(true);
 
     useEffect(() => {
         setDarkMode(systemTheme);

@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { FullHeader } from "@/components/header";
 import { Container } from "@mui/material";
+import { FooterButtons } from "@/components/footer";
 
 export const metadata = {
     title: "Harmeet Blogs - Home",
@@ -11,7 +12,10 @@ export default function BlogLayout({ children }) {
     return (
         <>
             <FullHeader />
-            <Container>{children}</Container>
+            <Container>
+                {children}
+                <FooterButtons />
+            </Container>
         </>
     );
 }
