@@ -9,6 +9,7 @@ import {
     responsiveFontSizes,
 } from "@mui/material";
 import { useMemo } from "react";
+import { ComponentsOverrides } from "./components-overrides";
 
 export default function MuiThemeProvider({ children }) {
     const { darkMode } = useSettingsContext();
@@ -19,148 +20,119 @@ export default function MuiThemeProvider({ children }) {
             ...(darkMode
                 ? {
                       primary: {
-                          main: "#ffb3b4",
-                          on: "#5f131c",
+                          main: "#c6bfff",
+                          on: "#2c2276",
                           container: {
-                              main: "#7e2a30",
-                              on: "#ffdad9",
+                              main: "#433b8e",
+                              on: "#e4dfff",
                           },
                           fixed: {
-                              main: "#ffdad9",
-                              dim: "#ffb3b4",
-                              on: "#40000a",
-                              onvar: "#7e2a30",
+                              main: "#e4dfff",
+                              dim: "#c6bfff",
+                              on: "#160362",
+                              onvar: "#433b8e",
                           },
                       },
                       secondary: {
-                          main: "#e6bdbc",
-                          on: "#5f131c",
+                          main: "#c8c3dc",
+                          on: "#2c2276",
                           container: {
-                              main: "#5d3f3f",
-                              on: "#ffdad9",
+                              main: "#474459",
+                              on: "#e4dff9",
                           },
                           fixed: {
-                              main: "#ffdad9",
-                              dim: "#e6bdbc",
-                              on: "#2c1516",
-                              onvar: "#5d3f3f",
+                              main: "#e4dff9",
+                              dim: "#c8c3dc",
+                              on: "#1b192c",
+                              onvar: "#474459",
                           },
                       },
                       tertiary: {
-                          main: "#e5c18d",
-                          on: "#422c05",
+                          main: "#ebb8cf",
+                          on: "#482537",
                           container: {
-                              main: "#5b421a",
-                              on: "#ffddaf",
+                              main: "#613b4e",
+                              on: "#ffd8e8",
                           },
                           fixed: {
-                              main: "#ffddaf",
-                              dim: "#e5c18d",
-                              on: "#281800",
+                              main: "#ffd8e8",
+                              dim: "#ebb8cf",
+                              on: "#301122",
                               onvar: "#633b48",
                           },
                       },
                       background: {
-                          default: "#000000",
-                          low: "#201a1a",
-                          med: "#241e1e",
-                          high: "#2f2828",
-                          highest: "#3a3333",
-                          header: "#120d0dfa",
+                          default: "#0e0e11",
+                          low: "#1c1b1f",
+                          med: "#201f23",
+                          high: "#2a292d",
+                          highest: "#353438",
                       },
-                      divider: "#a08c8c",
-                      dividervar: "#524343",
-                      backdrop: "#000000ba",
+                      divider: "#47464f",
+                      dividervar: "#928f99",
                   }
                 : {
                       primary: {
-                          main: "#9c4146",
+                          main: "#5b53a8",
                           on: "#ffffff",
                           container: {
-                              main: "#ffdad9",
-                              on: "#40000a",
+                              main: "#e4dfff",
+                              on: "#160362",
                           },
                           fixed: {
-                              main: "#ffdad9",
-                              dim: "#ffb3b4",
-                              on: "#40000a",
-                              onvar: "#7e2a30",
+                              main: "#e4dfff",
+                              dim: "#c6bfff",
+                              on: "#160362",
+                              onvar: "#433b8e",
                           },
                       },
                       secondary: {
-                          main: "#775656",
+                          main: "#5f5c71",
                           on: "#ffffff",
                           container: {
-                              main: "#ffdad9",
-                              on: "#2c1516",
+                              main: "#e4dff9",
+                              on: "#1b192c",
                           },
                           fixed: {
-                              main: "#ffdad9",
-                              dim: "#e6bdbc",
-                              on: "#2c1516",
-                              onvar: "#5d3f3f",
+                              main: "#e4dff9",
+                              dim: "#c8c3dc",
+                              on: "#1b192c",
+                              onvar: "#474459",
                           },
                       },
                       tertiary: {
-                          main: "#755a2f",
+                          main: "#7b5266",
                           on: "#ffffff",
                           container: {
-                              main: "#ffddaf",
-                              on: "#281800",
+                              main: "#ffd8e8",
+                              on: "#301122",
                           },
                           fixed: {
-                              main: "#ffddaf",
-                              dim: "#e5c18d",
-                              on: "#281800",
-                              onvar: "#5b421a",
+                              main: "#ffd8e8",
+                              dim: "#ebb8cf",
+                              on: "#301122",
+                              onvar: "#633b48",
                           },
                       },
                       background: {
                           default: "#ffffff",
-                          low: "#fef1f0",
-                          med: "#f8ebea",
-                          high: "#f2e5e5",
-                          highest: "#ece0df",
-                          header: "#fffffffa",
+                          low: "#f7f2f7",
+                          med: "#f1ecf1",
+                          high: "#ebe7ec",
+                          highest: "#e5e1e6",
                       },
-                      divider: "#d7c1c1",
-                      dividervar: "#857373",
-                      backdrop: "#000000ba",
+                      divider: "#c9c5d0",
+                      dividervar: "#787680",
                   }),
         },
         typography: {
             fontFamily: "inherit",
         },
-        components: {
-            MuiCssBaseline: {
-                styleOverrides: {
-                    "html *": {
-                        fontFamily: "inherit",
-                        "&:link": {
-                            color: darkMode
-                                ? "rgba(50, 255, 255, 1)"
-                                : "rgba(50, 120, 120, 1)",
-                        },
-                    },
-                    body: {
-                        textAlign: "center",
-                        justfifyContent: "center",
-                        alignItems: "center",
-                        transition: "all 0.25s ease",
-                    },
-                },
-            },
-            MuiLinearProgress: {
-                styleOverrides: {
-                    root: {
-                        borderRadius: 10,
-                    },
-                },
-            },
-        },
     }));
 
     let theme = createTheme(materia3Theme);
+
+    theme.components = ComponentsOverrides(theme);
 
     theme = responsiveFontSizes(theme);
 

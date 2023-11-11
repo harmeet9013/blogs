@@ -1,6 +1,7 @@
 import { useSettingsContext } from "@/settings/context";
 import styled from "@emotion/styled";
-import { Box, Button } from "@mui/material";
+import { Button, Card } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
 export const CustomButton = styled(Button)(({ theme }) => ({
     textTransform: "none",
@@ -18,36 +19,17 @@ export const CustomButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-// big blog button
-export const BlogButton = styled(Button)(({ theme }) => {
+export const BlogButton = styled(Card)(({ theme }) => {
     const { isMobile } = useSettingsContext();
 
     return {
-        transition: `${theme.transitions.create()} !important`,
-        textTransform: "none",
         borderRadius: 50,
-        padding: `${theme.spacing(3)} ${theme.spacing(4)}`,
         width: isMobile ? "100%" : theme.breakpoints.values.sm + 50,
-        flexDirection: "column",
         color: theme.palette.primary.main,
-        backgroundColor: theme.palette.background.low,
+        backgroundColor: alpha(theme.palette.background.low, 0.5),
         gap: theme.spacing(2),
         "&:hover": {
-            backgroundColor: theme.palette.primary.container.main,
             transform: "translateY(-0.5rem) !important",
-            boxShadow: theme.shadows[2],
         },
     };
 });
-
-// blog image styles
-export const BlogsImageBox = styled(Box)(({ theme }) => ({
-    transition: theme.transitions.create(),
-    position: "relative",
-    borderRadius: 50,
-    width: "100%",
-    height: "300px",
-    objectFit: "cover",
-    pointerEvents: "none",
-    border: `1px solid ${theme.palette.secondary.container.main}`,
-}));

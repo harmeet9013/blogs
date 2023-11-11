@@ -1,26 +1,25 @@
 import PropTypes from "prop-types";
 import { FullHeader } from "@/components/header";
 import { Container } from "@mui/material";
-import { FooterButtons, FooterText } from "@/components/footer";
+import { FooterButtons } from "@/components/footer";
 
 export const metadata = {
-    title: "Harmeet Blogs - Home",
+    title: "Harmeet Blogs - Login",
     description: "Built on NextJS, A blog website",
 };
 
-export default function HomeLayout({ children }) {
+export default function LoginLayout({ children }) {
     return (
         <>
             <FullHeader />
             <Container>
                 {children}
-                <FooterText />
                 <FooterButtons />
             </Container>
         </>
     );
 }
 
-HomeLayout.propTypes = {
+LoginLayout.propTypes = {
     children: PropTypes.node,
 };

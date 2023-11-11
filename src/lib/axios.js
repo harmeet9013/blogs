@@ -12,4 +12,7 @@ export const endpoints = {
         all_blogs_path: "/blogs/allBlogs",
         single_blog_path: (id) => `/blogs/${id}`,
     },
+    users: {
+        login_path: "/users/login",
+    },
 };

@@ -9,7 +9,12 @@ const loginUser = async (url, payload) => {
             return { data: response, status: 200 };
         })
         .catch((error) => {
-            return { data: "Something went wrong!", status: 500 };
+            return {
+                data: {
+                    error: error.response.data.error || "Something went wrong!",
+                },
+                status: 500,
+            };
         });
     return response;
 };
