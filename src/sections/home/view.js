@@ -29,7 +29,7 @@ export default function HomeView() {
     }, []);
 
     return (
-        <Stack spacing={4} py={10} justifyContent="center" alignItems="center">
+        <Stack spacing={4} py={15} justifyContent="center" alignItems="center">
             {!showLoader && <RenderBlogs blogs={blogs} />}
         </Stack>
     );

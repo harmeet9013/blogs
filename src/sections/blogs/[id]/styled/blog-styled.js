@@ -1,6 +1,6 @@
 import { useSettingsContext } from "@/settings/context";
 import { default as styled } from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 export const BlogTitle = styled(Typography)(({ theme }) => ({
     transition: theme.transitions.create(),
@@ -22,3 +22,12 @@ export const BlogImageBox = styled(Box)(({ theme }) => {
         border: `2px solid ${theme.palette.secondary.container.main}`,
     };
 });
+
+export const ActionButton = styled(Button)(({ theme }) => ({
+    padding: `${theme.spacing(0.8)} ${theme.spacing(1.2)}`,
+    color: theme.palette.primary.main,
+    transition: `${theme.transitions.create()} !important`,
+    "&:hover": {
+        backgroundColor: theme.palette.primary.container.main,
+    },
+}));

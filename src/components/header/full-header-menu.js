@@ -1,19 +1,28 @@
 "use client";
 
-import { Button, IconButton, Menu, Stack } from "@mui/material";
+import { Button, IconButton, Menu, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { MyAvatar, MyMenuItem } from "./styled/header-styled";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@emotion/react";
-import { GitHub, LoginRounded } from "@mui/icons-material";
+import {
+    AddCircleRounded,
+    GitHub,
+    LoginRounded,
+    LogoutRounded,
+} from "@mui/icons-material";
 import { ConfirmDialog } from "../custom-dialog";
+import { useAuthContext } from "@/context";
+import { enqueueSnackbar } from "notistack";
 
 export default function FullHeaderMenu() {
     const theme = useTheme();
     const router = useRouter();
+    const { user, authenticated, logout } = useAuthContext();
 
     const [iconAnchor, setIconAnchor] = useState(null);
     const [sourceCodeDialog, setSourceCodeDialog] = useState(false);
+    const [logoutDialog, setLogoutDialog] = useState(false);
 
     const handleScroll = () => {
         setIconAnchor(null);
@@ -30,7 +39,12 @@ export default function FullHeaderMenu() {
     return (
         <>
             <IconButton onClick={(e) => setIconAnchor(e.currentTarget)}>
-                <MyAvatar />
+                <MyAvatar
+                    src={authenticated && user?.avatar}
+                    sx={{
+                        border: `2px solid ${theme.palette.primary.main}`,
+                    }}
+                />
             </IconButton>
 
             <Menu
@@ -53,9 +67,57 @@ export default function FullHeaderMenu() {
                 }}
             >
                 <Stack spacing={2}>
-                    <MyMenuItem onClick={() => router.push("/login")}>
-                        <LoginRounded /> Login
-                    </MyMenuItem>
+                    {authenticated ? (
+                        <>
+                            <MyMenuItem
+                                disabled
+                                sx={{
+                                    "&.Mui-disabled": {
+                                        opacity: 1,
+                                    },
+                                }}
+                            >
+                                <MyAvatar
+                                    src={user?.avatar}
+                                    sx={{
+                                        border: `2px solid ${theme.palette.primary.main}`,
+                                    }}
+                                />
+
+                                <Stack
+                                    justifyContent="flex-start"
+                                    alignItems="flex-start"
+                                    spacing={0}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        marginBottom={-1}
+                                    >
+                                        Hey,
+                                    </Typography>
+                                    {user?.name}
+                                </Stack>
+                            </MyMenuItem>
+
+                            <MyMenuItem>
+                                <AddCircleRounded /> New blog
+                            </MyMenuItem>
+
+                            <MyMenuItem
+                                onClick={() => {
+                                    setIconAnchor(null);
+                                    setLogoutDialog(true);
+                                }}
+                            >
+                                <LogoutRounded /> Logout
+                            </MyMenuItem>
+                        </>
+                    ) : (
+                        <MyMenuItem onClick={() => router.push("/login")}>
+                            <LoginRounded /> Login
+                        </MyMenuItem>
+                    )}
+
                     <MyMenuItem
                         onClick={() => {
                             setIconAnchor(null);
@@ -64,6 +126,19 @@ export default function FullHeaderMenu() {
                     >
                         <GitHub /> Source Code
                     </MyMenuItem>
+
+                    <Typography
+                        align="center"
+                        color="tertiary.main"
+                        variant="body2"
+                        px={4}
+                        py={0}
+                        sx={{
+                            cursor: "default",
+                        }}
+                    >
+                        Theming is <br /> now system based
+                    </Typography>
                 </Stack>
             </Menu>
 
@@ -81,7 +156,29 @@ export default function FullHeaderMenu() {
                             window.open("https://github.com/harmeet9013/blogs");
                         }}
                     >
-                        Sure
+                        Yes
+                    </Button>
+                }
+            />
+
+            <ConfirmDialog
+                open={logoutDialog}
+                onClose={() => setLogoutDialog(false)}
+                title="Logout"
+                content="Are you sure you want to logout?"
+                action={
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            setLogoutDialog(false);
+                            logout();
+                            enqueueSnackbar("You are now logged out!", {
+                                variant: "info",
+                            });
+                        }}
+                    >
+                        Yes
                     </Button>
                 }
             />

@@ -1,7 +1,7 @@
-import { api } from "@/lib/axios";
+import axiosInstance from "@/lib/axios";
 
 const loginUser = async (url, payload) => {
-    const response = await api
+    const response = await axiosInstance
         .post(url, {
             loginData: payload,
         })

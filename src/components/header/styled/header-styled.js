@@ -52,7 +52,7 @@ export const MyMenuItem = styled(MenuItem)(({ theme }) => ({
     transition: theme.transitions.create(),
     fontSize: theme.typography.subtitle1.fontSize,
     padding: `${theme.spacing(2)} ${theme.spacing(2.5)}`,
-    gap: theme.spacing(2),
+    gap: theme.spacing(1),
     fontWeight: 500,
     borderRadius: 50,
     justifyContent: "flex-start",
