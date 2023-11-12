@@ -28,10 +28,15 @@ import * as Yup from "yup";
 import { endpoints } from "@/lib/axios";
 import userService from "@/api/user-service";
 import { RHFTextField } from "@/components/hook-form";
+import { useAuthContext } from "@/context";
+import { enqueueSnackbar } from "notistack";
+import { useRouter } from "next/navigation";
 
 export default function LoginView() {
     const theme = useTheme();
+    const router = useRouter();
     const { isMobile } = useSettingsContext();
+    const { login } = useAuthContext();
 
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({
@@ -81,8 +86,6 @@ export default function LoginView() {
     };
 
     const onSubmit = handleSubmit(async (data) => {
-        console.log("DATA =>", data);
-
         setErrors({
             email: null,
             password: null,
@@ -97,6 +100,9 @@ export default function LoginView() {
                 setErrors({ ...errors, error: response.data.error });
             } else {
                 console.log("LOGIN =>", response);
+                login?.(response.data.data);
+                enqueueSnackbar("You are logged in!");
+                router.push("/home");
             }
         } catch (error) {
             console.log("PROMISE ERROR =>", error);

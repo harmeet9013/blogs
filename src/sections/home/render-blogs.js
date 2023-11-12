@@ -6,6 +6,7 @@ import {
     CardActionArea,
     CardContent,
     CardMedia,
+    Chip,
     Container,
     Grow,
     Stack,
@@ -59,25 +60,35 @@ export default function RenderBlogs({ blogs }) {
                                         <Avatar
                                             src={avatar}
                                             sx={(theme) => ({
+                                                height: theme.spacing(7),
+                                                width: theme.spacing(7),
                                                 border: `2px solid ${theme.palette.tertiary.main}`,
                                             })}
                                         />
                                     </Grow>
 
                                     <Stack
-                                        direction="column"
                                         alignItems="flex-start"
                                         justifyContent="flex-start"
                                         color="secondary.main"
+                                        spacing={1}
                                     >
-                                        <Typography
+                                        {/* <Typography
                                             variant="subtitle1"
                                             fontWeight={600}
                                             color="tertiary.main"
                                         >
                                             By {author}
-                                        </Typography>
-                                        <Typography variant="body2">
+                                        </Typography> */}
+                                        <Chip
+                                            color="primary"
+                                            label={author}
+                                            sx={{
+                                                typography: "body2",
+                                                fontWeight: 600,
+                                            }}
+                                        />
+                                        <Typography variant="body2" pl={1}>
                                             {date}
                                         </Typography>
                                     </Stack>

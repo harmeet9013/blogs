@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import { SettingsProvider } from "@/settings/context";
 import { Work_Sans } from "next/font/google";
-import { GlobalContextProvider } from "@/context";
+import { AuthProvider, GlobalContextProvider } from "@/context";
 import MuiThemeProvider from "@/theme";
 import { Loader } from "@/components/loader";
+import { NotisSnackbarProvider } from "@/components/snackbar";
 
 export const metadata = {
     title: "Harmeet Blogs",
@@ -21,14 +22,18 @@ export default function RootLayout({ children }) {
                     margin: 0,
                 }}
             >
-                <GlobalContextProvider>
-                    <SettingsProvider>
-                        <MuiThemeProvider>
-                            <Loader />
-                            {children}
-                        </MuiThemeProvider>
-                    </SettingsProvider>
-                </GlobalContextProvider>
+                <AuthProvider>
+                    <GlobalContextProvider>
+                        <SettingsProvider>
+                            <MuiThemeProvider>
+                                <NotisSnackbarProvider>
+                                    <Loader />
+                                    {children}
+                                </NotisSnackbarProvider>
+                            </MuiThemeProvider>
+                        </SettingsProvider>
+                    </GlobalContextProvider>
+                </AuthProvider>
             </body>
         </html>
     );
