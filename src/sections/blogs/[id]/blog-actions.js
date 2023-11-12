@@ -82,8 +82,8 @@ export default function RenderBlogActions() {
                     justifyContent="center"
                     alignItems="center"
                     borderRadius={5}
-                    mb={4}
                     m="auto"
+                    mb={5}
                     zIndex={50}
                     width={
                         authenticated
@@ -111,21 +111,13 @@ export default function RenderBlogActions() {
                         ),
                         backdropFilter: "blur(6px)",
                     }}
-                    divider={
-                        <Divider
-                            orientation="vertical"
-                            variant="middle"
-                            flexItem
-                        />
-                    }
                 >
                     {editMode ? (
-                        <Fragment>
+                        <>
                             <Tooltip
                                 title="Discard"
                                 placement="top"
                                 disableInteractive
-                                // componentsProps={TooltipSX}
                             >
                                 <ActionButton
                                     onClick={() => setDiscardEditDialog(true)}
@@ -134,24 +126,28 @@ export default function RenderBlogActions() {
                                 </ActionButton>
                             </Tooltip>
 
+                            <Divider
+                                orientation="vertical"
+                                variant="middle"
+                                flexItem
+                            />
+
                             <Tooltip
                                 title="Confirm changes"
                                 placement="top"
                                 disableInteracive
-                                // componentsProps={TooltipSX}
                             >
                                 <ActionButton>
                                     <SaveRounded />
                                 </ActionButton>
                             </Tooltip>
-                        </Fragment>
+                        </>
                     ) : (
                         <>
                             <Tooltip
                                 title="Back"
                                 placement="top"
                                 disableInteractive
-                                // componentsProps={TooltipSX}
                             >
                                 <ActionButton
                                     onClick={() => router.push("/home")}
@@ -160,11 +156,16 @@ export default function RenderBlogActions() {
                                 </ActionButton>
                             </Tooltip>
 
+                            <Divider
+                                orientation="vertical"
+                                variant="middle"
+                                flexItem
+                            />
+
                             <Tooltip
-                                title={!isCopied && "Create Link"}
+                                title={!isCopied && "Copy link"}
                                 placement="top"
                                 disableInteractive
-                                // componentsProps={TooltipSX}
                             >
                                 <ActionButton
                                     onClick={!isCopied && handleCopyURL}
@@ -181,11 +182,16 @@ export default function RenderBlogActions() {
 
                             {authenticated && (
                                 <>
+                                    <Divider
+                                        orientation="vertical"
+                                        variant="middle"
+                                        flexItem
+                                    />
+
                                     <Tooltip
                                         title="Edit"
                                         placement="top"
                                         disableInteractive
-                                        // componentsProps={TooltipSX}
                                     >
                                         <ActionButton
                                             onClick={() => setEditMode(true)}
@@ -194,11 +200,16 @@ export default function RenderBlogActions() {
                                         </ActionButton>
                                     </Tooltip>
 
+                                    <Divider
+                                        orientation="vertical"
+                                        variant="middle"
+                                        flexItem
+                                    />
+
                                     <Tooltip
                                         title="Delete"
                                         placement="top"
                                         disableInteractive
-                                        // componentsProps={TooltipSX}
                                     >
                                         <ActionButton
                                             onClick={() =>

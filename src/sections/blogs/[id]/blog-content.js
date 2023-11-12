@@ -18,7 +18,8 @@ export default function RenderBlogContent({ blog }) {
                 justifyContent="center"
                 alignItems="center"
                 component={Container}
-                py={15}
+                pt={15}
+                pb={4}
                 px={0}
                 width={isMobile ? "100%" : "50rem"}
                 sx={{

@@ -25,6 +25,7 @@ export const BlogImageBox = styled(Box)(({ theme }) => {
 
 export const ActionButton = styled(Button)(({ theme }) => ({
     padding: `${theme.spacing(0.8)} ${theme.spacing(1.2)}`,
+    borderRadius: 5,
     color: theme.palette.primary.main,
     transition: `${theme.transitions.create()} !important`,
     "&:hover": {
