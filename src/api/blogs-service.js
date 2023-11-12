@@ -1,7 +1,7 @@
-import { api } from "@/lib/axios";
+import axiosInstance from "@/lib/axios";
 
 const fetchAllSingleBlog = async (url) => {
-    const response = await api
+    const response = await axiosInstance
         .get(url)
         .then((response) => {
             return { data: response.data, status: 200 };
