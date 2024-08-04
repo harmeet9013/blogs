@@ -12,7 +12,9 @@ import {
 import { LoadingButton } from "@mui/lab";
 import {
     Alert,
+    alpha,
     Box,
+    Collapse,
     Divider,
     Grow,
     IconButton,
@@ -68,19 +70,19 @@ export default function LoginView() {
         borderRadius: 50,
         transition: `${theme.transitions.create()} !important`,
         "&.Mui-focused": {
-            backgroundColor: theme.palette.background.low,
+            backgroundColor: theme.palette.background.paper,
         },
         "&.MuiOutlinedInput-root": {
             "& fieldset": {
                 transition: theme.transitions.create(),
                 border: 2,
-                borderColor: theme.palette.dividervar,
+                borderColor: theme.palette.divider,
             },
             "&:hover fieldset": {
-                borderColor: theme.palette.tertiary.container.main,
+                borderColor: alpha(theme.palette.tertiary.main, 0.4),
             },
             "&.Mui-focused fieldset": {
-                borderColor: theme.palette.primary.container.on,
+                borderColor: theme.palette.primary.main,
             },
         },
     };
@@ -136,9 +138,17 @@ export default function LoginView() {
 
                 <Divider flexItem />
 
-                {!!errors?.error && (
-                    <Alert severity="error">{errors?.error}</Alert>
-                )}
+                <Collapse
+                    unmountOnExit
+                    in={!!errors?.error}
+                    sx={{
+                        width: 1,
+                    }}
+                >
+                    <Alert severity="error" variant="filled">
+                        {errors?.error}
+                    </Alert>
+                </Collapse>
 
                 {/* Input fields */}
                 <FormProvider {...methods}>

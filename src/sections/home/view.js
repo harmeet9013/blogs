@@ -1,20 +1,25 @@
 "use client";
 
-import blogsService from "@/api/blogs-service";
-import { useGlobalContext } from "@/context";
-import { endpoints } from "@/lib/axios";
-import { Chip, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect } from "react";
-import RenderBlogs from "./render-blogs";
-import { useBoolean } from "@/hooks";
-import { LoadingScreen } from "@/components/loading-screen";
+//
 import { useTheme } from "@emotion/react";
+import { Chip, Stack, Typography } from "@mui/material";
+//
+import { useBoolean } from "@/hooks";
+import { endpoints } from "@/lib/axios";
+import { useGlobalContext } from "@/context";
+//
+import blogsService from "@/api/blogs-service";
+//
+import { LoadingScreen } from "@/components/loading-screen";
+//
+import RenderBlogs from "./render-blogs";
 
 export default function HomeView() {
     const theme = useTheme();
 
-    const isLoading = useBoolean(true);
     const isError = useBoolean(false);
+    const isLoading = useBoolean(true);
     const { blogs, setBlogs } = useGlobalContext();
 
     const fetchAllBlogs = useCallback(async () => {
@@ -40,10 +45,14 @@ export default function HomeView() {
         }
     }, [blogs]);
 
-    console.log(blogs);
-
     return (
-        <Stack spacing={4} py={15} justifyContent="center" alignItems="center">
+        <Stack
+            spacing={4}
+            pt={15}
+            pb={10}
+            justifyContent="center"
+            alignItems="center"
+        >
             {isLoading?.value ? (
                 <LoadingScreen text="Fetching blogs" />
             ) : isError?.value ? (

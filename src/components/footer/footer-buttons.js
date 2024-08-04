@@ -32,23 +32,37 @@ export default function FooterButtons(props) {
                     ))}
                 </Stack>
 
-                <Typography
-                    variant="button"
-                    sx={{
-                        cursor: "default",
-                    }}
-                >
-                    Created with love{" "}
-                    <FavoriteRounded
-                        fontSize="20"
-                        sx={(theme) => ({
-                            color: theme.palette.tertiary.main,
-                            my: -0.2,
-                        })}
-                    />
-                    <br />
-                    By Harmeet
-                </Typography>
+                <Stack>
+                    <Typography
+                        variant="button"
+                        sx={{
+                            cursor: "default",
+                        }}
+                    >
+                        Created with love{" "}
+                        <FavoriteRounded
+                            fontSize="20"
+                            sx={(theme) => ({
+                                color: theme.palette.tertiary.main,
+                                my: -0.2,
+                                mx: 0.5,
+                            })}
+                        />
+                    </Typography>
+
+                    <Typography
+                        variant="h3"
+                        sx={{
+                            fontFamily: "Creattion",
+                            fontWeight: 600,
+                            textTransform: "none",
+                            letterSpacing: 2,
+                            pt: 1,
+                        }}
+                    >
+                        Harmeet Singh
+                    </Typography>
+                </Stack>
 
                 <Divider flexItem />
 

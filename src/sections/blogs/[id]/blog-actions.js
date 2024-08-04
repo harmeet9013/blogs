@@ -1,9 +1,6 @@
-import { useTheme } from "@emotion/react";
-import { Button, Divider, Grow, Stack, Tooltip } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import { enqueueSnackbar } from "notistack";
-import { Fragment, useEffect, useState } from "react";
-import { ActionButton } from "./styled/blog-styled";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+//
 import {
     ArrowBackRounded,
     CancelRounded,
@@ -13,10 +10,18 @@ import {
     LinkRounded,
     SaveRounded,
 } from "@mui/icons-material";
+import { useTheme } from "@emotion/react";
+import { alpha } from "@mui/material/styles";
+import { Button, Divider, Grow, Stack, Tooltip } from "@mui/material";
+//
+import { enqueueSnackbar } from "notistack";
+//
 import { ConfirmDialog } from "@/components/custom-dialog";
-import { useRouter } from "next/navigation";
+//
 import { useAuthContext } from "@/context";
 import { useSettingsContext } from "@/settings/context";
+//
+import { ActionButton } from "./styled/blog-styled";
 
 export default function RenderBlogActions() {
     const theme = useTheme();
@@ -34,17 +39,15 @@ export default function RenderBlogActions() {
         two: false,
     });
 
-    // intersection handling
     const handleIntersection = (entries) => {
         const [entry] = entries;
         setHeaderSticky(!entry.isIntersecting);
     };
 
-    // copy the link function
     const handleCopyURL = async () => {
         try {
             await navigator.clipboard.writeText(window.location.href);
-            enqueueSnackbar("Link coped to clipboard!");
+            enqueueSnackbar("Link copied to clipboard!");
             setIsCopied(true);
         } catch (error) {
             enqueueSnackbar("Could not copy link!", { variant: "error" });

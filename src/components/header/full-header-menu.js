@@ -1,19 +1,26 @@
 "use client";
 
-import { Button, IconButton, Menu, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { MyAvatar, MyMenuItem } from "./styled/header-styled";
 import { useRouter } from "next/navigation";
-import { useTheme } from "@emotion/react";
+//
 import {
-    AddCircleRounded,
     GitHub,
     LoginRounded,
     LogoutRounded,
+    Person2Rounded,
+    AddCircleRounded,
 } from "@mui/icons-material";
-import { ConfirmDialog } from "../custom-dialog";
-import { useAuthContext } from "@/context";
+import { useTheme } from "@emotion/react";
+import { Button, IconButton, Menu, Stack, Typography } from "@mui/material";
+//
 import { enqueueSnackbar } from "notistack";
+//
+import { useAuthContext } from "@/context";
+//
+import { ConfirmDialog } from "../custom-dialog";
+//
+import { MyAvatar, MyMenuItem } from "./styled/header-styled";
+import { PATHS } from "@/config/paths";
 
 export default function FullHeaderMenu() {
     const theme = useTheme();
@@ -21,14 +28,13 @@ export default function FullHeaderMenu() {
     const { user, authenticated, logout } = useAuthContext();
 
     const [iconAnchor, setIconAnchor] = useState(null);
-    const [sourceCodeDialog, setSourceCodeDialog] = useState(false);
     const [logoutDialog, setLogoutDialog] = useState(false);
+    const [sourceCodeDialog, setSourceCodeDialog] = useState(false);
 
     const handleScroll = () => {
         setIconAnchor(null);
     };
 
-    // scroll check
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
         return () => {
@@ -40,11 +46,17 @@ export default function FullHeaderMenu() {
         <>
             <IconButton onClick={(e) => setIconAnchor(e.currentTarget)}>
                 <MyAvatar
-                    src={authenticated && user?.avatar}
+                    {...(authenticated
+                        ? {
+                              src: user?.avatar,
+                          }
+                        : {})}
                     sx={{
                         border: `2px solid ${theme.palette.primary.main}`,
                     }}
-                />
+                >
+                    <Person2Rounded />
+                </MyAvatar>
             </IconButton>
 
             <Menu
@@ -63,6 +75,11 @@ export default function FullHeaderMenu() {
                 slotProps={{
                     paper: {
                         elevation: 0,
+                        sx: {
+                            py: 1,
+                            px: 1,
+                            borderRadius: 6,
+                        },
                     },
                 }}
             >
@@ -73,7 +90,10 @@ export default function FullHeaderMenu() {
                                 disabled
                                 sx={{
                                     "&.Mui-disabled": {
+                                        px: 2,
+                                        py: 1,
                                         opacity: 1,
+                                        background: "transparent",
                                     },
                                 }}
                             >
@@ -113,7 +133,7 @@ export default function FullHeaderMenu() {
                             </MyMenuItem>
                         </>
                     ) : (
-                        <MyMenuItem onClick={() => router.push("/login")}>
+                        <MyMenuItem onClick={() => router.push(PATHS.login)}>
                             <LoginRounded /> Login
                         </MyMenuItem>
                     )}
