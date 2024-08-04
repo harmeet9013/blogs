@@ -25,7 +25,7 @@ export const HeaderContainer = styled(Stack)(({ theme }) => {
     return {
         overflow: "hidden",
         zIndex: 50,
-        borderBottom: `1px solid ${theme.palette.divider}`,
+        borderBottom: `2px solid ${theme.palette.divider}`,
         transition: theme.transitions.create(),
         backgroundColor: alpha(theme.palette.background.default, 0.95),
         WebkitBackfaceVisibility: "hidden",
@@ -43,22 +43,25 @@ export const HeaderContainer = styled(Stack)(({ theme }) => {
 // avatar on the header
 export const MyAvatar = styled(Avatar)(({ theme }) => ({
     transition: theme.transitions.create(),
-    color: theme.palette.primary.main,
-    backgroundColor: theme.palette.secondary.container.main,
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.dark,
 }));
 
 // menu items
 export const MyMenuItem = styled(MenuItem)(({ theme }) => ({
     transition: theme.transitions.create(),
-    fontSize: theme.typography.subtitle1.fontSize,
+    fontSize: theme.typography.h6.fontSize,
     padding: `${theme.spacing(2)} ${theme.spacing(2.5)}`,
     gap: theme.spacing(1),
     fontWeight: 500,
-    borderRadius: 50,
+    borderRadius: theme.spacing(2),
     justifyContent: "flex-start",
     color: theme.palette.primary.main,
-    backgroundColor: theme.palette.background.low,
+    backgroundColor: theme.palette.background.paper,
+
     "&:hover": {
-        backgroundColor: theme.palette.background.high,
+        color: theme.palette.primary.contrastText,
+        borderRadius: theme.spacing(3),
+        backgroundColor: theme.palette.primary.main,
     },
 }));

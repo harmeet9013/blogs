@@ -151,6 +151,7 @@ export default function FullHeaderMenu() {
                     <Button
                         variant="contained"
                         color="primary"
+                        size="large"
                         onClick={() => {
                             setSourceCodeDialog(false);
                             window.open("https://github.com/harmeet9013/blogs");
@@ -170,6 +171,7 @@ export default function FullHeaderMenu() {
                     <Button
                         variant="contained"
                         color="primary"
+                        size="large"
                         onClick={() => {
                             setLogoutDialog(false);
                             logout();

@@ -1,5 +1,6 @@
 "use client";
 
+import { PALETTE_NAMES } from "@/config/theme";
 import { useSettingsContext } from "@/settings/context";
 import { FavoriteRounded, GitHub, Web } from "@mui/icons-material";
 import {
@@ -10,6 +11,7 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
+import PaletteButton from "./palette-button";
 
 export default function FooterButtons(props) {
     const { isMobile } = useSettingsContext();
@@ -18,6 +20,18 @@ export default function FooterButtons(props) {
         <Grow in={true}>
             <Stack component={Container} spacing={2} pb={5}>
                 <Divider flexItem />
+                <Stack
+                    width={1}
+                    spacing={1}
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    {Object.keys(PALETTE_NAMES).map((item, index) => (
+                        <PaletteButton index={index + 1} key={index} />
+                    ))}
+                </Stack>
+
                 <Typography
                     variant="button"
                     sx={{
@@ -35,6 +49,9 @@ export default function FooterButtons(props) {
                     <br />
                     By Harmeet
                 </Typography>
+
+                <Divider flexItem />
+
                 <Stack
                     direction={isMobile ? "column" : "row"}
                     spacing={2}

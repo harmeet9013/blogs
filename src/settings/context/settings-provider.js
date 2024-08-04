@@ -9,6 +9,7 @@ export default function SettingsProvider({ children }) {
     const isMobile = useMediaQuery("(max-width: 900px");
     const systemTheme = useMediaQuery("(prefers-color-scheme: dark)");
     const [darkMode, setDarkMode] = useState(true);
+    const [selectedPalette, setSelectedPalette] = useState(1);
 
     useEffect(() => {
         setDarkMode(systemTheme);
@@ -19,8 +20,10 @@ export default function SettingsProvider({ children }) {
             isMobile,
             darkMode,
             setDarkMode,
+            selectedPalette,
+            setSelectedPalette,
         }),
-        [isMobile, darkMode, setDarkMode]
+        [isMobile, darkMode, setDarkMode, selectedPalette, setSelectedPalette]
     );
 
     return (

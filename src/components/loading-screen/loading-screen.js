@@ -1,12 +1,28 @@
+"use client";
+
+import { useTheme } from "@emotion/react";
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 
-export default function LoadingScreen() {
+export default function LoadingScreen({ text }) {
+    const theme = useTheme();
+
     return (
-        <Stack alignItems="center" m="auto" pt="50dvh" width="10rem">
-            <Typography variant="h5" fontWeight={600}>
-                Loading...
-            </Typography>
-            <Box width="100%">
+        <Stack
+            width={1}
+            spacing={1}
+            justifyContent="center"
+            alignItems="center"
+        >
+            {!!text && (
+                <Typography
+                    variant="h5"
+                    letterSpacing={2}
+                    color="text.secondary"
+                >
+                    {text}
+                </Typography>
+            )}
+            <Box width={theme.spacing(50)}>
                 <LinearProgress />
             </Box>
         </Stack>

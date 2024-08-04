@@ -7,7 +7,7 @@ export const CustomButton = styled(Button)(({ theme }) => ({
     textTransform: "none",
     color: theme.palette.primary.main,
     borderRadius: 40,
-    backgroundColor: theme.palette.background.low,
+    backgroundColor: theme.palette.background.paper,
     padding: "0.8rem 1.5rem",
     fontSize: theme.typography.h5.fontSize,
     width: "100%",
@@ -26,7 +26,7 @@ export const BlogButton = styled(Card)(({ theme }) => {
         borderRadius: 50,
         width: isMobile ? "100%" : theme.breakpoints.values.sm + 50,
         color: theme.palette.primary.main,
-        backgroundColor: alpha(theme.palette.background.low, 0.5),
+        backgroundColor: alpha(theme.palette.background.paper, 0.5),
         gap: theme.spacing(2),
         "&:hover": {
             transform: "translateY(-0.5rem) !important",
