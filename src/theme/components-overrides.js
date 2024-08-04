@@ -1,4 +1,3 @@
-import { outlinedInputClasses } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
 export const ComponentsOverrides = (theme) => {
@@ -8,10 +7,7 @@ export const ComponentsOverrides = (theme) => {
                 "html *": {
                     fontFamily: "inherit",
                     "&:link": {
-                        // color: darkMode
-                        //     ? "rgba(50, 255, 255, 1)"
-                        //     : "rgba(50, 120, 120, 1)",
-                        color: theme.palette.primary.container.on,
+                        color: theme.palette.tertiary.main,
                     },
                 },
                 body: {
@@ -113,8 +109,8 @@ export const ComponentsOverrides = (theme) => {
         MuiTooltip: {
             styleOverrides: {
                 tooltip: {
-                    backgroundColor: theme.palette.tertiary.fixed.on,
-                    color: theme.palette.tertiary.fixed.main,
+                    backgroundColor: theme.palette.tertiary.main,
+                    color: theme.palette.tertiary.contrastText,
                     fontSize: theme.typography.caption.fontSize,
                     borderRadius: theme.spacing(5),
                     padding: `${theme.spacing(0.8)} ${theme.spacing(1.2)}`,

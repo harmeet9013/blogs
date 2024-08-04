@@ -24,9 +24,9 @@ export default function RenderBlogActions() {
     const { isMobile } = useSettingsContext();
     const { authenticated } = useAuthContext();
 
-    const [headerSticky, setHeaderSticky] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
+    const [headerSticky, setHeaderSticky] = useState(false);
 
     const [discardEditDialog, setDiscardEditDialog] = useState(false);
     const [deleteBlogDialog, setDeleteBlogDialog] = useState({
@@ -39,6 +39,23 @@ export default function RenderBlogActions() {
         const [entry] = entries;
         setHeaderSticky(!entry.isIntersecting);
     };
+
+    // copy the link function
+    const handleCopyURL = async () => {
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            enqueueSnackbar("Link coped to clipboard!");
+            setIsCopied(true);
+        } catch (error) {
+            enqueueSnackbar("Could not copy link!", { variant: "error" });
+            setIsCopied(false);
+        }
+
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 8000);
+    };
+
     useEffect(() => {
         const observer = new IntersectionObserver(handleIntersection, {
             threshold: 0,
@@ -56,22 +73,6 @@ export default function RenderBlogActions() {
             }
         };
     }, [headerSticky]);
-
-    // copy the link function
-    const handleCopyURL = async () => {
-        try {
-            await navigator.clipboard.writeText(window.location.href);
-            enqueueSnackbar("Link coped to clipboard!");
-            setIsCopied(true);
-        } catch (error) {
-            enqueueSnackbar("Could not copy link!", { variant: "error" });
-            setIsCopied(false);
-        }
-
-        setTimeout(() => {
-            setIsCopied(false);
-        }, 8000);
-    };
 
     return (
         <>
@@ -237,6 +238,7 @@ export default function RenderBlogActions() {
                 action={
                     <Button
                         variant="contained"
+                        size="large"
                         onClick={() => {
                             setDiscardEditDialog(false);
                             setEditMode(false);
@@ -255,6 +257,7 @@ export default function RenderBlogActions() {
                 action={
                     <Button
                         variant="contained"
+                        size="large"
                         onClick={() =>
                             setDeleteBlogDialog({ one: false, two: true })
                         }
@@ -272,6 +275,7 @@ export default function RenderBlogActions() {
                 action={
                     <Button
                         variant="contained"
+                        size="large"
                         onClick={() =>
                             setDeleteBlogDialog({ one: false, two: false })
                         }

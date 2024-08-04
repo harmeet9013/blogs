@@ -7,6 +7,7 @@ import {
     DialogTitle,
     Stack,
 } from "@mui/material";
+import { useTheme } from "@emotion/react";
 
 export default function ConfirmDialog({
     title,
@@ -16,6 +17,8 @@ export default function ConfirmDialog({
     onClose,
     ...other
 }) {
+    const theme = useTheme();
+
     return (
         <Dialog
             fullWidth
@@ -24,30 +27,59 @@ export default function ConfirmDialog({
             open={open}
             onClose={onClose}
             PaperProps={{
-                elevation: 0,
+                elevation: 2,
+                sx: {
+                    p: 0,
+                    borderRadius: 4,
+                    background: theme.palette.background.default,
+                },
             }}
             {...other}
         >
             <Stack
-                pb={2}
                 component={DialogTitle}
-                sx={{ typography: "h4", fontWeight: 500, textAlign: "left" }}
+                sx={{
+                    typography: "h4",
+                    fontWeight: 500,
+                    textAlign: "left",
+                    px: 3,
+                    py: 2,
+                }}
             >
                 {title}
             </Stack>
 
             {content && (
-                <DialogContent sx={{ typography: "body1", textAlign: "left" }}>
+                <DialogContent
+                    sx={{
+                        mt: 1,
+                        typography: "h6",
+                        textAlign: "left",
+                        px: 3,
+                        py: 2,
+                    }}
+                >
                     {content}
                 </DialogContent>
             )}
 
-            <DialogActions>
-                {action}
-
-                <Button variant="outlined" color="inherit" onClick={onClose}>
+            <DialogActions
+                sx={{
+                    borderTop: `1px dashed ${theme.palette.divider}`,
+                    px: 3,
+                    py: 2,
+                }}
+            >
+                <Button
+                    variant="outlined"
+                    size="large"
+                    color="inherit"
+                    onClick={onClose}
+                >
                     Cancel
                 </Button>
+
+                {action}
             </DialogActions>
         </Dialog>
     );

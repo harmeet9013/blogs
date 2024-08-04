@@ -1,23 +1,21 @@
 import PropTypes from "prop-types";
 import { SettingsProvider } from "@/settings/context";
-import { Work_Sans } from "next/font/google";
 import { AuthProvider, GlobalContextProvider } from "@/context";
 import MuiThemeProvider from "@/theme";
 import { Loader } from "@/components/loader";
 import { NotisSnackbarProvider } from "@/components/snackbar";
+import { primaryFont } from "@/theme/typography";
 
 export const metadata = {
     title: "Harmeet Blogs",
     description: "Built on NextJS, A blog website",
 };
 
-const workSansFont = Work_Sans({ subsets: ["latin"] });
-
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body
-                className={workSansFont.className}
+                className={primaryFont.className}
                 style={{
                     margin: 0,
                 }}

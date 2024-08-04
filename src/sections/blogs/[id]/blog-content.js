@@ -5,6 +5,8 @@ import { Avatar, Container, Grow, Stack, Typography } from "@mui/material";
 import { BlogImageBox, BlogTitle } from "./styled/blog-styled";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+import StarterKit from "@tiptap/starter-kit";
+import { RichTextReadOnly } from "mui-tiptap";
 
 export default function RenderBlogContent({ blog }) {
     const theme = useTheme();
@@ -75,11 +77,16 @@ export default function RenderBlogContent({ blog }) {
                         alt={blog.title}
                     />
 
-                    <CKEditor
+                    <RichTextReadOnly
+                        content={blog?.content}
+                        extensions={[StarterKit]}
+                    />
+
+                    {/* <CKEditor
                         editor={BalloonEditor}
                         data={blog.content}
                         disabled={true}
-                    />
+                    /> */}
                 </Stack>
             </Stack>
         </Grow>
