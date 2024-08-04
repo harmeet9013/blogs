@@ -16,7 +16,6 @@ export const StyledMaterialDesignContent = styled(MaterialDesignContent)(
         },
         "&.notistack-MuiContent-info": {
             borderRadius: theme.spacing(5),
-            color: theme.palette.tertiary.main,
             backgroundColor: theme.palette.background.high,
         },
     })

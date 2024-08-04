@@ -1,12 +1,15 @@
-import PropTypes from "prop-types";
-import { useSettingsContext } from "@/settings/context";
 import { useTheme } from "@emotion/react";
 import { Avatar, Container, Grow, Stack, Typography } from "@mui/material";
-import { BlogImageBox, BlogTitle } from "./styled/blog-styled";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+//
+import PropTypes from "prop-types";
 import StarterKit from "@tiptap/starter-kit";
 import { RichTextReadOnly } from "mui-tiptap";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
+//
+import { useSettingsContext } from "@/settings/context";
+//
+import { BlogImageBox, BlogTitle } from "./styled/blog-styled";
 
 export default function RenderBlogContent({ blog }) {
     const theme = useTheme();
@@ -31,15 +34,15 @@ export default function RenderBlogContent({ blog }) {
             >
                 <Stack component={!isMobile && Container} spacing={4}>
                     <BlogTitle variant="h3" color="primary">
-                        {blog.title}
+                        {blog?.title}
                     </BlogTitle>
 
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Avatar
                             src={blog.avatar}
                             sx={{
-                                height: 60,
                                 width: 60,
+                                height: 60,
                                 border: `2px solid ${theme.palette.tertiary.main}`,
                             }}
                         />
@@ -55,10 +58,10 @@ export default function RenderBlogContent({ blog }) {
                                 fontWeight={600}
                                 color="tertiary.main"
                             >
-                                {blog.author}
+                                {blog?.author}
                             </Typography>
                             <Typography variant={isMobile ? "body2" : "body1"}>
-                                {blog.date}
+                                {blog?.date}
                             </Typography>
                         </Stack>
                     </Stack>
@@ -77,16 +80,16 @@ export default function RenderBlogContent({ blog }) {
                         alt={blog.title}
                     />
 
-                    <RichTextReadOnly
+                    {/* <RichTextReadOnly
                         content={blog?.content}
                         extensions={[StarterKit]}
-                    />
+                    /> */}
 
-                    {/* <CKEditor
+                    <CKEditor
                         editor={BalloonEditor}
                         data={blog.content}
                         disabled={true}
-                    /> */}
+                    />
                 </Stack>
             </Stack>
         </Grow>

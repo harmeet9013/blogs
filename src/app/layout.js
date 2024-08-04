@@ -25,7 +25,6 @@ export default function RootLayout({ children }) {
                         <SettingsProvider>
                             <MuiThemeProvider>
                                 <NotisSnackbarProvider>
-                                    <Loader />
                                     {children}
                                 </NotisSnackbarProvider>
                             </MuiThemeProvider>

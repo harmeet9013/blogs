@@ -1,10 +1,13 @@
 "use client";
 
-import PropTypes from "prop-types";
-import { SnackbarProvider, closeSnackbar } from "notistack";
 import { useRef } from "react";
+//
 import { IconButton } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
+import { SnackbarProvider, closeSnackbar } from "notistack";
+//
+import PropTypes from "prop-types";
+//
 import { StyledMaterialDesignContent } from "./styles";
 
 export default function NotisSnackbarProvider({ children }) {
@@ -12,11 +15,11 @@ export default function NotisSnackbarProvider({ children }) {
 
     return (
         <SnackbarProvider
-            ref={notisRef}
             maxSnack={3}
-            autoHideDuration={5000}
-            preventDuplicate
+            ref={notisRef}
             variant="success"
+            preventDuplicate
+            autoHideDuration={5000}
             Components={{
                 default: StyledMaterialDesignContent,
                 info: StyledMaterialDesignContent,
@@ -28,8 +31,8 @@ export default function NotisSnackbarProvider({ children }) {
                 return (
                     <IconButton
                         size="small"
-                        onClick={() => closeSnackbar(snackbarId)}
                         sx={{ p: 0.5 }}
+                        onClick={() => closeSnackbar(snackbarId)}
                     >
                         <CloseRounded />
                     </IconButton>

@@ -48,20 +48,30 @@ export const MyAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 // menu items
-export const MyMenuItem = styled(MenuItem)(({ theme }) => ({
+export const MyMenuItem = styled(MenuItem)(({ theme, centered }) => ({
+    width: "100%",
+    fontWeight: 500,
+    gap: theme.spacing(1),
+    justifyContent: centered ? "center" : "flex-start",
+    borderRadius: theme.spacing(2),
+    color: theme.palette.primary.main,
     transition: theme.transitions.create(),
     fontSize: theme.typography.h6.fontSize,
-    padding: `${theme.spacing(2)} ${theme.spacing(2.5)}`,
-    gap: theme.spacing(1),
-    fontWeight: 500,
-    borderRadius: theme.spacing(2),
-    justifyContent: "flex-start",
-    color: theme.palette.primary.main,
     backgroundColor: theme.palette.background.paper,
+    padding: `${theme.spacing(2)} ${theme.spacing(2.5)}`,
 
     "&:hover": {
         color: theme.palette.primary.contrastText,
         borderRadius: theme.spacing(3),
         backgroundColor: theme.palette.primary.main,
+    },
+
+    "&.Mui-selected": {
+        color: theme.palette.primary.contrastText,
+        backgroundColor: theme.palette.secondary.main,
+        "&:hover": {
+            color: theme.palette.primary.contrastText,
+            backgroundColor: theme.palette.secondary.main,
+        },
     },
 }));

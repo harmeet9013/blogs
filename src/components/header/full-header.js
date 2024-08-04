@@ -1,10 +1,15 @@
 "use client";
 
-import { Slide } from "@mui/material";
 import { useEffect, useState } from "react";
-import { HeaderContainer, NavbarHomeButton } from "./styled/header-styled";
-import FullHeaderMenu from "./full-header-menu";
+//
+import { Slide } from "@mui/material";
+//
+import { PATHS } from "@/config/paths";
 import { useSettingsContext } from "@/settings/context";
+//
+import FullHeaderMenu from "./full-header-menu";
+//
+import { HeaderContainer, NavbarHomeButton } from "./styled/header-styled";
 
 export default function FullHeader() {
     const { isMobile } = useSettingsContext();
@@ -29,20 +34,20 @@ export default function FullHeader() {
 
     return (
         <Slide
-            direction="down"
             in={showHeader}
+            direction="down"
             timeout={{ enter: 350, exit: 350 }}
         >
             <HeaderContainer
-                direction="row"
-                py={0.2}
                 px={1}
-                justifyContent={isMobile ? "space-between" : "space-around"}
-                alignItems="center"
+                py={0.2}
+                width={1}
+                direction="row"
                 position="fixed"
-                width="100%"
+                alignItems="center"
+                justifyContent={isMobile ? "space-between" : "space-around"}
             >
-                <NavbarHomeButton href="/home">BLOGS</NavbarHomeButton>
+                <NavbarHomeButton href={PATHS.home}>BLOGS</NavbarHomeButton>
                 <FullHeaderMenu />
             </HeaderContainer>
         </Slide>

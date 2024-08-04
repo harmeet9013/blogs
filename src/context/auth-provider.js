@@ -1,10 +1,12 @@
 "use client";
 
-import PropTypes from "prop-types";
-import axiosInstance, { endpoints } from "@/lib/axios";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useCallback, useEffect, useMemo, useReducer } from "react";
+//
+import Cookies from "js-cookie";
+import PropTypes from "prop-types";
+//
+import axiosInstance, { endpoints } from "@/lib/axios";
+//
 import { authContext } from "./auth-context";
 
 const initialState = {
@@ -14,6 +16,7 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
+    console.log(action);
     if (action.type === "LOADING") {
         return {
             ...state,
@@ -97,12 +100,7 @@ export default function AuthProvider({ children }) {
         }
     }, []);
 
-    useEffect(() => {
-        initialize();
-    }, []);
-
     const login = useCallback(async (userData) => {
-        console.log("LOGIN DATA =>", userData);
         dispatch({
             type: "LOADING",
         });
@@ -143,7 +141,9 @@ export default function AuthProvider({ children }) {
         [state.user, state.loading, login, logout]
     );
 
-    console.log("state", state);
+    useEffect(() => {
+        initialize();
+    }, []);
 
     return (
         <authContext.Provider value={providerValues}>

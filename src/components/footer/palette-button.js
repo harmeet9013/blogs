@@ -24,7 +24,7 @@ export default function PaletteButton({ index }) {
                     theme.transitions.create(["all"], {
                         duration: 1500,
                     }) + "!important",
-                ...(selectedPalette === index && {
+                ...(parseInt(selectedPalette) === index && {
                     borderRadius: 50,
                     outline: `2px solid ${theme.palette.divider}`,
                     background: theme.palette.background.paper,
