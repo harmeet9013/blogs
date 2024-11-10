@@ -1,9 +1,8 @@
+import parse from "html-react-parser";
 import { useTheme } from "@emotion/react";
 import { Avatar, Container, Grow, Stack, Typography } from "@mui/material";
 //
 import PropTypes from "prop-types";
-import StarterKit from "@tiptap/starter-kit";
-import { RichTextReadOnly } from "mui-tiptap";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
 //
@@ -11,7 +10,7 @@ import { useSettingsContext } from "@/settings/context";
 //
 import { BlogImageBox, BlogTitle } from "./styled/blog-styled";
 
-export default function RenderBlogContent({ blog }) {
+export const RenderBlogContent = ({ blog }) => {
     const theme = useTheme();
     const { isMobile } = useSettingsContext();
 
@@ -39,7 +38,7 @@ export default function RenderBlogContent({ blog }) {
 
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Avatar
-                            src={blog.avatar}
+                            src={blog?.authorID?.avatar}
                             sx={{
                                 width: 60,
                                 height: 60,
@@ -58,7 +57,7 @@ export default function RenderBlogContent({ blog }) {
                                 fontWeight={600}
                                 color="tertiary.main"
                             >
-                                {blog?.author}
+                                {blog?.authorID?.name}
                             </Typography>
                             <Typography variant={isMobile ? "body2" : "body1"}>
                                 {blog?.date}
@@ -73,6 +72,7 @@ export default function RenderBlogContent({ blog }) {
                     spacing={2}
                     component={!isMobile && Container}
                     id="blog-container"
+                    maxWidth={1}
                 >
                     <BlogImageBox
                         component="img"
@@ -80,10 +80,18 @@ export default function RenderBlogContent({ blog }) {
                         alt={blog.title}
                     />
 
-                    {/* <RichTextReadOnly
-                        content={blog?.content}
-                        extensions={[StarterKit]}
-                    /> */}
+                    {/* <Stack
+                        width={1}
+                        justifyContent="center"
+                        alignItems="flex-start"
+                        sx={{
+                            "& img": {
+                                width: 1,
+                            },
+                        }}
+                    >
+                        {parse(blog?.content)}
+                    </Stack> */}
 
                     <CKEditor
                         editor={BalloonEditor}
@@ -94,7 +102,7 @@ export default function RenderBlogContent({ blog }) {
             </Stack>
         </Grow>
     );
-}
+};
 
 RenderBlogContent.propTypes = {
     blog: PropTypes.object,

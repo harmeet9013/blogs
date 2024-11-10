@@ -23,10 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
 export default axiosInstance;
 
 export const endpoints = {
-    blogs: {
-        all_blogs_path: "/blogs/allBlogs",
-        single_blog_path: (id) => `/blogs/${id}`,
-    },
+    blogs: "/api/blogs",
     users: {
         login_path: "/users/login",
         verify_token_path: "/users/verify",

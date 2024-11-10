@@ -23,7 +23,7 @@ import { useSettingsContext } from "@/settings/context";
 //
 import { ActionButton } from "./styled/blog-styled";
 
-export default function RenderBlogActions() {
+export const RenderBlogActions = () => {
     const theme = useTheme();
     const router = useRouter();
     const { isMobile } = useSettingsContext();
@@ -289,4 +289,4 @@ export default function RenderBlogActions() {
             />
         </>
     );
-}
+};

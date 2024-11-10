@@ -16,7 +16,7 @@ import { BlogButton } from "./styled/home-styled";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-export default function RenderBlogs({ blogs }) {
+export const RenderBlogs = ({ blogs }) => {
     const router = useRouter();
 
     const handleClick = useCallback((id) => {
@@ -24,7 +24,7 @@ export default function RenderBlogs({ blogs }) {
     });
 
     return blogs?.map((blog) => {
-        const { _id, title, image, author, date, avatar } = blog;
+        const { _id, title, image, authorID, date } = blog;
 
         return (
             <Grow in={true} key={_id} timeout={{ enter: 500 }}>
@@ -58,7 +58,7 @@ export default function RenderBlogs({ blogs }) {
                                 >
                                     <Grow in={true}>
                                         <Avatar
-                                            src={avatar}
+                                            src={authorID?.avatar}
                                             sx={(theme) => ({
                                                 height: theme.spacing(7),
                                                 width: theme.spacing(7),
@@ -82,7 +82,7 @@ export default function RenderBlogs({ blogs }) {
                                         </Typography> */}
                                         <Chip
                                             color="primary"
-                                            label={author}
+                                            label={authorID?.name}
                                             sx={{
                                                 typography: "body2",
                                                 fontWeight: 600,
@@ -100,7 +100,7 @@ export default function RenderBlogs({ blogs }) {
             </Grow>
         );
     });
-}
+};
 
 RenderBlogs.propTypes = {
     blogs: PropTypes.array,

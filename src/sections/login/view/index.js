@@ -34,7 +34,7 @@ import { useAuthContext } from "@/context";
 import { enqueueSnackbar } from "notistack";
 import { useRouter } from "next/navigation";
 
-export default function LoginView() {
+export const LoginView = () => {
     const theme = useTheme();
     const router = useRouter();
     const { isMobile } = useSettingsContext();
@@ -237,4 +237,4 @@ export default function LoginView() {
             </Stack>
         </Grow>
     );
-}
+};

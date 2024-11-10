@@ -1,5 +1,9 @@
-import HomeView from "@/sections/home/view";
+import { endpoints } from "@/lib/axios";
+import { HomeView } from "@/sections";
+import { GET_REQUEST } from "@/services";
 
-export default function HomePage() {
-    return <HomeView />;
+export default async function HomePage() {
+    const response = await GET_REQUEST(endpoints["blogs"]);
+
+    return <HomeView blogs={response?.data || []} />;
 }

@@ -1,7 +1,11 @@
-import BlogView from "@/sections/blogs/[id]/view";
+import { BlogView } from "@/sections";
+import { endpoints } from "@/lib/axios";
+import { GET_REQUEST } from "@/services";
 
-export default function BlogPage({ params }) {
+export default async function ({ params }) {
     const { id } = params;
 
-    return <BlogView id={id} />;
+    const response = await GET_REQUEST(endpoints["blogs"], { blog_id: id });
+
+    return <BlogView blog={response?.data || false} />;
 }

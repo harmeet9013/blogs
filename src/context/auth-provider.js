@@ -16,7 +16,6 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-    console.log(action);
     if (action.type === "LOADING") {
         return {
             ...state,
