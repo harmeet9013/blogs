@@ -9,8 +9,28 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blocknote/core": "^0.23.2",
+    "@blocknote/mantine": "^0.23.2",
+    "@blocknote/react": "^0.23.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.4.3",
+    "@mui/material": "^6.4.3",
+    "@reduxjs/toolkit": "^2.5.1",
+    "axios": "^1.7.9",
+    "cookies-next": "^5.1.0",
+    "html-react-parser": "^5.2.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.10.0",
+    "next": "15.1.6",
+    "notistack": "^3.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.1.6"
+    "react-hook-form": "^7.54.2",
+    "react-redux": "^9.2.0",
+    "shiki": "^2.3.2",
+    "short-unique-id": "^5.2.0",
+    "yup": "^1.6.1"
   }
 }
