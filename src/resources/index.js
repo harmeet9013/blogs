@@ -4,6 +4,7 @@ export * from "./theme";
 export * from "./redux";
 export * from "./pages";
 export * from "./layouts";
+export * from "./schemas";
 export * from "./settings";
 export * from "./utilities";
 export * from "./components";

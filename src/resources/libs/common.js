@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthError } from "next-auth";
 import { useState, useCallback } from "react";
 
 export const formatDateForRender = (date) => {

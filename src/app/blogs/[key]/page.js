@@ -1,7 +1,7 @@
 import { BlogDetailView, fetchAllBlogs } from "@/resources";
 
 export default async function Page({ params }) {
-    const { key } = params;
+    const { key } = await params;
 
     const response = await fetchAllBlogs(key, undefined);
 

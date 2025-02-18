@@ -36,6 +36,9 @@ export const ThemeProvider = ({ children }) => {
         },
         typography: {
             fontFamily: "inherit",
+            button: {
+                textTransform: "none",
+            },
         },
     });
 
@@ -48,6 +51,10 @@ export const ThemeProvider = ({ children }) => {
             },
         },
         MuiButton: {
+            defaultProps: {
+                variant: "contained",
+                fullWidth: true,
+            },
             styleOverrides: {
                 root: {
                     boxShadow: "none",

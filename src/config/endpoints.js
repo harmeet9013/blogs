@@ -5,7 +5,7 @@ export const endpoints = {
         root: PREFIX + "/blogs",
     },
     users: {
-        root: PREFIX + "/users",
-        login: PREFIX + "/login",
+        root: PREFIX + "/user",
+        login: PREFIX + "/user" + "/login",
     },
 };

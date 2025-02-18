@@ -14,6 +14,7 @@ export const RHFInput = ({ name, ...other }) => {
                 <TextField
                     {...field}
                     {...other}
+                    fullWidth
                     error={!!error}
                     helperText={!!error ? error?.message : false}
                 />

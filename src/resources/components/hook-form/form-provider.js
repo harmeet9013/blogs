@@ -1,18 +1,14 @@
 "use client";
 
+import { Stack } from "@mui/material";
 import { FormProvider as HookFormProvider } from "react-hook-form";
 
-export const FormProvider = ({ methods, onSubmit, children }) => {
+export const FormProvider = ({ methods, onSubmit, children, ...other }) => {
     return (
         <HookFormProvider {...methods}>
-            <form
-                onSubmit={onSubmit}
-                style={{
-                    width: "100%",
-                }}
-            >
+            <Stack width={1} component="form" onSubmit={onSubmit} {...other}>
                 {children}
-            </form>
+            </Stack>
         </HookFormProvider>
     );
 };

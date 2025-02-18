@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import ShortUniqueId from "short-unique-id";
 
 export const getQueryFromRequest = (req, key) => {
@@ -25,3 +26,13 @@ export const getPaginationOptions = (
 };
 
 export const uid = new ShortUniqueId({ length: 10 });
+
+export const getHeader = async (key) => {
+    const header = await headers();
+
+    if (key) {
+        return header.get(key) || false;
+    }
+
+    return header;
+};
