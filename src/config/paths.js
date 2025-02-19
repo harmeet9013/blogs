@@ -12,7 +12,14 @@ export const PATHS = {
         root: generateURL([GLOBAL.BLOGS]),
         single_blog: (key) => generateURL([GLOBAL.BLOGS, key]),
     },
+    admin: {
+        root: generateURL([GLOBAL.ADMIN, "dashboard"]),
+        blogs: {
+            create: generateURL([GLOBAL.ADMIN, "create", "blog"]),
+        },
+    },
     users: {
         login: generateURL([GLOBAL.ADMIN, "login"]),
+        register: generateURL([GLOBAL.ADMIN, "register"]),
     },
 };

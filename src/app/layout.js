@@ -1,4 +1,5 @@
 import {
+    auth,
     primaryFont,
     ReduxProvider,
     SettingsProvider,
@@ -10,12 +11,14 @@ export const metadata = {
     description: "full stack web application for blogs",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+    const session = await auth();
+
     return (
         <html lang="en" suppressHydrationWarning>
             <body className={`${primaryFont.className}`}>
                 <ReduxProvider>
-                    <SettingsProvider>
+                    <SettingsProvider session={session}>
                         <ThemeProvider>{children}</ThemeProvider>
                     </SettingsProvider>
                 </ReduxProvider>

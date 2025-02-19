@@ -75,6 +75,10 @@ export const registerUser = async (req) => {
 
         await user.save();
 
+        delete user.password;
+        delete user._id;
+        delete user.__v;
+
         return successResponse("user logged in", user);
     } catch (error) {
         return errorResponse(

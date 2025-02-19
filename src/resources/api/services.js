@@ -69,3 +69,27 @@ export const loginApi = async (data = {}, params = {}) => {
 
     return state;
 };
+
+export const registerApi = async (data = {}, params = {}) => {
+    let state = {
+        loading: true,
+        data: null,
+        error: null,
+    };
+
+    const response = await POST_REQUEST(
+        endpoints["users"]["register"],
+        data,
+        params
+    );
+
+    if (response?.status) {
+        state.data = response;
+    } else {
+        state.error = response?.message;
+    }
+
+    state.loading = false;
+
+    return state;
+};

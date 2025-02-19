@@ -11,6 +11,7 @@ export const MAX_FILE_SIZE =
 
 export const DESIGN_CONFIG = {
     HEADER: 13,
+    NAV: 30,
 };
 
 export const MONTHS = [

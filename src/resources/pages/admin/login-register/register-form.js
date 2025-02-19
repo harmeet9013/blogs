@@ -1,41 +1,55 @@
 "use client";
 
+import {
+    VisibilityRounded,
+    VisibilityOffRounded,
+    AppRegistrationRounded,
+} from "@mui/icons-material";
+import {
+    Link,
+    Stack,
+    Button,
+    useTheme,
+    Typography,
+    IconButton,
+    InputAdornment,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { LoginRounded } from "@mui/icons-material";
-import { Button, Link, Stack, Typography, useTheme } from "@mui/material";
 //
 import {
-    FormProvider,
-    loginFormSchema,
     RHFInput,
-    signInAPI,
-    useSettingsContext,
+    useBoolean,
+    registerApi,
+    FormProvider,
+    registerFormSchema,
 } from "@/resources";
 import { DESIGN_CONFIG, PATHS } from "@/config";
+import { ArrowBackRounded } from "@mui/icons-material";
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
     const router = useRouter();
     const muiTheme = useTheme();
-    const { updateSession } = useSettingsContext();
+    const showPassword = useBoolean(false);
 
     const methods = useForm(
-        loginFormSchema({
+        registerFormSchema({
+            name: "",
             email: "",
             password: "",
+            confirm: "",
         })
     );
 
     const onSubmit = methods["handleSubmit"](async (data) => {
-        const response = await signInAPI(data);
+        const response = await registerApi(data);
 
-        if (response?.status) {
-            enqueueSnackbar("logged in");
-            await updateSession();
-            router.push(PATHS["admin"]["root"]);
+        if (!response?.error) {
+            router.push(PATHS["users"]["login"]);
+            enqueueSnackbar("user created, please login");
         } else {
-            enqueueSnackbar(response?.message || "unexpected error", {
+            enqueueSnackbar(response?.error || "unexpected error", {
                 variant: "error",
             });
         }
@@ -57,8 +71,8 @@ export const LoginForm = () => {
                 alignItems="stretch"
             >
                 <Stack
-                    width={1}
                     gap={8}
+                    width={1}
                     alignItems="center"
                     justifyContent="center"
                 >
@@ -69,11 +83,13 @@ export const LoginForm = () => {
                         alignItems="flex-start"
                     >
                         <Typography variant="h3" color="primary">
-                            admin login
+                            register
                         </Typography>
 
                         <Typography variant="body1">
-                            hope you remember your credentials
+                            these credentials are important
+                            <br />
+                            remember them!
                         </Typography>
                     </Stack>
 
@@ -83,6 +99,8 @@ export const LoginForm = () => {
                         justifyContent="center"
                         alignItems="flex-start"
                     >
+                        <RHFInput name="name" label="name" />
+
                         <RHFInput name="email" label="email / username" />
 
                         <RHFInput
@@ -90,15 +108,38 @@ export const LoginForm = () => {
                             name="password"
                             label="password"
                         />
+
+                        <RHFInput
+                            type={showPassword?.value ? "text" : "password"}
+                            name="confirm"
+                            label="confirm password"
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={showPassword.onToggle}
+                                            >
+                                                {showPassword?.value ? (
+                                                    <VisibilityOffRounded />
+                                                ) : (
+                                                    <VisibilityRounded />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
                     </Stack>
 
                     <Button
                         type="submit"
                         color="primary"
                         size="large"
-                        startIcon={<LoginRounded />}
+                        startIcon={<AppRegistrationRounded />}
                     >
-                        login
+                        register
                     </Button>
 
                     <Stack
@@ -106,18 +147,12 @@ export const LoginForm = () => {
                         width={1}
                         direction="row"
                         alignItems="center"
-                        color="text.disabled"
+                        color="primary"
                         justifyContent="center"
                     >
-                        <Link href="#" color="secondary" underline="none">
-                            forgot password?
-                        </Link>{" "}
-                        /
-                        <Link
-                            href={PATHS["users"]["register"]}
-                            underline="hover"
-                        >
-                            register yourself
+                        <ArrowBackRounded />
+                        <Link href={PATHS["users"]["login"]} underline="none">
+                            back to login
                         </Link>
                     </Stack>
                 </Stack>

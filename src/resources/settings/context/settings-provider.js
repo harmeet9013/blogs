@@ -1,24 +1,47 @@
 "use client";
 
+import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
 //
+import { auth, authSliceActions } from "@/resources";
+//
 import { settingsContext } from "./settings-context";
 
-export const SettingsProvider = ({ children }) => {
+export const SettingsProvider = ({ session, children }) => {
+    const { setSession } = authSliceActions;
+
+    const dispatch = useDispatch();
     const isMobile = useMediaQuery("(max-width: 900px");
     const systemTheme = useMediaQuery("(prefers-color-scheme: dark)");
 
     const [mode, setMode] = useState("dark");
 
+    const initReduxSession = (newSession) => {
+        dispatch(setSession(newSession));
+    };
+
+    const updateSession = async () => {
+        const newSession = await auth();
+
+        initReduxSession(newSession);
+
+        return newSession;
+    };
+
     useEffect(() => {
         setMode(systemTheme ? "dark" : "light");
     }, [systemTheme]);
 
+    useEffect(() => {
+        initReduxSession(session);
+    }, []);
+
     const providerValues = {
-        isMobile,
         mode,
         setMode,
+        isMobile,
+        updateSession,
     };
 
     return (
