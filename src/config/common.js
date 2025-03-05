@@ -1,10 +1,9 @@
-export const {
-    MONGO_URI: DATABSE_URL,
-    JWT_SECRET,
-    API_URL,
-    NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_FILE_SIZE_LIMIT,
-} = process.env;
+export const NEXT_PUBLIC_FILE_SIZE_LIMIT =
+    process.env.NEXT_PUBLIC_FILE_SIZE_LIMIT;
+export const API_URL = process.env.API_URL;
+export const DATABSE_URL = process.env.MONGO_URI;
+export const JWT_SECRET = process.env.JWT_SECRET;
+export const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const MAX_FILE_SIZE =
     parseInt(NEXT_PUBLIC_FILE_SIZE_LIMIT) * 1024 * 1024;

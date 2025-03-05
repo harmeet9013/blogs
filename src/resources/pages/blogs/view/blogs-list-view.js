@@ -105,7 +105,7 @@ export const BlogsListView = ({ response }) => {
                     justifyContent="space-between"
                     alignItems="center"
                 >
-                    <Typography variant="h3">
+                    <Typography variant="h3" width={1}>
                         {methods["watch"]("search") ||
                             `all blogs - ${paginationData?.current_page}`}
                     </Typography>
@@ -113,6 +113,9 @@ export const BlogsListView = ({ response }) => {
                     <RHFInput
                         name="search"
                         label="search"
+                        sx={{
+                            width: 0.4,
+                        }}
                         placeholder="search title or author"
                         loading={!!response?.error || isUpdating.value}
                         slotProps={{

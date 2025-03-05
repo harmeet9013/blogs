@@ -48,11 +48,29 @@ export const CommonHeader = () => {
                         direction={{ xs: "row", md: "row" }}
                     >
                         <Typography
-                            variant={"h2"}
+                            variant="h2"
+                            component="a"
+                            color="text.primary"
+                            href={PATHS["blogs"]["root"]}
                             sx={{
                                 cursor: "pointer",
+                                textDecorationStyle: "wavy",
+                                textUnderlineOffset: muiTheme.spacing(1),
+                                textDecorationThickness: muiTheme.spacing(0.5),
+                                textDecorationColor: "transparent",
+                                transition: muiTheme.transitions.create([
+                                    "text-shadow",
+                                    "text-decoration-color",
+                                ]),
+                                ":hover": {
+                                    textShadow: `0 0 ${muiTheme.spacing(1)} ${
+                                        muiTheme.palette.text.disabled
+                                    }`,
+                                    textDecorationColor:
+                                        muiTheme.palette.text.primary,
+                                },
                             }}
-                            component="h2"
+                            // component="h2"
                             onClick={() => router.push(PATHS["blogs"]["root"])}
                         >
                             blogs

@@ -44,21 +44,21 @@ export const LoginForm = () => {
     return (
         <FormProvider methods={methods} onSubmit={onSubmit}>
             <Stack
+                mt={4}
+                px={4}
+                py={6}
+                width={1}
+                direction="row"
+                alignItems="stretch"
+                bgcolor="background.paper"
+                border={`2px solid ${muiTheme.palette.divider}`}
                 minHeight={`calc(80dvh - ${muiTheme.spacing(
                     DESIGN_CONFIG.HEADER
                 )})`}
-                mt={4}
-                border={`2px solid ${muiTheme.palette.divider}`}
-                width={1}
-                px={4}
-                py={6}
-                direction="row"
-                bgcolor="background.paper"
-                alignItems="stretch"
             >
                 <Stack
-                    width={1}
                     gap={8}
+                    width={1}
                     alignItems="center"
                     justifyContent="center"
                 >

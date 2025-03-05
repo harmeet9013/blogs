@@ -1,5 +1,5 @@
 import { CommonLayout } from "@/resources";
 
 export default function Layout({ children }) {
-    return <CommonLayout>{children}</CommonLayout>;
+    return <CommonLayout isUserPage>{children}</CommonLayout>;
 }

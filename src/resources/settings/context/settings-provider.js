@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
 //
-import { auth, authSliceActions } from "@/resources";
+import { authSliceActions, getSession } from "@/resources";
 //
 import { settingsContext } from "./settings-context";
 
@@ -22,7 +22,7 @@ export const SettingsProvider = ({ session, children }) => {
     };
 
     const updateSession = async () => {
-        const newSession = await auth();
+        const newSession = await getSession();
 
         initReduxSession(newSession);
 
