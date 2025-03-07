@@ -1,3 +1,5 @@
+import "@blocknote/mantine/style.css";
+
 import {
     auth,
     primaryFont,

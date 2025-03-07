@@ -16,7 +16,7 @@ export const fetchAllBlogs = async (
     let state = {
         loading: true,
         data: null,
-        error: null,
+        error: false,
     };
 
     let params = {

@@ -1,4 +1,10 @@
-import { connectMongoDB, createBlog, errorResponse, getBlogs } from "@/server";
+import {
+    connectMongoDB,
+    createBlog,
+    errorResponse,
+    getBlogs,
+    updateBlog,
+} from "@/server";
 
 export const GET = async (req) => {
     let database_connected = await connectMongoDB();
@@ -18,4 +24,14 @@ export const POST = async (req) => {
     }
 
     return await createBlog(req);
+};
+
+export const PUT = async (req) => {
+    let database_connected = await connectMongoDB();
+
+    if (!database_connected) {
+        return errorResponse("database not connected");
+    }
+
+    return await updateBlog(req);
 };

@@ -6,7 +6,7 @@ import {
     uid,
 } from "../utlities";
 import { blogModel } from "../models";
-import { blogsCreateSchema } from "../schemas";
+import { blogsCreateSchema, blogsUpdateSchema } from "../schemas";
 
 export const getBlogs = async (req) => {
     let blog_id = getQueryFromRequest(req, "blog");
@@ -47,6 +47,10 @@ export const getBlogs = async (req) => {
             .sort("-updatedAt")
             .select("-_id -__v");
 
+        if (!!blog_id && !blogs?.length) {
+            return errorResponse("no blog found");
+        }
+
         const blogs_count = await blogModel.countDocuments(query);
 
         return successResponse("all blogs", blogs, {
@@ -78,6 +82,29 @@ export const createBlog = async (req) => {
         const response = await blogModel.create(blog_data);
 
         return successResponse("blog created", response);
+    } catch (error) {
+        return errorResponse(error?.message);
+    }
+};
+
+export const updateBlog = async (req) => {
+    try {
+        let blog_id = getQueryFromRequest(req, "blog");
+
+        const request_body = await req.json();
+
+        await blogsUpdateSchema({ id: blog_id });
+
+        const blog_data = await blogModel.findOne({ key: blog_id });
+
+        blog_data.title = request_body?.title || [];
+        blog_data.content = request_body?.content || [];
+
+        blog_data.revision = blog_data?.revision + 1;
+
+        const response = await blog_data.save();
+
+        return successResponse("blog updated", response);
     } catch (error) {
         return errorResponse(error?.message);
     }

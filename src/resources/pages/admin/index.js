@@ -1,3 +1,3 @@
 export * from "./dashboard";
-export * from "./create-blog";
 export * from "./login-register";
+export * from "./blog-management";

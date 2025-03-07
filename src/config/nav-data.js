@@ -11,7 +11,7 @@ const NAV_ITEMS = [
     {
         label: "blogs",
         icon: <EditNoteRounded />,
-        href: PATHS["admin"]["blogs"]["create"],
+        href: PATHS["admin"]["blogs"]["root"],
     },
 ];
 

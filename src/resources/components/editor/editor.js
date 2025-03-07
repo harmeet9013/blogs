@@ -1,14 +1,36 @@
 "use client";
 
-import "@blocknote/mantine/style.css";
-//
+import { useEffect } from "react";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 
-const BlockNoteEditor = ({ ...other }) => {
-    const editor = useCreateBlockNote();
+const BlockNoteEditor = ({ onChange, value, ...other }) => {
+    const editor = useCreateBlockNote({});
 
-    return <BlockNoteView editor={editor} {...other} />;
+    const initDefaultContent = async () => {
+        const blocks = await editor.tryParseHTMLToBlocks(value);
+
+        editor.replaceBlocks(editor.document, blocks);
+    };
+
+    useEffect(() => {
+        if (!!value) {
+            initDefaultContent();
+        }
+    }, []);
+
+    return (
+        <BlockNoteView
+            editor={editor}
+            {...other}
+            onChange={async () => {
+                onChange(await editor.blocksToFullHTML(editor.document));
+            }}
+            style={{
+                width: "100%",
+            }}
+        />
+    );
 };
 
 export default BlockNoteEditor;

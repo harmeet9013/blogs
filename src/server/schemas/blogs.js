@@ -8,3 +8,11 @@ export const blogsCreateSchema = async (values) => {
 
     await schema.validate(values);
 };
+
+export const blogsUpdateSchema = async (values) => {
+    const schema = yup.object().shape({
+        id: yup.string().required(),
+    });
+
+    await schema.validate(values);
+};

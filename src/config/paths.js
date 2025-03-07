@@ -15,7 +15,8 @@ export const PATHS = {
     admin: {
         root: generateURL([GLOBAL.ADMIN, "dashboard"]),
         blogs: {
-            create: generateURL([GLOBAL.ADMIN, "create", "blog"]),
+            root: generateURL([GLOBAL.ADMIN, "blogs"]),
+            create_edit: (key) => generateURL([GLOBAL.ADMIN, "blogs", key]),
         },
     },
     users: {

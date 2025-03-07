@@ -108,7 +108,9 @@ export const AdminUILayout = ({ children }) => {
                         </Stack>
                     </Stack>
 
-                    <Stack pt={10}>{children}</Stack>
+                    <Stack width={1} pt={10}>
+                        {children}
+                    </Stack>
                 </Stack>
             </Container>
 

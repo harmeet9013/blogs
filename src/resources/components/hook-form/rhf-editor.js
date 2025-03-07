@@ -1,10 +1,11 @@
 "use client";
 
+import { Stack, Typography } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 //
 import { Editor } from "../editor";
 
-export const RHFEditor = ({ name }) => {
+export const RHFEditor = ({ name, label }) => {
     const { control } = useFormContext();
 
     return (
@@ -12,7 +13,26 @@ export const RHFEditor = ({ name }) => {
             name={name}
             control={control}
             render={({ field, fieldState: { error } }) => {
-                return <Editor {...field} />;
+                return (
+                    <Stack
+                        gap={1}
+                        width={1}
+                        alignItems="flex-start"
+                        justifyContent="flex-start"
+                    >
+                        {!!label && (
+                            <Typography variant="body1">{label}</Typography>
+                        )}
+
+                        <Editor {...field} />
+
+                        {!!error && (
+                            <Typography variant="body1" color="error">
+                                {error?.message}
+                            </Typography>
+                        )}
+                    </Stack>
+                );
             }}
         />
     );
