@@ -1,4 +1,9 @@
-import { connectMongoDB, errorResponse, uploadSingleMedia } from "@/server";
+import {
+    errorResponse,
+    connectMongoDB,
+    updateSingleMedia,
+    uploadSingleMedia,
+} from "@/server";
 
 export async function POST(req) {
     const database_connected = await connectMongoDB();

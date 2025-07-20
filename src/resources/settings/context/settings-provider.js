@@ -13,6 +13,7 @@ export const SettingsProvider = ({ session, children }) => {
 
     const dispatch = useDispatch();
     const isMobile = useMediaQuery("(max-width: 900px");
+    const isTablet = useMediaQuery("(max-width: 1200px");
     const systemTheme = useMediaQuery("(prefers-color-scheme: dark)");
 
     const [mode, setMode] = useState("dark");
@@ -40,6 +41,7 @@ export const SettingsProvider = ({ session, children }) => {
     const providerValues = {
         mode,
         setMode,
+        isTablet,
         isMobile,
         updateSession,
     };

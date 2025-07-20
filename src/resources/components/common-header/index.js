@@ -7,15 +7,16 @@ import {
     useTheme,
     Container,
     Typography,
+    useMediaQuery,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
 import { FavoriteRounded } from "@mui/icons-material";
 //
 import { DESIGN_CONFIG, PATHS } from "@/config";
 
 export const CommonHeader = () => {
-    const router = useRouter();
     const muiTheme = useTheme();
+
+    const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
 
     return (
         <Slide in={true}>
@@ -30,7 +31,6 @@ export const CommonHeader = () => {
                     zIndex: muiTheme.zIndex.drawer,
                     height: muiTheme.spacing(DESIGN_CONFIG.HEADER),
                     background: alpha(muiTheme.palette.background.default, 0.8),
-                    // borderBottom: `2px solid ${muiTheme.palette.divider}`,
                 }}
             >
                 <Container
@@ -48,7 +48,7 @@ export const CommonHeader = () => {
                         direction={{ xs: "row", md: "row" }}
                     >
                         <Typography
-                            variant="h2"
+                            variant={isMobile ? "h3" : "h2"}
                             component="a"
                             color="text.primary"
                             href={PATHS["blogs"]["root"]}
@@ -63,22 +63,20 @@ export const CommonHeader = () => {
                                     "text-decoration-color",
                                 ]),
                                 ":hover": {
-                                    textShadow: `0 0 ${muiTheme.spacing(1)} ${
+                                    textShadow: `0 0 ${muiTheme.spacing(10)} ${
                                         muiTheme.palette.text.disabled
                                     }`,
                                     textDecorationColor:
                                         muiTheme.palette.text.primary,
                                 },
                             }}
-                            // component="h2"
-                            onClick={() => router.push(PATHS["blogs"]["root"])}
                         >
                             blogs
                         </Typography>
 
                         <Stack
                             direction={{ xs: "column", md: "row" }}
-                            gap={1}
+                            gap={{ xs: 0, md: 1 }}
                             alignItems="center"
                         >
                             <Typography variant="button">
@@ -94,7 +92,7 @@ export const CommonHeader = () => {
                             </Typography>
 
                             <Typography
-                                variant="h3"
+                                variant={isMobile ? "h5" : "h3"}
                                 sx={{
                                     fontFamily: "Creattion",
                                     fontWeight: 600,

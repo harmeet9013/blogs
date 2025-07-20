@@ -5,9 +5,15 @@ export const endpoints = {
         root: PREFIX + "/blogs",
     },
     users: {
-        root: PREFIX + "/user",
-        login: PREFIX + "/user" + "/login",
-        verify: PREFIX + "/user" + "/me",
-        register: PREFIX + "/user" + "/register",
+        root: PREFIX + "/users",
+        login: PREFIX + "/users" + "/login",
+        verify: PREFIX + "/users" + "/me",
+        register: PREFIX + "/users" + "/register",
+        verify_email: PREFIX + "/users" + "/verify-email",
+        forget_password: PREFIX + "/users" + "/forgot-password",
+    },
+    media: {
+        root: PREFIX + "/media",
+        upload: PREFIX + "/media" + "/upload",
     },
 };

@@ -15,7 +15,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 const response = await loginApi({ email, password });
 
                 if (response?.error) {
-                    return { error: response?.message || "invalid user" };
+                    return {
+                        error:
+                            response?.error ||
+                            response?.message ||
+                            "invalid user",
+                    };
                 }
 
                 return response?.data?.data;

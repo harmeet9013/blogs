@@ -53,8 +53,6 @@ export const generatePaginationReducers = (key = "pagination") => {
             const { current_page, limit, total_pages, total_items } =
                 action.payload;
 
-            console.log(current_page < total_pages, current_page, total_pages);
-
             state[key] = {
                 limit: limit || 10,
                 current_page: current_page || 1,
@@ -75,7 +73,6 @@ export const generatePaginationReducers = (key = "pagination") => {
                 hasPrevPage: false,
             };
         },
-        // [`nextPage`]
     };
 };
 

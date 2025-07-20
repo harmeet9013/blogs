@@ -4,7 +4,12 @@ import { LoginForm } from "../login-form";
 
 export const LoginView = () => {
     return (
-        <Container maxWidth="sm">
+        <Container
+            maxWidth="sm"
+            sx={{
+                p: 0,
+            }}
+        >
             <LoginForm />
         </Container>
     );

@@ -1,4 +1,6 @@
 import { kebabCase } from "lodash";
+//
+import { NEXT_PUBLIC_API_URL } from "@/config";
 
 export const toBytes = (value = 20) => {
     return value * 1024 * 1024;
@@ -30,5 +32,18 @@ export const getFileType = (mime) => {
         return "audio";
     } else {
         return "other";
+    }
+};
+
+export const getImageURL = (url = "") => {
+    if (url?.startsWith("http") || url?.startsWith("blob")) {
+        return url;
+    } else if (!!url) {
+        return (
+            NEXT_PUBLIC_API_URL +
+            (url?.startsWith("\\") || url?.startsWith("/") ? url : `/${url}`)
+        );
+    } else {
+        return "";
     }
 };

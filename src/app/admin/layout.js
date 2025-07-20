@@ -7,7 +7,7 @@ export default async function Layout({ children }) {
     const headerList = await headers();
 
     const header_url = headerList?.get("x-url") || "";
-    const isUserPage = header_url?.includes(PATHS["users"]["login"]);
+    const isUserPage = header_url?.includes(PATHS["auth"]["root"]);
 
     return (
         <AdminLayout isUserPage={isUserPage}>

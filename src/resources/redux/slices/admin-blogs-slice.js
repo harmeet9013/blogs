@@ -9,10 +9,12 @@ import {
     generateReduxReducers,
     generateReduxSelectors,
 } from "../factory";
+import { BLOG_LISTING_TAB_HEAD } from "@/config";
 
 const initialState = {
     data: null,
     edit: null,
+    selectedTab: BLOG_LISTING_TAB_HEAD?.at(0)?.value,
     pagination: { ...generatePaginationStates({ limit: 10 }) },
 };
 
@@ -24,11 +26,13 @@ const adminBlogSlice = createSlice({
     reducers: {
         ...generateReduxReducers("data"),
         ...generateReduxReducers("edit"),
+        ...generateReduxReducers("selectedTab"),
         ...generatePaginationReducers(),
     },
     selectors: {
         ...generateReduxSelectors("data"),
         ...generateReduxSelectors("edit"),
+        ...generateReduxSelectors("selectedTab"),
         ...generatePaginationSelectors(),
     },
 });

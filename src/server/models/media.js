@@ -8,6 +8,7 @@ const mediaSchema = new Schema(
         key: { type: String, unique: true },
         path: { type: String, unique: true },
         size: { type: Number },
+        alt: { type: String, required: true },
         type: {
             type: String,
             // enum: [...STATIC_MEDIA_TYPES_VALUES],

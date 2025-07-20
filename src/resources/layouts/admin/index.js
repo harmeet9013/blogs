@@ -11,7 +11,7 @@ export const AdminLayout = async ({ isUserPage, children }) => {
     if (!!session?.user && isUserPage) {
         redirect(PATHS["admin"]["root"]);
     } else if (!session?.user && !isUserPage) {
-        redirect(PATHS["users"]["login"]);
+        redirect(PATHS["auth"]["login"]);
     } else {
         return (
             <>

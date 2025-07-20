@@ -161,3 +161,26 @@ export const uploadSingleMedia = async (req) => {
         return errorResponse(error?.message || "File upload failed", error);
     }
 };
+
+export const updateSingleMedia = async (req) => {
+    try {
+        let media_key = getQueryFromRequest(req, "key");
+
+        const request_body = await req.json();
+
+        if (!media_key) {
+            throw new Error("key is required");
+        }
+
+        let media = await mediaModel.findOne({ key: media_key });
+
+        media.alt = request_body?.alt || media?.alt;
+
+        await media.save();
+
+        return successResponse("media updated");
+    } catch (error) {
+        console.error("File upload error:", error);
+        return errorResponse(error?.message || "File upload failed", error);
+    }
+};

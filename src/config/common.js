@@ -27,3 +27,54 @@ export const MONTHS = [
     "November",
     "December",
 ];
+
+export const BLOG_LISTING_TABLE_HEAD = [
+    {
+        label: "index",
+    },
+    {
+        label: "title",
+    },
+    {
+        label: "author",
+    },
+    {
+        label: "actions",
+    },
+];
+
+export const BLOG_LISTING_TAB_HEAD = [
+    {
+        label: "published",
+        value: "published",
+    },
+    {
+        label: "un-published",
+        value: "unpublished",
+    },
+];
+
+export const STATIC_MEDIA_TYPES = [
+    {
+        value: "image",
+        label: "Image",
+    },
+    {
+        value: "file",
+        label: "File",
+    },
+    {
+        value: "audio",
+        label: "Audio",
+    },
+    {
+        value: "other",
+        label: "Other",
+    },
+];
+
+export const COMMON_ASSETS = {
+    placeholder:
+        process.env.NEXT_PUBLIC_API_URL +
+        "/media/2025/February/1740055183671_1735104686843-placeholder-image.jpg",
+};

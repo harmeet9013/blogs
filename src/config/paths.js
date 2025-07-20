@@ -18,9 +18,15 @@ export const PATHS = {
             root: generateURL([GLOBAL.ADMIN, "blogs"]),
             create_edit: (key) => generateURL([GLOBAL.ADMIN, "blogs", key]),
         },
+        media: {
+            root: generateURL([GLOBAL.ADMIN, "media"]),
+        },
     },
-    users: {
-        login: generateURL([GLOBAL.ADMIN, "login"]),
-        register: generateURL([GLOBAL.ADMIN, "register"]),
+    users: {},
+    auth: {
+        root: generateURL([GLOBAL.ADMIN, "auth"]),
+        login: generateURL([GLOBAL.ADMIN, "auth", "login"]),
+        register: generateURL([GLOBAL.ADMIN, "auth", "register"]),
+        forget_password: generateURL([GLOBAL.ADMIN, "auth", "forget-password"]),
     },
 };

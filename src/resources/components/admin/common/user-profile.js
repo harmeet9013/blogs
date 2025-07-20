@@ -18,7 +18,7 @@ export const UserProfilePopover = ({ anchorEl, onClose }) => {
     const handleLogout = async () => {
         await logoutAPI();
         await updateSession();
-        router.push(PATHS["users"]["login"]);
+        router.push(PATHS["auth"]["login"]);
     };
 
     return (
@@ -28,12 +28,13 @@ export const UserProfilePopover = ({ anchorEl, onClose }) => {
                 onClose={onClose}
                 anchorEl={anchorEl}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                transformOrigin={{ horizontal: "left", vertical: "top" }}
                 slotProps={{
                     paper: {
-                        elevation: 1,
+                        elevation: 10,
                         sx: {
                             mt: 2,
+                            ml: -5,
                         },
                     },
                 }}
@@ -45,11 +46,11 @@ export const UserProfilePopover = ({ anchorEl, onClose }) => {
                         alignItems="flex-start"
                         justifyContent="flex-start"
                     >
-                        <Typography variant="h6">
-                            hey{" "}
+                        <Typography variant="body1" fontWeight={300}>
+                            hey <br />
                             <Typography
-                                variant="inline"
-                                fontWeight={500}
+                                variant="h6"
+                                fontWeight={600}
                                 color="secondary"
                             >
                                 {sessionData?.user?.name}
@@ -61,16 +62,13 @@ export const UserProfilePopover = ({ anchorEl, onClose }) => {
 
                     <MenuItem
                         color="error"
+                        onClick={handleLogout}
                         sx={{
                             gap: 1,
-                            display: "flex",
-                            alignItems: "center",
-                            flexDirection: "row",
                         }}
-                        onClick={handleLogout}
                     >
                         <LogoutRounded />
-                        Logout
+                        logout
                     </MenuItem>
                 </Stack>
             </Menu>

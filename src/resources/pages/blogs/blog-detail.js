@@ -14,8 +14,8 @@ export const BlogDetail = ({ blog }) => {
         <Stack
             gap={4}
             width={1}
-            justifyContent="flex-start"
             alignItems="flex-start"
+            justifyContent="flex-start"
         >
             <Button
                 color="secondary"
@@ -29,13 +29,17 @@ export const BlogDetail = ({ blog }) => {
 
             <Typography variant="h1">{title}</Typography>
 
-            <Typography
-                variant="body1"
-                component="div"
+            <div
                 dangerouslySetInnerHTML={{
                     __html: content,
                 }}
-            ></Typography>
+            />
+
+            {/* <Typography
+                variant="body1"
+                component="div"
+                
+            /> */}
         </Stack>
     );
 };

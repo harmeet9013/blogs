@@ -4,6 +4,7 @@ export const blogsCreateSchema = async (values) => {
     const schema = yup.object().shape({
         title: yup.string().required(),
         content: yup.string().required(),
+        published: yup.boolean().required(),
     });
 
     await schema.validate(values);

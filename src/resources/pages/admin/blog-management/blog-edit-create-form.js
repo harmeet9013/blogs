@@ -5,11 +5,12 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { SaveRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Divider, Stack, Typography } from "@mui/material";
+import { CheckRounded, PublishRounded, SaveRounded } from "@mui/icons-material";
 //
 import {
     RHFInput,
+    RHFMedia,
     RHFEditor,
     useBoolean,
     PUT_REQUEST,
@@ -29,18 +30,23 @@ export const BlogEditCreateForm = ({ blogData }) => {
 
     const methods = useForm({
         defaultValues: {
-            title: "",
-            content: "",
-            image: "",
+            title: blogData?.title || "",
+            content: blogData?.content || "",
+            media: blogData?.media || "",
+            published: blogData?.published || false,
         },
     });
+
+    const publishedValue = methods["watch"]("published");
 
     const onSubmit = methods["handleSubmit"](async (data) => {
         isUpdating.onTrue();
 
         let payload = {
             title: data?.title || "",
-            content: data?.content || [],
+            media: data?.media || null,
+            content: data?.content || "",
+            published: data?.published || false,
         };
 
         const response = await (!!blogData ? PUT_REQUEST : POST_REQUEST)(
@@ -50,13 +56,19 @@ export const BlogEditCreateForm = ({ blogData }) => {
         );
 
         if (response?.status) {
+            enqueueSnackbar(response?.message || "blog created");
+
             if (!blogData) {
-                enqueueSnackbar("blog created");
                 router.push(
                     PATHS["admin"]["blogs"]["create_edit"](response?.data?.key)
                 );
             } else {
-                enqueueSnackbar("blog created");
+                methods["reset"]({
+                    title: response?.data?.title,
+                    media: response?.data?.media,
+                    content: response?.data?.content,
+                    published: response?.data?.published,
+                });
             }
         } else {
             enqueueSnackbar(response?.message || "unexpected error");
@@ -68,10 +80,6 @@ export const BlogEditCreateForm = ({ blogData }) => {
     useEffect(() => {
         if (!!blogData) {
             dispatch(setEdit(blogData));
-            methods["reset"]({
-                title: blogData?.title,
-                content: blogData?.content,
-            });
         }
 
         isUpdating.onFalse();
@@ -86,23 +94,60 @@ export const BlogEditCreateForm = ({ blogData }) => {
                     <Stack width={1} gap={4}>
                         <Stack
                             width={1}
-                            direction="row"
+                            gap={4}
+                            direction={{ xs: "column", md: "row" }}
                             alignItems="center"
                             justifyContent="space-between"
                         >
-                            <Typography variant="h3">
+                            <Typography variant="h3" width={1}>
                                 {blogData ? "edit" : "create"} blog
                             </Typography>
 
-                            <Button
-                                type="submit"
-                                fullWidth={false}
-                                startIcon={<SaveRounded />}
-                                loading={methods["formState"]["isSubmitting"]}
+                            <Stack
+                                direction="row"
+                                width={{ xs: 1, md: 0.5 }}
+                                alignItems="center"
+                                gap={2}
                             >
-                                save
-                            </Button>
+                                <Button
+                                    variant={
+                                        publishedValue
+                                            ? "contained"
+                                            : "outlined"
+                                    }
+                                    onClick={() =>
+                                        methods["setValue"](
+                                            "published",
+                                            !publishedValue
+                                        )
+                                    }
+                                    startIcon={
+                                        publishedValue ? (
+                                            <CheckRounded />
+                                        ) : (
+                                            <PublishRounded />
+                                        )
+                                    }
+                                >
+                                    {publishedValue ? "published" : "publish"}
+                                </Button>
+
+                                <Button
+                                    type="submit"
+                                    // fullWidth={false}
+                                    startIcon={<SaveRounded />}
+                                    loading={
+                                        methods["formState"]["isSubmitting"]
+                                    }
+                                >
+                                    save
+                                </Button>
+                            </Stack>
                         </Stack>
+
+                        <Divider />
+
+                        <RHFMedia name="media" label="select banner" />
 
                         <RHFInput name="title" label="title" />
 

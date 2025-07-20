@@ -46,8 +46,11 @@ export const RegisterForm = () => {
         const response = await registerApi(data);
 
         if (!response?.error) {
-            router.push(PATHS["users"]["login"]);
-            enqueueSnackbar("user created, please login");
+            router.push(PATHS["auth"]["login"]);
+            enqueueSnackbar(
+                response?.data?.message ||
+                    "user created, please check your inbox to verify email"
+            );
         } else {
             enqueueSnackbar(response?.error || "unexpected error", {
                 variant: "error",
@@ -58,17 +61,17 @@ export const RegisterForm = () => {
     return (
         <FormProvider methods={methods} onSubmit={onSubmit}>
             <Stack
+                mt={4}
+                px={{ xs: 2, md: 4 }}
+                py={{ xs: 3, md: 6 }}
+                width={1}
+                direction="row"
+                alignItems="stretch"
+                bgcolor="background.paper"
+                border={`2px solid ${muiTheme.palette.divider}`}
                 minHeight={`calc(80dvh - ${muiTheme.spacing(
                     DESIGN_CONFIG.HEADER
                 )})`}
-                mt={4}
-                border={`2px solid ${muiTheme.palette.divider}`}
-                width={1}
-                px={4}
-                py={6}
-                direction="row"
-                bgcolor="background.paper"
-                alignItems="stretch"
             >
                 <Stack
                     gap={8}
@@ -99,14 +102,23 @@ export const RegisterForm = () => {
                         justifyContent="center"
                         alignItems="flex-start"
                     >
-                        <RHFInput name="name" label="name" />
+                        <RHFInput
+                            name="name"
+                            label="name"
+                            disabled={methods["formState"]["isSubmitting"]}
+                        />
 
-                        <RHFInput name="email" label="email / username" />
+                        <RHFInput
+                            name="email"
+                            label="email / username"
+                            disabled={methods["formState"]["isSubmitting"]}
+                        />
 
                         <RHFInput
                             type="password"
                             name="password"
                             label="password"
+                            disabled={methods["formState"]["isSubmitting"]}
                         />
 
                         <RHFInput
@@ -130,6 +142,7 @@ export const RegisterForm = () => {
                                     ),
                                 },
                             }}
+                            disabled={methods["formState"]["isSubmitting"]}
                         />
                     </Stack>
 
@@ -138,6 +151,7 @@ export const RegisterForm = () => {
                         color="primary"
                         size="large"
                         startIcon={<AppRegistrationRounded />}
+                        loading={methods["formState"]["isSubmitting"]}
                     >
                         register
                     </Button>
@@ -151,7 +165,11 @@ export const RegisterForm = () => {
                         justifyContent="center"
                     >
                         <ArrowBackRounded />
-                        <Link href={PATHS["users"]["login"]} underline="none">
+                        <Link
+                            href={PATHS["auth"]["login"]}
+                            underline="none"
+                            disabled={methods["formState"]["isSubmitting"]}
+                        >
                             back to login
                         </Link>
                     </Stack>

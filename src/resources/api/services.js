@@ -11,6 +11,7 @@ export const axiosInstance = axios.create({
 export const fetchAllBlogs = async (
     blog_id = null,
     search_term = null,
+    published = true,
     pagination = {}
 ) => {
     let state = {
@@ -25,6 +26,7 @@ export const fetchAllBlogs = async (
                   blog: blog_id,
               }
             : {}),
+        published: published,
         ...(search_term
             ? {
                   search: search_term?.trim()?.toLowerCase(),
@@ -81,6 +83,53 @@ export const registerApi = async (data = {}, params = {}) => {
         endpoints["users"]["register"],
         data,
         params
+    );
+
+    if (response?.status) {
+        state.data = response;
+    } else {
+        state.error = response?.message;
+    }
+
+    state.loading = false;
+
+    return state;
+};
+
+export const verifyEmailApi = async (params = {}) => {
+    let state = {
+        loading: true,
+        data: null,
+        error: null,
+    };
+
+    const response = await GET_REQUEST(
+        endpoints["users"]["verify_email"],
+        params
+    );
+
+    if (response?.status) {
+        state.data = response;
+    } else {
+        state.error = response?.message;
+    }
+
+    state.loading = false;
+
+    return state;
+};
+
+export const forgetPasswordRequestApi = async (data = null, params = {}) => {
+    let state = {
+        loading: true,
+        data: null,
+        error: null,
+    };
+
+    const response = await (data ? POST_REQUEST : GET_REQUEST)(
+        endpoints["users"]["forget_password"],
+        data || params,
+        data ? params : null
     );
 
     if (response?.status) {

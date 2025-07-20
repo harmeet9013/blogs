@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Card, Typography, Stack, useTheme, Divider } from "@mui/material";
+import { Card, Typography, Stack, useTheme, Divider, Box } from "@mui/material";
 //
 import { PATHS } from "@/config";
-import { formatDateForRender } from "@/resources";
+import { bgBlur, formatDateForRender } from "@/resources";
 
 export const BlogCard = ({ item, index }) => {
-    const { title, content, key, image, author } = item;
+    const { title, content, key, media, author } = item;
 
     const router = useRouter();
     const muiTheme = useTheme();
@@ -26,37 +26,83 @@ export const BlogCard = ({ item, index }) => {
                     "transform",
                     "background",
                     "box-shadow",
+                    "border-color",
                 ]),
 
                 ":hover": {
                     transform: `translateY(${muiTheme.spacing(-0.5)})`,
                     background: muiTheme.palette.action.hover,
                     boxShadow: muiTheme.shadows[2],
+                    borderColor: "primary.main",
                 },
             }}
             onClick={handleCardClick}
         >
             <Stack
-                gap={3}
                 px={2}
                 py={2}
+                gap={3}
                 width={1}
                 direction="column"
+                position="relative"
                 alignItems="flex-start"
                 justifyContent="flex-start"
             >
-                <Typography variant="h3" fontWeight={200}>
+                <Stack
+                    sx={{
+                        width: 1,
+                        overflow: "hidden",
+                        position: "relative",
+                        maxHeight: muiTheme.spacing(30),
+                        border: `2px solid ${muiTheme.palette.divider}`,
+                    }}
+                >
+                    <Box
+                        component="img"
+                        src={media?.path}
+                        sx={{
+                            top: 0,
+                            left: 0,
+                            width: 1,
+                            zIndex: 0,
+                            position: "absolute",
+                            objectFit: "cover",
+                            opacity: 0.1,
+                            filter: "blur(4px)",
+                            transform: "scale(1.2)",
+                            maxHeight: muiTheme.spacing(30),
+                        }}
+                    />
+                    <Box
+                        component="img"
+                        src={media?.path}
+                        sx={{
+                            width: 1,
+                            zIndex: 2,
+                            objectFit: "scale-down",
+                            maxHeight: muiTheme.spacing(30),
+                        }}
+                    />
+                </Stack>
+
+                <Typography variant="h3" fontWeight={400}>
                     {title}
                 </Typography>
 
-                <Typography
+                {/* <Typography
                     variant="body2"
                     fontWeight={300}
                     color="text.secondary"
                     mb={-1}
-                >
-                    {content?.substring(0, 200)}...
-                </Typography>
+                    component="p"
+                    dangerouslySetInnerHTML={{
+                        __html: content,
+                    }}
+                    sx={{
+                        display: "box",
+                        lineClamp: 4,
+                    }}
+                ></Typography> */}
 
                 <Divider flexItem />
 

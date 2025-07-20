@@ -1,9 +1,9 @@
 import {
+    uid,
     errorResponse,
     successResponse,
     getQueryFromRequest,
     getPaginationOptions,
-    uid,
 } from "../utlities";
 import { blogModel } from "../models";
 import { blogsCreateSchema, blogsUpdateSchema } from "../schemas";
@@ -11,12 +11,17 @@ import { blogsCreateSchema, blogsUpdateSchema } from "../schemas";
 export const getBlogs = async (req) => {
     let blog_id = getQueryFromRequest(req, "blog");
     let search_term = getQueryFromRequest(req, "search");
+    let published = getQueryFromRequest(req, "published");
 
     let page_options = getPaginationOptions(req, !!search_term, 9);
 
     try {
         let query = {
-            ...(blog_id ? { key: blog_id } : {}),
+            ...(blog_id
+                ? { key: blog_id }
+                : {
+                      published: published === "false" ? false : true,
+                  }),
             ...(search_term
                 ? {
                       $or: [
@@ -41,7 +46,7 @@ export const getBlogs = async (req) => {
 
         const blogs = await blogModel
             .find(query)
-            .populate("author")
+            .populate([{ path: "author" }, { path: "media" }])
             .skip(page_options?.limit * (page_options?.page - 1))
             .limit(page_options?.limit)
             .sort("-updatedAt")
@@ -75,7 +80,9 @@ export const createBlog = async (req) => {
         const blog_data = {
             title: request_body?.title,
             key: uid.rnd(),
+            published: request_body?.published || false,
             content: request_body?.content,
+            media: request_body?.media || null,
             revision: 1,
         };
 
@@ -99,10 +106,17 @@ export const updateBlog = async (req) => {
 
         blog_data.title = request_body?.title || [];
         blog_data.content = request_body?.content || [];
+        blog_data.published = request_body?.published;
+        blog_data.media = request_body?.media || null;
 
         blog_data.revision = blog_data?.revision + 1;
 
-        const response = await blog_data.save();
+        await blog_data.save();
+
+        const response = await blogModel
+            .findOne({ key: blog_id })
+            .populate([{ path: "author" }, { path: "media" }])
+            .select("-_id -__v");
 
         return successResponse("blog updated", response);
     } catch (error) {

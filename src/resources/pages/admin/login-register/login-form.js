@@ -45,8 +45,8 @@ export const LoginForm = () => {
         <FormProvider methods={methods} onSubmit={onSubmit}>
             <Stack
                 mt={4}
-                px={4}
-                py={6}
+                px={{ xs: 2, md: 4 }}
+                py={{ xs: 3, md: 6 }}
                 width={1}
                 direction="row"
                 alignItems="stretch"
@@ -83,12 +83,17 @@ export const LoginForm = () => {
                         justifyContent="center"
                         alignItems="flex-start"
                     >
-                        <RHFInput name="email" label="email / username" />
+                        <RHFInput
+                            name="email"
+                            label="email"
+                            disabled={methods["formState"]["isSubmitting"]}
+                        />
 
                         <RHFInput
                             type="password"
                             name="password"
                             label="password"
+                            disabled={methods["formState"]["isSubmitting"]}
                         />
                     </Stack>
 
@@ -97,6 +102,7 @@ export const LoginForm = () => {
                         color="primary"
                         size="large"
                         startIcon={<LoginRounded />}
+                        loading={methods["formState"]["isSubmitting"]}
                     >
                         login
                     </Button>
@@ -109,13 +115,21 @@ export const LoginForm = () => {
                         color="text.disabled"
                         justifyContent="center"
                     >
-                        <Link href="#" color="secondary" underline="none">
+                        <Link
+                            type="button"
+                            href={PATHS["auth"]["forget_password"]}
+                            color="secondary"
+                            underline="none"
+                            disabled={methods["formState"]["isSubmitting"]}
+                        >
                             forgot password?
                         </Link>{" "}
                         /
                         <Link
-                            href={PATHS["users"]["register"]}
+                            type="button"
+                            href={PATHS["auth"]["register"]}
                             underline="hover"
+                            disabled={methods["formState"]["isSubmitting"]}
                         >
                             register yourself
                         </Link>
